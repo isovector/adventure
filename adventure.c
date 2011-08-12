@@ -146,6 +146,8 @@ void update_game() {
 					lua_pushstring(script, "goal");
 					LUA_PUSHPOS(mouse_x, mouse_y);				
 					lua_settable(script, -3);
+					
+					lua_pop(script, 2);
 				} else {
 					int dest = closest_waypoint(mouse_x, mouse_y);
 					int here = closest_waypoint(player->x, player->y);
@@ -154,6 +156,8 @@ void update_game() {
 					lua_getglobal(script, "player");
 					LUA_PUSHPOS(mouse_x, mouse_y);
 					lua_call(script, 2, 0);
+					
+					lua_pop(script, 1);
 				}
 				
 				free(player);
@@ -358,16 +362,30 @@ void frame() {
 	clear_to_color(buffer, 0);
 	blit(room_art, buffer, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
-	lua_getglobal(script, "actors");
+	lua_getglobal(script, "room");
+	lua_pushstring(script, "scene");
+	lua_gettable(script, -2);
+	
 	int t = lua_gettop(script);
 
 	lua_pushnil(script);
 	while (lua_next(script, t) != 0) {
+		lua_pushstring(script, "id");
+		lua_gettable(script, -2);
+		lua_pushvalue(script, -2);
+		
 		POINT *pos = actor_position(lua_tostring(script, -2));
 		
 		lua_pushstring(script, "flipped");
 		lua_gettable(script, -2);
-		int flipped = lua_tonumber(script, -1);
+		int flipped = lua_toboolean(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "ignore_ui");
+		lua_gettable(script, -2);
+		int ignore = 0;
+		if (!lua_isnil(script, -1))
+			ignore = lua_toboolean(script, -1);
 		lua_pop(script, 1);
 		
 		lua_pushstring(script, "name");
@@ -428,16 +446,20 @@ void frame() {
 		blit(sheet, tmp, xsrc, ysrc + 1, 0, 0, width, height);
 		draw_sprite_ex(buffer, tmp, pos->x - xorigin, pos->y - yorigin, DRAW_SPRITE_NORMAL, flipped);
 		
-		lua_getregister(script, "render_obj");
-		lua_pushvalue(script, -3);
-		push_rendertable(name, pos->x - xorigin, pos->y - yorigin, width, height);
-		lua_settable(script, -3);
+		if (!ignore) {
+			lua_getregister(script, "render_obj");
+			lua_pushvalue(script, -3);
+			push_rendertable(name, pos->x - xorigin, pos->y - yorigin, width, height);
+			lua_settable(script, -3);
+			lua_pop(script, 1);
+		}
 		
 		destroy_bitmap(tmp);
 		
 		free(pos);
-		lua_pop(script, 2);
-	} lua_pop(script, 1);
+		lua_pop(script, 3);
+	} lua_pop(script, 3);
+	
 	
 	lua_getglobal(script, "conversation");
 	lua_pushstring(script, "words");

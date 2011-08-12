@@ -72,18 +72,13 @@ int lua_get_bitmap(lua_State *L) {
 }
 
 int load_room(lua_State *L) {
-    if (lua_gettop(L) != 2 || !lua_isstring(L, 1) || !lua_isstring(L, 2)) {
-        lua_pushstring(L, "__load_room expects (string, string)");
+    if (lua_gettop(L) != 2 || !lua_isuserdata(L, 1) || !lua_isuserdata(L, 2)) {
+        lua_pushstring(L, "__load_room expects (BITMAP*, BITMAP*)");
         lua_error(L);
     }
 
-    if (room_art != NULL) {
-        destroy_bitmap(room_art);
-        destroy_bitmap(room_hot);
-    }
-    
-    room_art = load_bitmap(lua_tostring(L, 1), NULL);
-    room_hot = load_bitmap(lua_tostring(L, 2), NULL);
+    room_art = (BITMAP*)lua_touserdata(L, 1);
+    room_hot = (BITMAP*)lua_touserdata(L, 2);
 	
 	for (int i = 0; i < 256; i++)
         if (hotspots[i] != NULL) {
@@ -114,7 +109,7 @@ void init_script() {
     lua_newtable(script);
     lua_setregister(script, "render_inv");
     
-    lua_register(script, "__load_room", &load_room);
+    lua_register(script, "set_room_data", &load_room);
     lua_register(script, "register_hotspot", &register_hotspot);
     lua_register(script, "get_image_size", &lua_get_image_size);
     lua_register(script, "get_bitmap", &lua_get_bitmap);

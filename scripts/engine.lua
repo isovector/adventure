@@ -1,5 +1,6 @@
 current_room = "";
 room = nil
+rooms = {}
 
 -- make this perform dispatch on object
 function do_callback(callback_type, object, method)
@@ -26,13 +27,23 @@ function unhandled_event()
     print("default unhandled_event()")
 end
 
-function load_room(r)
+function switch_room(r, door)
+    if current_room == r then return end
     current_room = r
     
-    local roompath = "rooms/" .. current_room .. "/"
-    __load_room(roompath .. "art.pcx", roompath .. "hot.pcx")
+    if not rooms[r] then
+        local roompath = "rooms/" .. r .. "/"
     
-    dofile(roompath .. "room.lua")
-
-    room = _G[current_room]
+        dofile(roompath .. "room.lua")
+        room.artwork = get_bitmap(roompath .. "art.pcx")
+        room.hotmap = get_bitmap(roompath .. "hot.pcx")
+        
+        room.on_init()
+        rooms[r] = room
+    end
+    
+    room = rooms[r]
+    set_room_data(room.artwork, room.hotmap)
+    
+    room.on_load(door)
 end

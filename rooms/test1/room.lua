@@ -5,7 +5,7 @@ room = {
 }
 
 function room.on_init()
-    print("initialized test2")
+    print("initialized test1")
 end
 
 function room.on_load()
@@ -21,8 +21,7 @@ function room.on_load()
 end
 
 function room.perfume_touch()
-    print("switching room to test1")
-    switch_room("test1", 1)
+    switch_room("test2", 1)
 end
 
 function room.plant_talk()

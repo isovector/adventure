@@ -18,9 +18,9 @@ function tick(state)
                     local dir = vector.normal(dif)
                     
                     if dir.x < 0 then 
-                        actor.flipped = 1
+                        actor.flipped = true
                     else
-                        actor.flipped = 0
+                        actor.flipped = false
                     end
                     
                     actor.pos.x = actor.pos.x + dir.x * speed

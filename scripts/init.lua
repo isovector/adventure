@@ -6,4 +6,4 @@ dofile("scripts/game.lua")
 dofile("scripts/dialogue.lua")
 dofile("scripts/content.lua")
 
-load_room("test2")
+switch_room("test2")

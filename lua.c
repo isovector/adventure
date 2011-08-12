@@ -109,6 +109,11 @@ void init_script() {
     luaL_openlibs(script);
     lua_atpanic(script, lua_panic);
     
+    lua_newtable(script);
+    lua_setregister(script, "render_obj");
+    lua_newtable(script);
+    lua_setregister(script, "render_inv");
+    
     lua_register(script, "__load_room", &load_room);
     lua_register(script, "register_hotspot", &register_hotspot);
     lua_register(script, "get_image_size", &lua_get_image_size);

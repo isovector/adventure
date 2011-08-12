@@ -1,5 +1,6 @@
 actors = {
     jack = {
+        name = "Gomez",
         pos = {x = 600, y = 300}, 
         color = 255, 
         speed = 150, 

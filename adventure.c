@@ -6,6 +6,7 @@ BITMAP *buffer;
 BITMAP *room_art = NULL, *room_hot = NULL;
 BITMAP *actionbar, *inventory;
 HOTSPOT *hotspots[256];
+const char *object_name = NULL;
 
 int last_mouse;
 int last_key[KEY_MAX];
@@ -34,93 +35,107 @@ int in_rect(int x, int y, int x1, int y1, int x2, int y2) {
 	return x >= x1 && x < x2 && y >= y1 && y < y2;
 }
 
-OBJTYPE get_object_at_cursor() {
-	const char *name = NULL;
-	
-	if (game_state & STATE_INVENTORY && in_rect(mouse_x, mouse_y, 270, 210, 270 + 741, 210 + 300)) {
-		int i = 1;
-		lua_getglobal(script, "player");
-		lua_pushstring(script, "inventory");
-		lua_gettable(script, -2);
-		int t = lua_gettop(script);
+int is_click(int button) {
+	return mouse_b & button && !(last_mouse & button);
+}
 
-		lua_pushnil(script);
-		while (lua_next(script, t) != 0) {
-			if (lua_isnil(script, -1)) {
-				lua_pop(script, 1);
-				continue;
-			}
-			if (in_rect(mouse_x, mouse_y, 270 + 75 * (i % 10), 215 + 75 * (i / 10), 270 + 75 * (i % 10) + 64, 215 + 75 * (i / 10) + 64)) {
-				name = lua_tostring(script, -2);
-			}
-			lua_pop(script, 1);
-			i++;
-		} lua_pop(script, 2);
-		
-		if (name) {
-			lua_getglobal(script, "items");
-			lua_pushstring(script, name);
-			lua_gettable(script, -2);
-			return OBJ_ITEM;
-		}
-	} else {
-		HOTSPOT *hs = hotspots[hotspot(mouse_x, mouse_y)];
-		if (hs != NULL) {
-			lua_newtable(script);
-			lua_pushstring(script, "internal_name");
-			lua_pushstring(script, hs->internal_name);
-			lua_settable(script, -2);
-			lua_pushstring(script, "display_name");
-			lua_pushstring(script, hs->display_name);
-			lua_settable(script, -2);
-			return OBJ_HOTSPOT;
-		}
-	}
+void set_action(const char *type, const char *obj) {
+	action_state.started = life;
+	action_state.x = mouse_x;
+	action_state.y = mouse_y;
+	action_state.type = type;
+	action_state.object = obj;
+	action_state.relevant = 1;
+}
+
+void fire_event(const char *type, const char *obj, const char *method) {
+	lua_getglobal(script, "do_callback");
+	lua_pushstring(script, type);
+	lua_pushstring(script, obj);
+	lua_pushstring(script, method);
+	lua_call(script, 3, 0);
 }
 
 void update_game() {
 	lua_getglobal(script, "tick");
 	lua_call(script, 0, 0);
 	
+	object_name = "";
+	
 	if (action_state.result) { // we just returned from action
-		HOTSPOT *hs = hotspots[hotspot(action_state.x, action_state.y)];
+		const char *method;
 		
-		lua_getglobal(script, "do_callback");
-		lua_pushstring(script, action_state.type);
-		lua_pushstring(script, action_state.object);
 		switch (action_state.result) {
-			case 1: lua_pushstring(script, "look"); break;
-			case 2: lua_pushstring(script, "talk"); break;
-			case 3: lua_pushstring(script, "touch"); break;
+			case 1: method = "look";  break;
+			case 2: method = "talk";  break;
+			case 3: method = "touch"; break;
 		}
 
-		lua_call(script, 3, 0);
+		fire_event(action_state.type, action_state.object, method);
 		
 		action_state.result = 0;
 	}
 	
-	if (mouse_b & 1 && !(last_mouse & 1)) { // we have a click
-		HOTSPOT *hs = hotspots[hotspot(mouse_x, mouse_y)];
-		if (hs != NULL) { // on a hotspot
-			if (active_item.active) {
-				lua_getglobal(script, "do_callback");
-				lua_pushstring(script, "hotspot");
-				lua_pushstring(script, hs->internal_name);
-				lua_pushstring(script, active_item.name);
-				lua_call(script, 3, 0);
-				
-				active_item.active = 0;
-			} else {
-				action_state.started = life;
-				action_state.x = mouse_x;
-				action_state.y = mouse_y;
-				action_state.type = "hotspot";
-				action_state.object = hs->internal_name;
-				action_state.relevant = 1;
-			}
-		} else {
-			action_state.relevant = 0;
+	lua_getregister(script, "render_obj");
+	int t = lua_gettop(script);
+	
+	int found = 0;
+
+	lua_pushnil(script);
+	while (lua_next(script, t) != 0) {
+		lua_pushstring(script, "name");
+		lua_gettable(script, -2);
+		const char *name = lua_tostring(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "x");
+		lua_gettable(script, -2);
+		int x = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "y");
+		lua_gettable(script, -2);
+		int y = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "width");
+		lua_gettable(script, -2);
+		int width = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "height");
+		lua_gettable(script, -2);
+		int height = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		if (in_rect(mouse_x, mouse_y, x, y, x + width, y + height)) {
+			object_name = name;
+			found = 1;
 			
+			if (is_click(1))
+				if (active_item.active) {
+					fire_event("object", lua_tostring(script, -2), active_item.name);
+					active_item.active = 0;
+				} else
+					set_action("object", lua_tostring(script, -2));
+		}
+		
+		lua_pop(script, 1);
+	} lua_pop(script, 1);
+	
+	if (!found) {
+		HOTSPOT *hs = hotspots[hotspot(mouse_x, mouse_y)];
+		
+		if (hs) {
+			object_name = hs->display_name;
+			
+			if (is_click(1))
+				if (active_item.active) {
+					fire_event("hotspot", hs->internal_name, active_item.name);
+					active_item.active = 0;
+				} else
+					set_action("hotspot", hs->internal_name);
+		} else if (is_click(1)) {
 			if (is_walkable(mouse_x, mouse_y)) { // on walkable ground
 				lua_getglobal(script, "player");
 				POINT *player = actor_position();
@@ -142,14 +157,99 @@ void update_game() {
 				
 				free(player);
 			}
+			
+			action_state.relevant = 0;
 		}
-	} else if (mouse_b & 1 && action_state.relevant) { // time to bring up the action menu
+	}
+	
+	if (mouse_b & 1 && action_state.relevant) { // time to bring up the action menu
 		if (life > action_state.started + ACTION_TIME) {
 			game_state = STATE_ACTION;
 			action_state.last_state = STATE_GAME;
 		}
-	} else if (mouse_b & 2 && !(last_mouse & 2)) {
-		game_state = STATE_INVENTORY;
+	} else if (is_click(2)) {
+		action_state.relevant = 0;
+		if (active_item.active)
+			active_item.active = 0;
+		else
+			game_state = STATE_INVENTORY;
+	}
+}
+
+void update_inventory() {
+	lua_getregister(script, "render_inv");
+	int t = lua_gettop(script);
+	
+	int found = 0;
+
+	lua_pushnil(script);
+	while (lua_next(script, t) != 0) {
+		lua_pushstring(script, "name");
+		lua_gettable(script, -2);
+		const char *name = lua_tostring(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "x");
+		lua_gettable(script, -2);
+		int x = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "y");
+		lua_gettable(script, -2);
+		int y = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "width");
+		lua_gettable(script, -2);
+		int width = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "height");
+		lua_gettable(script, -2);
+		int height = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		if (in_rect(mouse_x, mouse_y, x, y, x + width, y + height)) {
+			object_name = name;
+			found = 1;
+			
+			if (is_click(1))
+				if (active_item.active) {
+					fire_event("combine", lua_tostring(script, -2), active_item.name);
+					active_item.active = 0;
+				} else
+					set_action("item", lua_tostring(script, -2));
+			else if (!(mouse_b & 1) && last_mouse & 1) {
+				active_item.active = 1;
+
+				active_item.name = lua_tostring(script, -2);
+				
+				lua_pushstring(script, "image");
+				lua_gettable(script, -2);
+				
+				active_item.image = (BITMAP*)lua_touserdata(script, -1);
+				action_state.relevant = 0;
+				
+				lua_pop(script, 1);
+			}
+		}
+		
+		lua_pop(script, 1);
+	} lua_pop(script, 1);
+	
+	if (mouse_b & 1 && action_state.relevant) { // time to bring up the action menu
+		if (life > action_state.started + ACTION_TIME) {
+			game_state = STATE_ACTION;
+			action_state.last_state = STATE_GAME;
+		}
+	} else if (is_click(2)) {
+		action_state.relevant = 0;
+		if (active_item.active)
+			active_item.active = 0;
+		else
+			game_state = STATE_GAME;
+	} else if (is_click(1) && !in_rect(mouse_x, mouse_y, 270, 210, 270 + 741, 510)) {
+		game_state = STATE_GAME;
 	}
 }
 
@@ -167,84 +267,6 @@ void update_action() {
 	}
 }
 
-void update_inventory() {
-	if (mouse_b & 2 && !(last_mouse & 2))
-		game_state = STATE_GAME;
-	else if (mouse_b & 1 && !(last_mouse & 1)) { // we have a click
-		int i = 0;
-		lua_getglobal(script, "player");
-		lua_pushstring(script, "inventory");
-		lua_gettable(script, -2);
-		int t = lua_gettop(script);
-
-		lua_pushnil(script);
-		while (lua_next(script, t) != 0) {
-			if (lua_isnil(script, -1)) {
-				lua_pop(script, 1);
-				continue;
-			}
-			if (in_rect(mouse_x, mouse_y, 270 + 75 * (i % 10), 215 + 75 * (i / 10), 270 + 75 * (i % 10) + 64, 215 + 75 * (i / 10) + 64)) {
-				action_state.started = life;
-				action_state.x = mouse_x;
-				action_state.y = mouse_y;
-				action_state.type = "item";
-				action_state.object = lua_tostring(script, -2);
-				action_state.relevant = 1;
-			}
-			lua_pop(script, 1);
-			i++;
-		} lua_pop(script, 2);
-	} else if (!(mouse_b & 1) && last_mouse & 1) { // we have a click on an item
-		int i = 0;
-		lua_getglobal(script, "player");
-		lua_pushstring(script, "inventory");
-		lua_gettable(script, -2);
-		int t = lua_gettop(script);
-
-		lua_pushnil(script);
-		while (lua_next(script, t) != 0) {
-			if (lua_isnil(script, -1)) {
-				lua_pop(script, 1);
-				continue;
-			}
-			if (in_rect(mouse_x, mouse_y, 270 + 75 * (i % 10), 215 + 75 * (i / 10), 270 + 75 * (i % 10) + 64, 215 + 75 * (i / 10) + 64)) {
-				if (active_item.active) {
-					lua_getglobal(script, "do_callback");
-					lua_pushstring(script, "item");
-					lua_pushstring(script, lua_tostring(script, -4));
-					lua_pushstring(script, active_item.name);
-					lua_call(script, 3, 0);
-					active_item.active = 0;
-					game_state = STATE_GAME;
-				} else {
-					active_item.active = 1;
-					active_item.name = lua_tostring(script, -2);
-					
-					lua_pushstring(script, "image");
-					lua_gettable(script, -2);
-					
-					active_item.image = (BITMAP*)lua_touserdata(script, -1);
-					action_state.relevant = 0;
-					
-					lua_pop(script, 1);
-				}
-			}
-			lua_pop(script, 1);
-			i++;
-		} lua_pop(script, 2);
-		
-		
-	} else if (mouse_b & 1 && action_state.relevant) { // time to bring up the action menu
-		if (life > action_state.started + ACTION_TIME) {
-			game_state = STATE_ACTION | STATE_INVENTORY;
-			action_state.last_state = STATE_GAME;
-			action_state.relevant = 0;
-		}
-	} else if (!(mouse_b & 1) && action_state.relevant) { // select item
-		action_state.relevant = 0;
-		game_state = STATE_GAME;
-	}
-}
 
 int get_dialogue_count() {
 	lua_getglobal(script, "table");
@@ -301,6 +323,25 @@ void update() {
 		last_key[i] = key[i];
 }
 
+void push_rendertable(const char *name, int x, int y, int w, int h) {
+	lua_newtable(script);
+	lua_pushstring(script, "name");
+	lua_pushstring(script, name);
+	lua_settable(script, -3);
+	lua_pushstring(script, "x");
+	lua_pushnumber(script, x);
+	lua_settable(script, -3);
+	lua_pushstring(script, "y");
+	lua_pushnumber(script, y);
+	lua_settable(script, -3);
+	lua_pushstring(script, "width");
+	lua_pushnumber(script, w);
+	lua_settable(script, -3);
+	lua_pushstring(script, "height");
+	lua_pushnumber(script, h);
+	lua_settable(script, -3);
+}
+
 void frame() {
 	char cbuffer[10];
 	
@@ -320,6 +361,11 @@ void frame() {
 		lua_pushstring(script, "flipped");
 		lua_gettable(script, -2);
 		int flipped = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "name");
+		lua_gettable(script, -2);
+		const char *name = lua_tostring(script, -1);
 		lua_pop(script, 1);
 		
 		lua_pushstring(script, "aplay");
@@ -371,19 +417,23 @@ void frame() {
 		
 		lua_pop(script, 5);
 	
-		
 		BITMAP *tmp = create_bitmap(width, height);
 		blit(sheet, tmp, xsrc, ysrc + 1, 0, 0, width, height);
 		draw_sprite_ex(buffer, tmp, pos->x - xorigin, pos->y - yorigin, DRAW_SPRITE_NORMAL, flipped);
+		
+		lua_getregister(script, "render_obj");
+		lua_pushvalue(script, -3);
+		push_rendertable(name, pos->x - xorigin, pos->y - yorigin, width, height);
+		lua_settable(script, -3);
+		
 		destroy_bitmap(tmp);
 		
 		free(pos);
-		lua_pop(script, 1);
+		lua_pop(script, 2);
 	} lua_pop(script, 1);
 	
-	HOTSPOT *hs = hotspots[hotspot(mouse_x, mouse_y)];
-	if (hs != NULL)
-		textout_ex(buffer, font, hs->display_name, 10, 10, 0, -1);
+	if (object_name)
+		textout_ex(buffer, font, object_name, 10, 10, 0, -1);
 	
 	if (game_state & STATE_INVENTORY) {
 		masked_blit(inventory, buffer, 0, 0, 270, 210, 741, 300); 
@@ -401,13 +451,31 @@ void frame() {
 				continue;
 			}
 			
+			lua_pushstring(script, "label");
+			lua_gettable(script, -2);
+			const char *name = lua_tostring(script, -1);
+			lua_pop(script, 1);
+			
 			lua_pushstring(script, "image");
 			lua_gettable(script, -2);
 			
-			masked_blit((BITMAP*)lua_touserdata(script, -1), buffer, 0, 0, 270 + 75 * (i % 10), 215 + 75 * (i / 10), 64, 64); 
-			lua_pop(script, 2);
+			int xpos = 270 + 75 * (i % 10);
+			int ypos = 215 + 75 * (i / 10);
+			
+			BITMAP *bmp = (BITMAP*)lua_touserdata(script, -1);
+			masked_blit(bmp, buffer, 0, 0, xpos, ypos, 64, 64); 
+			
+			lua_getregister(script, "render_inv");
+			lua_pushvalue(script, -4);
+			push_rendertable(name, xpos, ypos, 64, 64);
+			lua_pushstring(script, "image");
+			lua_pushlightuserdata(script, bmp);
+			lua_settable(script, -3);
+			lua_settable(script, -3);
+			
+			lua_pop(script, 3);
 			i++;
-		} lua_pop(script, 2);
+		} lua_pop(script, 1);
 	}
 	
 	if (game_state & STATE_ACTION)

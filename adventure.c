@@ -58,7 +58,8 @@ void fire_event(const char *type, const char *obj, const char *method) {
 
 void update_game() {
 	lua_getglobal(script, "tick");
-	lua_call(script, 0, 0);
+	lua_pushstring(script, "game");
+	lua_call(script, 1, 0);
 	
 	object_name = "";
 	
@@ -284,6 +285,10 @@ int get_dialogue_count() {
 }
 
 void update_dialogue() {
+	lua_getglobal(script, "tick");
+	lua_pushstring(script, "dialogue");
+	lua_call(script, 1, 0);
+	
 	int dialogue = get_dialogue_count();
 	
 	if (mouse_b & 1 && !(last_mouse & 1)) {
@@ -300,6 +305,8 @@ void update_dialogue() {
 			}
 		}
 	}
+	
+	action_state.relevant = 0;
 }
 
 void update() {
@@ -429,6 +436,37 @@ void frame() {
 		destroy_bitmap(tmp);
 		
 		free(pos);
+		lua_pop(script, 2);
+	} lua_pop(script, 1);
+	
+	lua_getglobal(script, "conversation");
+	lua_pushstring(script, "words");
+	lua_gettable(script, -2);
+	t = lua_gettop(script);
+
+	lua_pushnil(script);
+	while (lua_next(script, t) != 0) {
+		lua_pushstring(script, "message");
+		lua_gettable(script, -2);
+		const char *msg = lua_tostring(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "x");
+		lua_gettable(script, -2);
+		int x = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "y");
+		lua_gettable(script, -2);
+		int y = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "color");
+		lua_gettable(script, -2);
+		int color = lua_tonumber(script, -1);
+		
+		textprintf_centre_ex(buffer, font, x, y, color, -1, msg);
+		
 		lua_pop(script, 2);
 	} lua_pop(script, 1);
 	

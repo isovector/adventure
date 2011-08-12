@@ -14,8 +14,8 @@ function singleton(name)
     end
 end
  
-function tasks.begin(func)
-    table.insert(tasks.current_tasks, {coroutine.create(func), 0})
+function tasks.begin(func, after)
+    table.insert(tasks.current_tasks, {coroutine.create(func), 0, after})
 end
  
 function tasks.update(tick)
@@ -33,6 +33,10 @@ function tasks.update(tick)
                 table.remove(tasks.current_tasks, key)
                 table.remove(tasks.locks, key)
                 table.remove(tasks.to_free, key)
+                
+                if val[3] then
+                    val[3]()
+                end
             end
         end
     end

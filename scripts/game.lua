@@ -1,54 +1,42 @@
-actors = {
-    jack = {
-        name = "Gomez",
-        pos = {x = 600, y = 300}, 
-        color = 255, 
-        speed = 150, 
-        goal = nil, 
-        goals = {},
-        inventory = {},
-        flipped = 0,
-        aplay = animation.start(animations.gomez, "stand")
-    }
-}
-player = actors.jack
-
 framerate = 60 -- this should be "magic" from the engine
 
-function tick()
+function tick(state)
     local elapsed = 1 / framerate
     tasks.update(elapsed * 1000)
+    conversation.pump_words(elapsed)
    
     for name, actor in pairs(actors) do
         animation.play(actor.aplay, elapsed)
     
-        if actor.goal then
-            animation.switch(actor.aplay, "walk")
-        
-            local speed = actor.speed * elapsed
-            local dif = vector.diff(actor.pos, actor.goal)
-            if vector.length(dif) > speed then
-                local dir = vector.normal(dif)
-                
-                if dir.x < 0 then 
-                    actor.flipped = 1
+        if state == "game" then
+            if actor.goal then
+                animation.switch(actor.aplay, "walk")
+            
+                local speed = actor.speed * elapsed
+                local dif = vector.diff(actor.pos, actor.goal)
+                if vector.length(dif) > speed then
+                    local dir = vector.normal(dif)
+                    
+                    if dir.x < 0 then 
+                        actor.flipped = 1
+                    else
+                        actor.flipped = 0
+                    end
+                    
+                    actor.pos.x = actor.pos.x + dir.x * speed
+                    actor.pos.y = actor.pos.y + dir.y * speed
                 else
-                    actor.flipped = 0
+                    actor.pos = actor.goal
+                    actor.goal = nil
+                    
+                    if actor.goals[1] then
+                        actor.goal = actor.goals[1]
+                        table.remove(actor.goals, 1)
+                    end
                 end
-                
-                actor.pos.x = actor.pos.x + dir.x * speed
-                actor.pos.y = actor.pos.y + dir.y * speed
             else
-                actor.pos = actor.goal
-                actor.goal = nil
-                
-                if actor.goals[1] then
-                    actor.goal = actor.goals[1]
-                    table.remove(actor.goals, 1)
-                end
+                animation.switch(actor.aplay, "stand")
             end
-        else
-            animation.switch(actor.aplay, "stand")
         end
     end
 end

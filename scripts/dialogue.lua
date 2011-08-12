@@ -1,6 +1,7 @@
 conversation = {
     topic = nil,
-    options = {}
+    options = {},
+    words = {}
 }
  
 state = { mad = false }
@@ -19,60 +20,7 @@ statecond = setmetatable({}, {
         return table[key]
     end
 })
- 
-tree = {
-    {
-        label = "Hello there!",
-        action = function()
-            print(">Why good day to yourself, sir.")
-        end
-    },
-    {
-        cond = statecond.not_mad,
-        label = "What's good, b?",
-        action = function()
-            state.mad = true
-            print(">You callin' me a potted plant!?")
-            open_topic(tree2)
-        end
-    },
-    {
-        cond = statecond.mad,
-        label = "Not to say you're a potted plant",
-        action = function()
-            print(">Good. You'd better not be.")
-        end
-    },
-    {
-        label = "Well bye",
-        action = function()
-            end_conversation()
-        end
-    },
-   
-    _load = function()
-        print(">Yo what's good?!")
-    end
-}
- 
-tree2 = {
-    {
-        silent = true,
-        label = "Yes",
-        action = function()
-           print("*gulp* No sir.");
-           print(">Wise answer, boy.")
-           open_topic(tree)
-        end
-    },
-    {
-        label = "No",
-        action = function()
-            print(">THAT'S WHAT I THOUGHT");
-            open_topic(tree)
-        end
-    }
-}
+
  
 function open_topic(topic)
     conversation.topic = topic
@@ -115,10 +63,14 @@ function conversation.continuer()
  
         if  select[opt] then
             if not select[opt].silent then
-                print(select[opt].label)
+                tasks.begin(function() say(player, select[opt].label) end, conversation.continue)
+                coroutine.yield()
             end
            
-            select[opt].action()
+            if select[opt].action then
+                tasks.begin(select[opt].action, conversation.continue)
+                coroutine.yield()
+            end
         end
         print()
     end
@@ -127,5 +79,42 @@ end
 function conversation.continue(opt)
     coroutine.resume(conversation.continue_routine, opt)
 end
- 
+
+function conversation.say(message, x, y, color, duration)
+    if not color then
+        color = 0
+    end
+
+    if not duration then
+        duration = #message * 0.075
+    end
+
+    msg = {
+        message = message,
+        color = color,
+        x = x,
+        y = y,
+        duration = duration
+    }
+    
+    table.insert(conversation.words, msg)
+    
+    return msg
+end
+
+function conversation.pump_words(elapsed)
+    for key, val in ipairs(conversation.words) do
+        val.duration = val.duration - elapsed
+        
+        if val.duration <= 0 then
+            table.remove(conversation.words, key)
+        end
+    end
+end
+
+function say(actor, message)
+    msg = conversation.say(message, actor.pos.x, actor.pos.y - actor.aplay.set.height - 20, actor.color)
+    wait(msg.duration * 1000)
+end
+
 conversation.continue_routine = coroutine.create(conversation.continuer)

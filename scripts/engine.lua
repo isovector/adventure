@@ -1,13 +1,17 @@
 current_room = "";
 room = nil
 
+-- make this perform dispatch on object
 function do_callback(callback_type, object, method)
     local name = object .. "_" .. method;
+    print(name)
     local func = function() 
         if callback_type == "hotspot" and room[name] then
             room[name]()
         elseif callback_type == "item" and item_events[name] then
             item_events[name]()
+        elseif callback_type == "object" and _G[name] then
+            _G[name]()
         else
             unhandled_event()
         end

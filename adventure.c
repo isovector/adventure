@@ -4,6 +4,7 @@
 
 BITMAP *buffer;
 BITMAP *room_art = NULL, *room_hot = NULL;
+
 BITMAP *actionbar, *inventory;
 HOTSPOT *hotspots[256];
 const char *object_name = NULL;
@@ -583,6 +584,8 @@ int main(int argc, char* argv[]) {
 	inventory = load_bitmap("resources/inventory.pcx", NULL);
 	action_state.relevant = 0;
 	active_item.active = 0;
+	
+	enabled_paths[255] = 1;
 	
 	init_script();
 	install_int(&frame, 1000 / FRAMERATE);

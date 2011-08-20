@@ -6,6 +6,7 @@
 extern POINT *waypoints[MAX_WAYPOINTS];
 extern unsigned int waypoint_connections[MAX_WAYPOINTS];
 extern int waypoint_count;
+extern int enabled_paths[256];
 
 void connect_waypoints(int, int);
 int is_pathable(int, int, int, int);

@@ -29,7 +29,7 @@ function tick(state)
                     actor.pos = actor.goal
                     actor.goal = nil
                     
-                    if actor.goals[1] then
+                    if actor.goals and actor.goals[1] then
                         actor.goal = actor.goals[1]
                         table.remove(actor.goals, 1)
                     end
@@ -57,6 +57,9 @@ function do_pathfinding(from, to)
         local continue = true
         repeat
             local path = pqueue.dequeue(open)
+            
+            if not path then return nil end
+            
             if table.contains(closed, path.location) then continue = true; break end
             if to == path.location then return path end
             table.insert(closed, path.location)
@@ -75,18 +78,15 @@ function walk(actor, to, y)
 
     actor.goal = get_waypoint(get_closest_waypoint(actor.pos))
     actor.goals = unwrap_path(do_pathfinding(get_closest_waypoint(actor.pos), get_closest_waypoint(to)))
-    table.insert(actor.goals, to)
-end
-
-function say(who, what, time)
-    if not time then
-        time = #what * 75
+    
+    if actor.goals then
+        table.insert(actor.goals, to)
     end
-    print(who .. "> " .. what)
-    wait(time)
 end
 
 function unwrap_path(path)
+    if not path then return nil end
+    
     if path.previous then
         local wind = unwrap_path(path.previous)
         table.insert(wind, get_waypoint(path.location));

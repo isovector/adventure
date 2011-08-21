@@ -31,6 +31,7 @@ end
 
 function room.towel_touch()
     give_item(player, "beer")
+    enable_path(17, true)
     say("Jack", "I found a beer under this towel. Somehow.")
 end
 

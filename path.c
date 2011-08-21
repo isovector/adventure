@@ -47,7 +47,7 @@ void build_waypoints() {
             waypoints[waypoint_count]->x = x;
             waypoints[waypoint_count++]->y = y;
         }
-        
+    
     for (int a = 0; a < waypoint_count; a++)
     for (int b = a + 1; b < waypoint_count; b++) {
         POINT pa = *waypoints[a], pb = *waypoints[b];
@@ -121,13 +121,16 @@ int lua_enable_path(lua_State *L) {
         lua_error(L);
     }
     
-    enabled_paths[(int)lua_tonumber(L, 1)] = lua_toboolean(L, 2);
+    int n = lua_tonumber(L, 1);
+    int b = lua_toboolean(L, 2);
+    
+    enabled_paths[n] = b;
     build_waypoints();
     
     return 0;
 }
 
-int is_walkable(int x, int y) {
+int is_walkable(int x, int y) {    
 	return enabled_paths[(getpixel(room_hot, x, y) & (255 << 8)) >> 8] || getpixel(room_hot, x, y) == 255;
 }
 

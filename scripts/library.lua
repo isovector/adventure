@@ -14,6 +14,8 @@ function pqueue.dequeue(tab)
         end
     end
     
+    if not tab[pos] then return nil end
+    
     max = tab[pos][2]
     table.remove(tab, pos)
     

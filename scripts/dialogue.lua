@@ -113,6 +113,7 @@ function conversation.pump_words(elapsed)
 end
 
 function say(actor, message)
+    print(actor.name .. "> " .. message)
     msg = conversation.say(message, actor.pos.x, actor.pos.y - actor.aplay.set.height - 20, actor.color)
     wait(msg.duration * 1000)
 end

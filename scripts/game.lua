@@ -33,6 +33,10 @@ function tick(state)
                         actor.goal = actor.goals[1]
                         table.remove(actor.goals, 1)
                     end
+                    
+                    if not actor.goal then
+                        do_callback("event", name, "goal")
+                    end
                 end
             else
                 animation.switch(actor.aplay, "stand")

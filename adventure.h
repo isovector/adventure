@@ -9,6 +9,7 @@
 #include <lauxlib.h>
 #include <lualib.h>
 #include <string.h>
+#include <semaphore.h>
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720

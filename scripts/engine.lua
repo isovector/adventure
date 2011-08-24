@@ -4,7 +4,7 @@ rooms = {}
 
 -- make this perform dispatch on object
 function do_callback(callback_type, object, method)
-    local name = object .. "_" .. method;
+    local name = object .. "_" .. method
     print(name)
     local func = function() 
         if callback_type == "hotspot" and room[name] then
@@ -20,6 +20,26 @@ function do_callback(callback_type, object, method)
     
     if func then 
         tasks.begin(func) 
+    end
+end
+
+function dispatch_room(name, callback_type, object, method)
+    if not (room.events and room.events[name] and not room.events[name]()) then
+        dispatch_object(name, callback_type, object, method)
+    end
+end
+
+function dispatch_object(name, callback_type, object, method)
+    local obj = room.scene[object]
+
+    if not (obj and obj.events and obj.events[name] and not obj.events[name]()) then
+        dispatch_global(name, callback_type, object, method)
+    end
+end
+
+function dispatch_global(name, callback_type, object, method)
+    if not (events[name] and not events[name]()) then
+        --dispatch_global(name, callback_type, object, method)
     end
 end
 

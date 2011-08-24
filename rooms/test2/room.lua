@@ -32,22 +32,22 @@ end
 function room.towel_touch()
     give_item(player, "beer")
     enable_path(17, true)
-    say("Jack", "I found a beer under this towel. Somehow.")
+    say(player, "I found a beer under this towel. Somehow.")
 end
 
 function room.tub_beer()
     remove_item(player, "beer")
-    say("Jack", "That's a good place to put my beer!");
+    say(player, "That's a good place to put my beer!");
 end
 
 function room.table_talk()
-    say("Jack", "Hello?");
+    say(player, "Hello?");
     say("Table", "What do you want!?");
-    say("Jack", "Yikes!");
+    say(player, "Yikes!");
 end
 
 function room.table_touch()
-    say("Jack", "I can't fit that into my pants!");
+    say(player, "I can't fit that into my pants!");
 end
 
 function room.art_click()

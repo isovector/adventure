@@ -19,6 +19,7 @@ POINT *actor_position();
 #define lua_getregister(L,s)  lua_getfield(L, LUA_REGISTRYINDEX, s)
 #define lua_setregister(L,s)  lua_setfield(L, LUA_REGISTRYINDEX, s)
 
+
 #define NTHARG11(n, arg, args ...) arg
 #define NTHARG12(n, arg, args ...) NTHARG2##n(n, args)
 #define NTHARG13(n, arg, args ...) NTHARG2##n(n, args)
@@ -80,5 +81,9 @@ POINT *actor_position();
         lua_push##type(script, name(LUA_GETARG##narg(NTHARG(narg, args), args)));\
         return 1; \
     }
+
+#ifndef DRAW_SPRITE_NORMAL
+#define DRAW_SPRITE_NORMAL 0
+#endif
 
 #endif

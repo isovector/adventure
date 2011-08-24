@@ -13,6 +13,11 @@ int last_mouse;
 int last_key[KEY_MAX];
 STATE game_state = STATE_GAME;
 float life = 0;
+int quit = 0;
+int fps = 0;
+
+volatile int ticks = 0;
+sem_t semaphore_rest;
 
 struct {
 	int x, y, relevant, result;
@@ -38,6 +43,17 @@ int in_rect(int x, int y, int x1, int y1, int x2, int y2) {
 
 int is_click(int button) {
 	return mouse_b & button && !(last_mouse & button);
+}
+
+int is_pixel_perfect(BITMAP *sheet, int x, int y, int width, int height, int xorigin, int yorigin, int flipped) {
+	int direction = flipped ? -1 : 1;
+	
+	int relx = x - xorigin;
+	
+	if (flipped)
+		xorigin += width;
+	
+	return getpixel(sheet, xorigin + relx * direction, y + yorigin) != ((255 << 16) | 255);
 }
 
 void set_action(const char *type, const char *obj) {
@@ -110,7 +126,28 @@ void update_game() {
 		int height = lua_tonumber(script, -1);
 		lua_pop(script, 1);
 		
-		if (in_rect(mouse_x, mouse_y, x, y, x + width, y + height)) {
+		lua_pushstring(script, "flipped");
+		lua_gettable(script, -2);
+		int flipped = lua_toboolean(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "xorigin");
+		lua_gettable(script, -2);
+		int xorigin = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "yorigin");
+		lua_gettable(script, -2);
+		int yorigin = lua_tonumber(script, -1);
+		lua_pop(script, 1);
+		
+		lua_pushstring(script, "sheet");
+		lua_gettable(script, -2);
+		BITMAP *sheet = lua_touserdata(script, -1);
+		lua_pop(script, 1);
+		
+		if (in_rect(mouse_x, mouse_y, x, y, x + width, y + height) 
+				&& is_pixel_perfect(sheet, mouse_x - x, mouse_y - y, width, height, xorigin, yorigin, flipped)) {
 			object_name = name;
 			found = 1;
 			
@@ -317,7 +354,7 @@ void update_dialogue() {
 void update() {
 	life += 1 / (float)FRAMERATE;
 	
-	if (key[KEY_ESC]) exit(0);
+	if (key[KEY_ESC]) quit = 1;
 	
 	int dialogue = get_dialogue_count();
 	if (game_state & STATE_GAME && !dialogue) update_game();
@@ -357,8 +394,6 @@ void push_rendertable(const char *name, int x, int y, int w, int h) {
 void frame() {
 	char cbuffer[10];
 	
-	update();
-
 	acquire_bitmap(buffer);
 	clear_to_color(buffer, 0);
 	blit(room_art, buffer, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -451,6 +486,19 @@ void frame() {
 			lua_getregister(script, "render_obj");
 			lua_pushvalue(script, -3);
 			push_rendertable(name, pos->x - xorigin, pos->y - yorigin, width, height);
+			lua_pushstring(script, "sheet");
+			lua_pushlightuserdata(script, sheet);
+			lua_settable(script, -3);
+			lua_pushstring(script, "xorigin");
+			lua_pushnumber(script, xsrc);
+			lua_settable(script, -3);
+			lua_pushstring(script, "yorigin");
+			lua_pushnumber(script, ysrc);
+			lua_settable(script, -3);
+			lua_pushstring(script, "flipped");
+			lua_pushnumber(script, flipped);
+			lua_settable(script, -3);
+			
 			lua_settable(script, -3);
 			lua_pop(script, 1);
 		}
@@ -567,14 +615,30 @@ void frame() {
 		masked_blit(active_item.image, buffer, 0, 0, mouse_x, mouse_y, 64, 64);
 	
 	release_bitmap(buffer);
+	
+	char fps_buffer[10];
+	sprintf(fps_buffer, "%d", fps);
+	textout_ex(buffer, font, fps_buffer, SCREEN_WIDTH - 25, 25, makecol(255, 0, 0), -1);
+	
     blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
+void ticker() {
+	sem_post(&semaphore_rest);
+	ticks++;
+}
+END_OF_FUNCTION(ticker);
+
 int main(int argc, char* argv[]) {
+	sem_init(&semaphore_rest, 0, 1);
+	
 	allegro_init();
 	install_keyboard();
 	install_mouse();
 	install_timer();
+	
+	LOCK_VARIABLE(ticks);
+	LOCK_FUNCTION(ticker);
 	
 	set_color_depth(32);
 	set_gfx_mode(GFX_AUTODETECT_WINDOWED, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
@@ -588,9 +652,35 @@ int main(int argc, char* argv[]) {
 	enabled_paths[255] = 1;
 	
 	init_script();
-	install_int(&frame, 1000 / FRAMERATE);
+	install_int_ex(&ticker, BPS_TO_TIMER(FRAMERATE));
 	
-	scanf("%d", &argc); 
+	int frames_done = 0;
+	float old_time = 0;
+	
+	while (!quit) {
+		sem_wait(&semaphore_rest);
+		
+		if (life - old_time >= 1) {
+			fps = frames_done;
+			frames_done = 0;
+			old_time = life;
+		}
+		
+		while (ticks > 0) {
+			int old_ticks = ticks;
+			update();
+			ticks--;
+			
+			if (old_ticks <= ticks) break;
+		}
+		
+		frame();
+		frames_done++;
+	}
+	
+	remove_int(ticker);
+	sem_destroy(&semaphore_rest);
+	
 	return 0;
 }
 END_OF_MAIN();

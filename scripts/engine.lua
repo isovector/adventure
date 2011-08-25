@@ -56,7 +56,7 @@ function switch_room(r, door)
     current_room = r
 
     if not rooms[r] then
-        local roompath = "rooms/" .. r .. "/"
+        local roompath = "game/rooms/" .. r .. "/"
 
         dofile(roompath .. "room.lua")
         room.artwork = get_bitmap(roompath .. "art.pcx")

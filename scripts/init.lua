@@ -1,3 +1,4 @@
+-- load the engine
 dofile("scripts/debug.lua")
 dofile("scripts/engine.lua")
 dofile("scripts/library.lua")
@@ -5,6 +6,9 @@ dofile("scripts/tasks.lua")
 dofile("scripts/animation.lua")
 dofile("scripts/game.lua")
 dofile("scripts/dialogue.lua")
-dofile("scripts/content.lua")
 
-switch_room("test2")
+-- load the game
+dofile("game/actors/actors.lua")
+dofile("game/dialogue/dialogue.lua")
+dofile("game/items/items.lua")
+dofile("game/boot.lua")

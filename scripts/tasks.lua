@@ -1,6 +1,6 @@
 tasks = {current_tasks = {}, locks = {}, to_free = {}}
 ticks = 0
- 
+
 function wait(ticks)
     coroutine.yield("wait", ticks)
 end
@@ -13,29 +13,39 @@ function singleton(name)
         coroutine.yield()
     end
 end
- 
-function tasks.begin(func, after)
-    table.insert(tasks.current_tasks, {coroutine.create(func), 0, after})
+
+function tasks.begin(chain, continue, chain_call)
+    if not chain_call then
+        debug.logm(debug.TASKS, "starting task", table.car(chain))
+        debug.log(debug.TASKS, "with chain length", table.getn(table.cdr(chain)))
+    end
+
+    table.insert(tasks.current_tasks, {
+        task = coroutine.create(table.car(chain)),
+        time = 0,
+        continue = continue,
+        after = table.cdr(chain)
+    })
 end
- 
+
 function tasks.update(tick)
     ticks = ticks + tick
-   
-    for key, val in ipairs(tasks.current_tasks) do
-        if ticks >= val[2] then
-            local success, command, arg = coroutine.resume(val[1])
+
+    for key, task in ipairs(tasks.current_tasks) do
+        if ticks >= task.time then
+            local success, command, arg = coroutine.resume(task.task)
 
             if command == "wait" then
-                val[2] = ticks + arg
+                task.time = ticks + arg
             elseif command == "free" then
                 table.insert(tasks.to_free, key, arg)
             else
                 table.remove(tasks.current_tasks, key)
                 table.remove(tasks.locks, key)
                 table.remove(tasks.to_free, key)
-                
-                if val[3] then
-                    val[3]()
+
+                if task.after and command == task.continue then
+                    tasks.begin(task.after, task.continue, true)
                 end
             end
         end

@@ -1,3 +1,4 @@
+dofile("scripts/debug.lua")
 dofile("scripts/engine.lua")
 dofile("scripts/library.lua")
 dofile("scripts/tasks.lua")

@@ -3,18 +3,18 @@ actors = {
         id = "jack",
         name = "Gomez",
         ignore_ui = true,
-        pos = {x = 600, y = 300}, 
-        color = 255, 
-        speed = 150, 
-        goal = nil, 
+        pos = {x = 600, y = 500},
+        color = 255,
+        speed = 150,
+        goal = nil,
         goals = {},
+        events = {},
         inventory = {},
         flipped = false,
         aplay = animation.start(animations.gomez, "stand")
     }
 }
 player = actors.jack
-
 
 items = {
     beer = {
@@ -54,12 +54,12 @@ tree = {
             end_conversation()
         end
     },
-   
+
     _load = function()
         print(">Yo what's good?!")
     end
 }
- 
+
 tree2 = {
     {
         silent = true,
@@ -92,6 +92,6 @@ function item_events.beer_touch()
     say("Jack", "No response...")
 end
 
-function jack_talk() 
+function jack_talk()
     conversation.say("This is not warcraft in space", player.pos.x, player.pos.y - 120, player.color)
 end

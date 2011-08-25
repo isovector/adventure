@@ -5,12 +5,12 @@ room = {
 }
 
 function room.on_init()
-    print("initialized test2")
+    debug.log(debug.ROOM, "initialized room2")
 end
 
 function room.on_load()
-    print("loaded test2")
-    
+    debug.log(debug.ROOM, "loaded room2")
+
     register_hotspot(17, "tub", "Tub");
     register_hotspot(34, "plant", "Potted Plant");
     register_hotspot(51, "towel", "Towel");
@@ -21,7 +21,6 @@ function room.on_load()
 end
 
 function room.perfume_touch()
-    print("switching room to test1")
     switch_room("test1", 1)
 end
 

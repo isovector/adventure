@@ -1,7 +1,6 @@
-H reorganize dispatcher organization
-  * dispatcher should check room first, then globals, then generic, unhandled
-    * with support to handle or continue up the chain
-
+M reorganize lua code
+  * add debugging as you go
+    < make debug.log take objects to log over instead of levels
 M make helper classes to build animations
   * maybe a separate tool, too?
 M reorganize C code
@@ -15,6 +14,7 @@ M let hotspots be doors
   * automatically teleport to corresponding walk spot
   * change mouse cursor to arrow
 
+L implement Z sorting and foreground objects
 L animate action bar
 L clean up lua's queue library
 L provide mechanism for scaling objects based on y position

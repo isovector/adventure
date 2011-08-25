@@ -65,7 +65,6 @@ int lua_get_bitmap(lua_State *L) {
     }
     
     BITMAP *bmp = load_bitmap(lua_tostring(L, 1), NULL);
-    printf("getting bitmap %d:%d\n", bmp->w, bmp->h);
     lua_pushlightuserdata(L, bmp);
     
     return 1;

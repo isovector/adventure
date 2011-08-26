@@ -49,5 +49,9 @@ extern HOTSPOT *hotspots[256];
 extern POINT *waypoints[MAX_WAYPOINTS];
 extern int waypoint_count;
 extern unsigned int waypoint_connections[MAX_WAYPOINTS];
+extern int in_console;
+
+void init_console(int);
+void open_console();
 
 #endif

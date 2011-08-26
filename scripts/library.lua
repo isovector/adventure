@@ -53,6 +53,44 @@ function table.car(tab)
     return tab[1]
 end
 
+function table.serialize(tab, indent, open)
+    if not indent then
+        indent = ""
+        open = {}
+    end
+
+    local output = "{ "
+
+    table.insert(open, tab)
+
+    for key, val in pairs(tab) do
+        local out = val
+        if type(val) == "table" then
+            --if not table.contains(open, val) then
+                out = table.serialize(val, indent, open)
+            --else
+                --out = "{RECURSION}"
+            --end
+        elseif type(val) == "string" then
+            out = "\"" .. val .. "\""
+        elseif type(val) == "function" then
+            out = "function"
+        elseif type(val) == "userdata" then
+            out = "userdata"
+        elseif type(val) == "nil" then
+            out = "nil"
+        elseif type(val) == "boolean" then
+            if val then out = "true" else out = "false" end
+        end
+
+        output = output .. key .. "=" .. out .. ", "
+    end
+
+    output = string.sub(output, 1, -2)
+
+    return output .. " }"
+end
+
 function table.cdr(tab)
     if not tab or type(tab) ~= "table" then return nil end
 

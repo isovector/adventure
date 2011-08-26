@@ -111,6 +111,10 @@ function conversation.pump_words(elapsed)
     end
 end
 
+function say_ex(actor, message)
+    tasks.begin(function() say(actor, message) end)
+end
+
 function say(actor, message)
     print(actor.name .. "> " .. message)
     msg = conversation.say(message, actor.pos.x, actor.pos.y - actor.aplay.set.height - 20, actor.color)

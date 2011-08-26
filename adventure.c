@@ -433,52 +433,72 @@ void frame() {
 
 		lua_pushstring(script, "aplay");
 		lua_gettable(script, -2);
-		lua_pushstring(script, "set");
-		lua_gettable(script, -2);
-		lua_pushstring(script, "image");
-		lua_gettable(script, -2);
-		BITMAP *sheet = (BITMAP*)lua_touserdata(script, -1);
-		lua_pop(script, 1);
 
-		lua_pushstring(script, "xorigin");
-		lua_gettable(script, -2);
-		int xorigin = lua_tonumber(script, -1);
-		lua_pop(script, 1);
+        BITMAP *sheet;
+        int xorigin, yorigin, width, height, frame, xsrc, ysrc;
 
-		lua_pushstring(script, "yorigin");
-		lua_gettable(script, -2);
-		int yorigin = lua_tonumber(script, -1);
-		lua_pop(script, 1);
+        if (!lua_isnil(script, -1)) {
+            lua_pushstring(script, "set");
+            lua_gettable(script, -2);
+            lua_pushstring(script, "image");
+            lua_gettable(script, -2);
+            sheet = (BITMAP*)lua_touserdata(script, -1);
+            lua_pop(script, 1);
 
-		lua_pushstring(script, "width");
-		lua_gettable(script, -2);
-		int width = lua_tonumber(script, -1);
-		lua_pop(script, 1);
+            lua_pushstring(script, "xorigin");
+            lua_gettable(script, -2);
+            xorigin = lua_tonumber(script, -1);
+            lua_pop(script, 1);
 
-		lua_pushstring(script, "height");
-		lua_gettable(script, -2);
-		int height = lua_tonumber(script, -1);
-		lua_pop(script, 2);
+            lua_pushstring(script, "yorigin");
+            lua_gettable(script, -2);
+            yorigin = lua_tonumber(script, -1);
+            lua_pop(script, 1);
 
-		lua_pushstring(script, "frame");
-		lua_gettable(script, -2);
-		int frame = lua_tonumber(script, -1);
-		lua_pop(script, 1);
+            lua_pushstring(script, "width");
+            lua_gettable(script, -2);
+            width = lua_tonumber(script, -1);
+            lua_pop(script, 1);
 
-		lua_pushstring(script, "set");
-		lua_gettable(script, -2);
+            lua_pushstring(script, "height");
+            lua_gettable(script, -2);
+            height = lua_tonumber(script, -1);
+            lua_pop(script, 2);
 
-		lua_getglobal(script, "animation");
-		lua_pushstring(script, "get_frame");
-		lua_gettable(script, -2);
-		lua_pushvalue(script, -3);
-		lua_pushnumber(script, frame);
-		lua_call(script, 2, 2);
+            lua_pushstring(script, "frame");
+            lua_gettable(script, -2);
+            frame = lua_tonumber(script, -1);
+            lua_pop(script, 1);
 
-		int xsrc = lua_tonumber(script, -2);
-		int ysrc = lua_tonumber(script, -1);
+            lua_pushstring(script, "set");
+            lua_gettable(script, -2);
 
-		lua_pop(script, 5);
+            lua_getglobal(script, "animation");
+            lua_pushstring(script, "get_frame");
+            lua_gettable(script, -2);
+            lua_pushvalue(script, -3);
+            lua_pushnumber(script, frame);
+            lua_call(script, 2, 2);
+
+            xsrc = lua_tonumber(script, -2);
+            ysrc = lua_tonumber(script, -1);
+
+            lua_pop(script, 5);
+        } else {
+            lua_pop(script, 1);
+            lua_pushstring(script, "sprite");
+            lua_gettable(script, -2);
+            sheet = (BITMAP*)lua_touserdata(script, -1);
+            lua_pop(script, 1);
+
+            width = sheet->w;
+            height = sheet->h;
+            xorigin = 0;
+            yorigin = 0;
+            frame = 0;
+            xsrc = 0;
+            ysrc = 0;
+        }
 
 		BITMAP *tmp = create_bitmap(width, height);
 		blit(sheet, tmp, xsrc, ysrc + 1, 0, 0, width, height);

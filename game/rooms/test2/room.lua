@@ -6,6 +6,21 @@ room = {
 
 function room.on_init()
     debug.log(debug.ROOM, "initialized room2")
+    table.insert(room.scene,
+        {
+            id = "homez",
+            name = "Homez",
+            ignore_ui = false,
+            pos = {x = 800, y = 600},
+            color = 255,
+            speed = 150,
+            goal = nil,
+            goals = {},
+            events = {},
+            inventory = {},
+            flipped = false,
+            sprite = get_bitmap("game/items/beer/beer.pcx")
+        })
 end
 
 function room.on_load()

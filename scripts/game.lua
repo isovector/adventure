@@ -7,11 +7,15 @@ function tick(state)
 
     for key, actor in pairs(room.scene) do
 	local name = actor.id
-        animation.play(actor.aplay, elapsed)
+        if actor.aplay then
+            animation.play(actor.aplay, elapsed)
+        end
 
         if state == "game" then
             if actor.goal then
-                animation.switch(actor.aplay, "walk")
+                if actor.aplay then
+                    animation.switch(actor.aplay, "walk")
+                end
 
                 local speed = actor.speed * elapsed
                 local dif = vector.diff(actor.pos, actor.goal)
@@ -37,15 +41,24 @@ function tick(state)
 
                     if not actor.goal then
                         do_callback("event", name, "goal")
+
+                        if actor.aplay then
+                            animation.switch(actor.aplay, "stand")
+                        end
                     end
                 end
-            else
-                animation.switch(actor.aplay, "stand")
             end
         end
     end
+
+    table.sort(room.scene, zorder_sort)
 end
 
+function zorder_sort(a, b)
+    return a.pos.y < b.pos.y
+end
+
+-- this should be implemented in C
 function distance(from, to)
     return 1
 end

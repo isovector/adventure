@@ -39,7 +39,7 @@ end
 function table.contains(tab, value)
     for key, val in ipairs(tab) do
         if val == value then
-            return true
+            return key
         end
     end
 

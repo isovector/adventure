@@ -1,2 +1,2 @@
-switch_room("test2")
+switch_room("outside")
 player = actors.gomez

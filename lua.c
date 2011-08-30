@@ -39,6 +39,29 @@ int register_hotspot(lua_State *L) {
     HOTSPOT *hotspot = malloc(sizeof(HOTSPOT));
     hotspot->internal_name = strdup(lua_tostring(L, 2));
     hotspot->display_name = strdup(lua_tostring(L, 3));
+    hotspot->cursor = 5;
+    hotspot->exit = NULL;
+    
+    hotspots[(int)lua_tonumber(L, 1)] = hotspot;
+    
+    return 0;
+}
+
+int register_door(lua_State *L) {
+    if (lua_gettop(L) != 5 || !lua_isnumber(L, 1) || !lua_isstring(L, 2)|| !lua_isstring(L, 3) || !lua_isnumber(L, 4)  || !lua_isnumber(L, 5) 
+        || lua_tonumber(L, 1) != (int)lua_tonumber(L, 1)) {
+        lua_pushstring(L, "register_door expects (int, string, string, int, int)");
+        lua_error(L);
+    }
+    
+    HOTSPOT *hotspot = malloc(sizeof(HOTSPOT));
+    hotspot->internal_name = "";
+    hotspot->display_name = strdup(lua_tostring(L, 2));
+    
+    // do things with the exit
+    
+    hotspot->cursor = lua_tonumber(L, 5);
+    hotspot->exit = NULL;
     
     hotspots[(int)lua_tonumber(L, 1)] = hotspot;
     
@@ -110,6 +133,7 @@ void init_script() {
     
     lua_register(script, "set_room_data", &load_room);
     lua_register(script, "register_hotspot", &register_hotspot);
+    lua_register(script, "register_door", &register_door);
     lua_register(script, "get_image_size", &lua_get_image_size);
     lua_register(script, "get_bitmap", &lua_get_bitmap);
     

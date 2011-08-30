@@ -4,6 +4,7 @@
 
 BITMAP *buffer;
 BITMAP *room_art = NULL, *room_hot = NULL;
+BITMAP *cursors;
 
 BITMAP *actionbar, *inventory;
 HOTSPOT *hotspots[256];
@@ -16,6 +17,7 @@ float life = 0;
 int quit = 0;
 int fps = 0;
 int in_console = 0;
+int cursor = 0;
 
 volatile int ticks = 0;
 sem_t semaphore_rest;
@@ -33,6 +35,37 @@ struct {
 	BITMAP *image;
 } active_item;
 
+void get_cursor_offset(int cursor, int *x, int *y) {
+	*x = *y = 0;
+	switch (cursor) {
+		case 0:
+		case 5:
+			*x = *y = 16;
+			break;
+		case 1:
+		case 3:
+		case 7:
+		case 9:
+			*x = 3;
+			*y = 27;
+			break;
+		case 2:
+		case 8:
+			*x = 16;
+			*y = 29;
+			break;
+		case 4:
+		case 6:
+			*x = 3;
+			*y = 16;
+			break;
+	}
+
+	if (cursor && (cursor - 1) % 3 > 1)
+		*x = 32 - *x;
+	if (cursor > 5)
+		*y = 32 - *y;
+}
 
 int hotspot(int x, int y) {
 	return (getpixel(room_hot, x, y) & (255 << 16)) >> 16;
@@ -46,6 +79,7 @@ int is_click(int button) {
 	return mouse_b & button && !(last_mouse & button);
 }
 
+// i think this fails for animated sprites
 int is_pixel_perfect(BITMAP *sheet, int x, int y, int width, int height, int xorigin, int yorigin, int flipped) {
 	int direction = flipped ? -1 : 1;
 
@@ -80,6 +114,7 @@ void update_game() {
 	lua_call(script, 1, 0);
 
 	object_name = "";
+	cursor = 0;
 
 	if (action_state.result) { // we just returned from action
 		const char *method;
@@ -158,6 +193,8 @@ void update_game() {
 					active_item.active = 0;
 				} else
 					set_action("object", lua_tostring(script, -2));
+				
+			cursor = 5;
 		}
 
 		lua_pop(script, 1);
@@ -167,6 +204,7 @@ void update_game() {
 		HOTSPOT *hs = hotspots[hotspot(mouse_x, mouse_y)];
 
 		if (hs) {
+			cursor = hs->cursor;
 			object_name = hs->display_name;
 
 			if (is_click(1))
@@ -632,7 +670,10 @@ void frame() {
 		} lua_pop(script, 2);
 	}
 
-	masked_blit(mouse_sprite, buffer, 0, 0, mouse_x, mouse_y, 16, 16);
+	int cx, cy;
+	get_cursor_offset(cursor, &cx, &cy);
+	masked_blit(cursors, buffer, cursor * 32, 0, mouse_x - cx, mouse_y - cy, 32, 32);
+
 	if (active_item.active)
 		masked_blit(active_item.image, buffer, 0, 0, mouse_x, mouse_y, 64, 64);
 
@@ -670,6 +711,8 @@ int main(int argc, char* argv[]) {
 	buffer = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
 	actionbar = load_bitmap("resources/actionbar.pcx", NULL);
 	inventory = load_bitmap("resources/inventory.pcx", NULL);
+	cursors = load_bitmap("resources/cursors.pcx", NULL);
+	
 	action_state.relevant = 0;
 	active_item.active = 0;
 

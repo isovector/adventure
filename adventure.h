@@ -19,9 +19,16 @@ typedef struct tagPOINT {
     int x, y;
 } POINT;
 
+typedef struct tagEXIT {
+	const char *room;
+	int door;
+} EXIT;
+
 typedef struct tagHOTSPOT {
     const char *internal_name;
     const char *display_name;
+	int cursor;
+	EXIT *exit;
 } HOTSPOT;
 
 typedef enum tagSTATE {
@@ -53,5 +60,7 @@ extern int in_console;
 
 void init_console(int);
 void open_console();
+char *strdup(const char*);
+
 
 #endif

@@ -33,7 +33,7 @@ RQNODE *alloc_rqnode() {
     return node;
 }
 
-void push_queue(char *value, int result) {
+void push_queue(const char *value, int result) {
     RQNODE *node = rollqueue.head;
     rollqueue.head = node->next;
     rollqueue.tail->next = node;

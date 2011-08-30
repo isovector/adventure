@@ -55,7 +55,17 @@ function tick(state)
 end
 
 function zorder_sort(a, b)
-    return a.pos.y < b.pos.y
+    if not a or not b then
+	return a
+    end
+
+    ah = a.height
+    bh = b.height
+
+    if not ah then ah = 0 end
+    if not bh then bh = 0 end
+
+    return a.pos.y + ah < b.pos.y + bh
 end
 
 -- this should be implemented in C

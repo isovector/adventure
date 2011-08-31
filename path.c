@@ -1,5 +1,6 @@
 #include "adventure.h"
 
+POINT *walkspots[255];
 POINT *waypoints[MAX_WAYPOINTS];
 unsigned int waypoint_connections[MAX_WAYPOINTS] = {0};
 int enabled_paths[256] = {0};
@@ -30,6 +31,22 @@ int is_pathable(int x1, int y1, int x2, int y2) {
     }
     
     return 1;
+}
+
+void build_walkspots() {
+    for (int i = 0; i < 255; i++)
+        free(walkspots[i]);
+    
+    waypoint_count = 0;
+    
+    int color = 0;
+    for (int y = 0; y < SCREEN_HEIGHT; y++)
+    for (int x = 0; x < SCREEN_WIDTH; x++)
+        if ((color = getpixel(room_hot, x, y)) && color < 255) {
+            walkspots[color] = malloc(sizeof(POINT));
+            walkspots[color]->x = x;
+            walkspots[color]->y = y;
+        }
 }
 
 void build_waypoints() {
@@ -82,7 +99,13 @@ int get_waypoint(lua_State *L) {
         lua_error(L);
     }
     
+    POINT defaultspot;
+    defaultspot.x = 0;
+    defaultspot.y = 0;
+    
     POINT *waypoint = waypoints[(int)lua_tonumber(L, 1)];
+    if (!waypoint)
+        waypoint = &defaultspot;
     
     lua_newtable(L);
     lua_pushstring(L, "x");
@@ -95,6 +118,30 @@ int get_waypoint(lua_State *L) {
     return 1;
 }
 
+int lua_get_walkspot(lua_State *L) {
+    if (lua_gettop(L) != 1 || !lua_isnumber(L, 1)) {
+        lua_pushstring(L, "get_walkspot expects (int)");
+        lua_error(L);
+    }
+
+    POINT defaultspot;
+    defaultspot.x = 0;
+    defaultspot.y = 0;
+    
+    POINT *walkspot = walkspots[(int)lua_tonumber(L, 1)];
+    if (!walkspot)
+        walkspot = &defaultspot;
+    
+    lua_newtable(L);
+    lua_pushstring(L, "x");
+    lua_pushnumber(L, walkspot->x);
+    lua_settable(L, -3);
+    lua_pushstring(L, "y");
+    lua_pushnumber(L, walkspot->y);
+    lua_settable(L, -3);
+    
+    return 1;
+}
 
 int get_closest_waypoint(lua_State *L) {
     if (lua_gettop(L) != 1 || !lua_istable(L, 1)) {
@@ -154,6 +201,7 @@ int closest_waypoint(int x, int y) {
 void register_path() {
     lua_register(script, "get_neighbors", &get_neighbors);
     lua_register(script, "get_waypoint", &get_waypoint);
+    lua_register(script, "get_walkspot", &lua_get_walkspot);
     lua_register(script, "get_closest_waypoint", &get_closest_waypoint);
     lua_register(script, "enable_path", &lua_enable_path);
 }

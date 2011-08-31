@@ -9,8 +9,6 @@ M reorganize lua code
     < make debug.log take objects to log over instead of levels
 M reorganize C code
   - document at the same time
-M encorporate hot.pcx walk spots for hotspots
-  * provide lua bindings to walk to these spots
 M procedurally calculate walkspots for objects
 
 L add support for sound effects and music

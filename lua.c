@@ -75,8 +75,13 @@ int lua_get_image_size(lua_State *L) {
     }
     
     BITMAP *bmp = (BITMAP*)lua_touserdata(L, 1);
-    lua_pushnumber(L, bmp->w);
-    lua_pushnumber(L, bmp->h);
+    if (bmp) {
+        lua_pushnumber(L, bmp->w);
+        lua_pushnumber(L, bmp->h);
+    } else {
+        lua_pushnumber(L, 0);
+	lua_pushnumber(L, 0);
+    }
     
     return 2;
 }
@@ -88,6 +93,9 @@ int lua_get_bitmap(lua_State *L) {
     }
     
     BITMAP *bmp = load_bitmap(lua_tostring(L, 1), NULL);
+    if (!bmp) {
+	printf("failed to load bitmap %s\n", lua_tostring(L, 1));
+    }
     lua_pushlightuserdata(L, bmp);
     
     return 1;
@@ -107,7 +115,8 @@ int load_room(lua_State *L) {
             free(hotspots[i]);
             hotspots[i] = NULL;
         }
-        
+
+    build_walkspots();        
     build_waypoints();
         
     return 0;

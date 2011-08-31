@@ -6,52 +6,69 @@ function tick(state)
     conversation.pump_words(elapsed)
 
     for key, actor in pairs(room.scene) do
-	local name = actor.id
         if actor.aplay then
             animation.play(actor.aplay, elapsed)
         end
 
         if state == "game" then
-            if actor.goal then
-                if actor.aplay then
-                    animation.switch(actor.aplay, "walk")
-                end
-
-                local speed = actor.speed * elapsed
-                local dif = vector.diff(actor.pos, actor.goal)
-                if vector.length(dif) > speed then
-                    local dir = vector.normal(dif)
-
-                    if dir.x < 0 then
-                        actor.flipped = true
-                    else
-                        actor.flipped = false
-                    end
-
-                    actor.pos.x = actor.pos.x + dir.x * speed
-                    actor.pos.y = actor.pos.y + dir.y * speed
-                else
-                    actor.pos = actor.goal
-                    actor.goal = nil
-
-                    if actor.goals and actor.goals[1] then
-                        actor.goal = actor.goals[1]
-                        table.remove(actor.goals, 1)
-                    end
-
-                    if not actor.goal then
-                        do_callback("event", name, "goal")
-
-                        if actor.aplay then
-                            animation.switch(actor.aplay, "stand")
-                        end
-                    end
-                end
-            end
+            update_actor(actor, elapsed)
         end
     end
 
     table.sort(room.scene, zorder_sort)
+end
+
+function update_actor(actor, elapsed)
+    local name = actor.id
+
+    if actor.goal and type(actor.goal) ~= "boolean" then
+        if actor.aplay then
+            animation.switch(actor.aplay, "walk")
+        end
+
+        local speed = actor.speed * elapsed
+        local dif = vector.diff(actor.pos, actor.goal)
+
+        if vector.length(dif) > speed then
+            local dir = vector.normal(dif)
+
+            if dir.x < 0 then
+                actor.flipped = true
+            else
+                actor.flipped = false
+            end
+
+            actor.pos.x = actor.pos.x + dir.x * speed
+            actor.pos.y = actor.pos.y + dir.y * speed
+        else
+            actor.pos = actor.goal
+            actor.goal = nil
+
+            if actor.goals and actor.goals[1] then
+                actor.goal = actor.goals[1]
+                table.remove(actor.goals, 1)
+            end
+            
+            if type(actor.goal) == "function" then
+                -- schedule our goal function and wait for it to exit
+                -- before resuming our path
+                tasks.begin({ actor.goal, function() actor.goal = nil end })
+                actor.goal = true
+                
+                if actor.aplay then
+                    animation.switch(actor.aplay, "stand")
+                end
+            end
+
+            if not actor.goal then
+                do_callback("event", name, "goal")
+
+                if actor.aplay then
+                    animation.switch(actor.aplay, "stand")
+                end
+            end
+        end
+    end
 end
 
 function zorder_sort(a, b)

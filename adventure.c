@@ -27,6 +27,7 @@ struct {
 	const char *type, *object;
 	float started;
 	STATE last_state;
+    POINT* walkspot;
 } action_state;
 
 struct {
@@ -100,6 +101,23 @@ void set_action(const char *type, const char *obj) {
 	action_state.relevant = 1;
 }
 
+void walk_and_fire_event(POINT *walkpoint, const char *type, const char *obj, const char *method, int flip) {
+    printf("walking and firing at %d:%d\n", walkpoint->x, walkpoint->y);
+    
+    lua_getglobal(script, "walk");
+    lua_getglobal(script, "player");
+    LUA_PUSHPOS(walkpoint->x, walkpoint->y);
+    lua_call(script, 2, 0);
+
+	lua_getglobal(script, "append_dispatch");
+    lua_getglobal(script, "player");
+	lua_pushstring(script, type);
+	lua_pushstring(script, obj);
+	lua_pushstring(script, method);
+    lua_pushboolean(script, flip);
+	lua_call(script, 5, 0);
+}
+
 void fire_event(const char *type, const char *obj, const char *method) {
 	lua_getglobal(script, "do_callback");
 	lua_pushstring(script, type);
@@ -125,8 +143,12 @@ void update_game() {
 			case 3: method = "touch"; break;
 		}
 
-		fire_event(action_state.type, action_state.object, method);
-
+        if (action_state.walkspot)
+            walk_and_fire_event(action_state.walkspot, action_state.type, action_state.object, method, action_state.walkspot->x > action_state.x);
+        else
+            fire_event(action_state.type, action_state.object, method);
+        
+        action_state.walkspot = NULL;
 		action_state.result = 0;
 	}
 
@@ -207,12 +229,16 @@ void update_game() {
 			cursor = hs->cursor;
 			object_name = hs->display_name;
 
+			POINT *walkspot = walkspots[hotspot(mouse_x, mouse_y)];
+
 			if (is_click(1))
 				if (active_item.active) {
-					fire_event("hotspot", hs->internal_name, active_item.name);
+					walk_and_fire_event(walkspot, "hotspot", hs->internal_name, active_item.name, walkspot->x > mouse_x);
 					active_item.active = 0;
-				} else
+				} else {
 					set_action("hotspot", hs->internal_name);
+                    action_state.walkspot = walkspot;
+                }
 		} else if (is_click(1)) {
 			if (is_walkable(mouse_x, mouse_y)) { // on walkable ground
 				lua_getglobal(script, "player");
@@ -223,12 +249,14 @@ void update_game() {
 					lua_pushstring(script, "goal");
 					LUA_PUSHPOS(mouse_x, mouse_y);
 					lua_settable(script, -3);
+                    
+                    lua_pushstring(script, "goals");
+                    lua_newtable(script);
+                    lua_settable(script, -3);
+                    
 
 					lua_pop(script, 2);
 				} else {
-					int dest = closest_waypoint(mouse_x, mouse_y);
-					int here = closest_waypoint(player->x, player->y);
-
 					lua_getglobal(script, "walk");
 					lua_getglobal(script, "player");
 					LUA_PUSHPOS(mouse_x, mouse_y);
@@ -539,7 +567,7 @@ void frame() {
         }
 
 		BITMAP *tmp = create_bitmap(width, height);
-		blit(sheet, tmp, xsrc, ysrc + 1, 0, 0, width, height);
+		blit(sheet, tmp, xsrc, ysrc, 0, 0, width, height);
 		draw_sprite_ex(buffer, tmp, pos->x - xorigin, pos->y - yorigin, DRAW_SPRITE_NORMAL, flipped);
 
 		if (!ignore) {
@@ -714,6 +742,7 @@ int main(int argc, char* argv[]) {
 	cursors = load_bitmap("resources/cursors.pcx", NULL);
 	
 	action_state.relevant = 0;
+    action_state.walkspot = NULL;
 	active_item.active = 0;
 
 	enabled_paths[255] = 1;

@@ -48,6 +48,13 @@ function unhandled_event(callback_type, object, method)
     debug.log(debug.DISPATCH, "failed to dispatch event", object .. "_" .. method)
 end
 
+function append_dispatch(actor, callback_type, object, method, flipped)
+    table.insert(actor.goals, function()
+        actor.flipped = flipped
+        do_callback(callback_type, object, method)
+    end)
+end
+
 function switch_room(r, door)
     debug.logm(debug.ROOM, "switching to room", r)
     debug.log("via door", door)

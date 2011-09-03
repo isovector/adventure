@@ -25,48 +25,55 @@ function update_actor(actor, elapsed)
         if actor.aplay then
             animation.switch(actor.aplay, "walk")
         end
+        
+        if type(actor.goal) == "table" then
+            local speed = actor.speed * elapsed
+            local dif = vector.diff(actor.pos, actor.goal)
 
-        local speed = actor.speed * elapsed
-        local dif = vector.diff(actor.pos, actor.goal)
+            if vector.length(dif) > speed then
+                local dir = vector.normal(dif)
 
-        if vector.length(dif) > speed then
-            local dir = vector.normal(dif)
+                if dir.x < 0 then
+                    actor.flipped = true
+                else
+                    actor.flipped = false
+                end
 
-            if dir.x < 0 then
-                actor.flipped = true
+                actor.pos.x = actor.pos.x + dir.x * speed
+                actor.pos.y = actor.pos.y + dir.y * speed
             else
-                actor.flipped = false
-            end
+                actor.pos = actor.goal
+                actor.goal = nil
 
-            actor.pos.x = actor.pos.x + dir.x * speed
-            actor.pos.y = actor.pos.y + dir.y * speed
-        else
-            actor.pos = actor.goal
-            actor.goal = nil
-
-            if actor.goals and actor.goals[1] then
-                actor.goal = actor.goals[1]
-                table.remove(actor.goals, 1)
-            end
-            
-            if type(actor.goal) == "function" then
-                -- schedule our goal function and wait for it to exit
-                -- before resuming our path
-                tasks.begin({ actor.goal, function() actor.goal = nil end })
-                actor.goal = true
+                if actor.goals and actor.goals[1] then
+                    actor.goal = actor.goals[1]
+                    table.remove(actor.goals, 1)
+                end
                 
                 if actor.aplay then
                     animation.switch(actor.aplay, "stand")
                 end
-            end
 
-            if not actor.goal then
-                do_callback("event", name, "goal")
+                if not actor.goal then
+                    do_callback("event", name, "goal")
 
-                if actor.aplay then
-                    animation.switch(actor.aplay, "stand")
+                    if actor.aplay then
+                        animation.switch(actor.aplay, "stand")
+                    end
+                    
+                    if actor == player then
+                        signal_goal()
+                    end
                 end
             end
+        elseif type(actor.goal) == "function" then
+            tasks.begin({ actor.goal, function() 
+                if actor.goals and actor.goals[1] then
+                    actor.goal = actor.goals[1]
+                    table.remove(actor.goals, 1)
+                end
+            end })
+            actor.goal = true
         end
     end
 end

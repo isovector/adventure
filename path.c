@@ -149,27 +149,28 @@ int get_closest_waypoint(lua_State *L) {
         lua_error(L);
     }
     
-	lua_pushstring(L, "x");
-	lua_gettable(L, -2);
-	int x = (int)lua_tonumber(L, -1);
-	lua_pop(L, 1);
-	lua_pushstring(L, "y");
-	lua_gettable(L, -2);
-	int y = (int)lua_tonumber(L, -1);
-	lua_pop(L, 2);
+    lua_pushstring(L, "x");
+    lua_gettable(L, -2);
+    int x = (int)lua_tonumber(L, -1);
+    lua_pop(L, 1);
+    lua_pushstring(L, "y");
+    lua_gettable(L, -2);
+    int y = (int)lua_tonumber(L, -1);
+    lua_pop(L, 2);
     
     lua_pushnumber(L, closest_waypoint(x, y));
     return 1;
 }
 
 int lua_enable_path(lua_State *L) {
-    if (lua_gettop(L) != 2 || !lua_isnumber(L, 1) || !lua_isboolean(L, 2)) {
-        lua_pushstring(L, "enable_path expects (int, bool)");
+    if ((lua_gettop(L) == 1 && !lua_isnumber(L, 1)) ||
+        (lua_gettop(L) >= 2 && (!lua_isnumber(L, 1) || !lua_isboolean(L, 2)))) {
+        lua_pushstring(L, "enable_path expects (int, [bool])");
         lua_error(L);
     }
     
     int n = lua_tonumber(L, 1);
-    int b = lua_toboolean(L, 2);
+    int b = lua_gettop(L) == 2 ? lua_toboolean(L, 2) : 1;
     
     enabled_paths[n] = b;
     build_waypoints();
@@ -178,7 +179,7 @@ int lua_enable_path(lua_State *L) {
 }
 
 int is_walkable(int x, int y) {    
-	return enabled_paths[(getpixel(room_hot, x, y) & (255 << 8)) >> 8] || getpixel(room_hot, x, y) == 255;
+    return enabled_paths[(getpixel(room_hot, x, y) & (255 << 8)) >> 8] || getpixel(room_hot, x, y) == 255;
 }
 
 int closest_waypoint(int x, int y) {
@@ -186,15 +187,15 @@ int closest_waypoint(int x, int y) {
     int winner = 0;
     
     for (int i = 0; i < waypoint_count; i++) {
-		int tx = waypoints[i]->x - x;
-		int ty = waypoints[i]->y - y;
+        int tx = waypoints[i]->x - x;
+        int ty = waypoints[i]->y - y;
         int dif = sqrt(tx * tx + ty * ty);
         if (dif < dist) {
             dist = dif;
             winner = i;
         }
     }
-	
+    
     return winner;
 }
 

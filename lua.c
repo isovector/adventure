@@ -3,17 +3,17 @@
 lua_State *script;
 
 POINT *actor_position() {
-	lua_pushvalue(script, -1);
-	lua_pushstring(script, "pos");
-	lua_gettable(script, -2);
-	lua_pushstring(script, "x");
-	lua_gettable(script, -2);
-	int x = (int)lua_tonumber(script, -1);
-	lua_pop(script, 1);
-	lua_pushstring(script, "y");
-	lua_gettable(script, -2);
-	int y = (int)lua_tonumber(script, -1);
-	lua_pop(script, 3);
+    lua_pushvalue(script, -1);
+    lua_pushstring(script, "pos");
+    lua_gettable(script, -2);
+    lua_pushstring(script, "x");
+    lua_gettable(script, -2);
+    int x = (int)lua_tonumber(script, -1);
+    lua_pop(script, 1);
+    lua_pushstring(script, "y");
+    lua_gettable(script, -2);
+    int y = (int)lua_tonumber(script, -1);
+    lua_pop(script, 3);
     
     POINT *retval = malloc(sizeof(POINT));
     retval->x = x;
@@ -48,22 +48,28 @@ int register_hotspot(lua_State *L) {
 }
 
 int register_door(lua_State *L) {
-    if (lua_gettop(L) != 5 || !lua_isnumber(L, 1) || !lua_isstring(L, 2)|| !lua_isstring(L, 3) || !lua_isnumber(L, 4)  || !lua_isnumber(L, 5) 
-        || lua_tonumber(L, 1) != (int)lua_tonumber(L, 1)) {
-        lua_pushstring(L, "register_door expects (int, string, string, int, int)");
+    if (lua_gettop(L) != 4 || !lua_isstring(L, 1) || !lua_isstring(L, 2)|| !lua_isnumber(L, 3)  || !lua_isnumber(L, 4)) {
+        lua_pushstring(L, "register_door expects (string, string, int, int)");
         lua_error(L);
     }
     
-    HOTSPOT *hotspot = malloc(sizeof(HOTSPOT));
-    hotspot->internal_name = "";
-    hotspot->display_name = strdup(lua_tostring(L, 2));
+    HOTSPOT *hotspot = NULL;
+    for (int i = 0; i < 256; i++)
+        if (hotspots[i] && strcmp(hotspots[i]->internal_name, lua_tostring(L, 1)) == 0) {
+            printf("found %s:%s\n", hotspots[i]->internal_name, lua_tostring(L, 1));
+            hotspot = hotspots[i];
+            break;
+        }
+        
+    if (!hotspot) {
+        lua_pushstring(L, "Could not find a registered hotspot to transform into a door. Are you missing a call to register_hotspot?");
+        lua_error(L);
+    }
     
-    // do things with the exit
-    
-    hotspot->cursor = lua_tonumber(L, 5);
-    hotspot->exit = NULL;
-    
-    hotspots[(int)lua_tonumber(L, 1)] = hotspot;
+    hotspot->cursor = lua_tonumber(L, 4);
+    hotspot->exit = malloc(sizeof(EXIT));
+    hotspot->exit->room = strdup(lua_tostring(L, 2));
+    hotspot->exit->door = lua_tonumber(L, 3);
     
     return 0;
 }
@@ -80,7 +86,7 @@ int lua_get_image_size(lua_State *L) {
         lua_pushnumber(L, bmp->h);
     } else {
         lua_pushnumber(L, 0);
-	lua_pushnumber(L, 0);
+    lua_pushnumber(L, 0);
     }
     
     return 2;
@@ -94,7 +100,7 @@ int lua_get_bitmap(lua_State *L) {
     
     BITMAP *bmp = load_bitmap(lua_tostring(L, 1), NULL);
     if (!bmp) {
-	printf("failed to load bitmap %s\n", lua_tostring(L, 1));
+    printf("failed to load bitmap %s\n", lua_tostring(L, 1));
     }
     lua_pushlightuserdata(L, bmp);
     
@@ -109,9 +115,12 @@ int load_room(lua_State *L) {
 
     room_art = (BITMAP*)lua_touserdata(L, 1);
     room_hot = (BITMAP*)lua_touserdata(L, 2);
-	
-	for (int i = 0; i < 256; i++)
+    
+    for (int i = 0; i < 256; i++)
         if (hotspots[i] != NULL) {
+            if (hotspots[i]->exit)
+                free(hotspots[i]->exit);
+            
             free(hotspots[i]);
             hotspots[i] = NULL;
         }
@@ -130,6 +139,17 @@ int lua_panic(lua_State *L) {
     printf("LUA ERROR: %s\nat %s\n", lua_tostring(L, 1), debug.name);
 }
 
+int lua_signal_goal(lua_State *L) {
+    if (lua_gettop(L) != 0) {
+        lua_pushstring(L, "signal_goal expects ()");
+        lua_error(L);
+    }
+    
+    door_travel = 0;
+    
+    return 0;
+}
+
 void init_script() {
     script = lua_open();
     luaL_openlibs(script);
@@ -145,6 +165,7 @@ void init_script() {
     lua_register(script, "register_door", &register_door);
     lua_register(script, "get_image_size", &lua_get_image_size);
     lua_register(script, "get_bitmap", &lua_get_bitmap);
+    lua_register(script, "signal_goal", &lua_signal_goal);
     
     register_path();
     

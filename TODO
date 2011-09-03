@@ -1,6 +1,3 @@
-H let hotspots be doors
-  * automatically teleport to corresponding walk spot
-  * change mouse cursor to arrow
 H disable input
 H make lua errors NOT segfault the engine
 

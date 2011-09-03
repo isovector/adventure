@@ -49,18 +49,25 @@ function unhandled_event(callback_type, object, method)
 end
 
 function append_dispatch(actor, callback_type, object, method, flipped)
+    if not actor or not actor.goals then return end
+    
     table.insert(actor.goals, function()
         actor.flipped = flipped
         do_callback(callback_type, object, method)
     end)
 end
 
+function append_switch(actor, room, door)
+    if not actor.goals then return end
+
+    table.insert(actor.goals, function()
+        switch_room(room, door)
+    end)
+end
+
 function switch_room(r, door)
     debug.logm(debug.ROOM, "switching to room", r)
     debug.log("via door", door)
-
-    if current_room == r then return end
-    current_room = r
 
     if not rooms[r] then
         local roompath = "game/rooms/" .. r .. "/"
@@ -73,8 +80,17 @@ function switch_room(r, door)
         rooms[r] = room
     end
 
-    room = rooms[r]
-    set_room_data(room.artwork, room.hotmap)
-
-    room.on_load(door)
+    if current_room ~= r then 
+        room = rooms[r]
+        current_room = r
+        
+        set_room_data(room.artwork, room.hotmap)
+        room.on_load(door)
+    end
+    
+    if player then 
+        player.pos = get_walkspot(door)
+        animation.switch(player.aplay, "stand")
+        player.goal = nil
+    end
 end

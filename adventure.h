@@ -59,6 +59,7 @@ extern int waypoint_count;
 extern unsigned int waypoint_connections[MAX_WAYPOINTS];
 extern int in_console;
 extern int door_travel;
+extern int disable_input;
 
 void init_console(int);
 void open_console();

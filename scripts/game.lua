@@ -57,16 +57,16 @@ function update_actor(actor, elapsed)
                 if not actor.goal then
                     do_callback("event", name, "goal")
 
-                    if actor.aplay then
-                        animation.switch(actor.aplay, "stand")
-                    end
-                    
                     if actor == player then
                         signal_goal()
                     end
                 end
             end
         elseif type(actor.goal) == "function" then
+            if actor.aplay then
+                animation.switch(actor.aplay, "stand")
+            end
+        
             tasks.begin({ actor.goal, function() 
                 if actor.goals and actor.goals[1] then
                     actor.goal = actor.goals[1]

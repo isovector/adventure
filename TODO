@@ -1,17 +1,16 @@
-H disable input
-H make lua errors NOT segfault the engine
+H procedurally calculate walkspots for objects
 
+M add support for permanent map labels
+M implement foreground objects
 M reorganize lua code
   * add debugging as you go
     < make debug.log take objects to log over instead of levels
 M reorganize C code
   - document at the same time
-M procedurally calculate walkspots for objects
 
 L add support for sound effects and music
 L make helper classes to build animations
   * maybe a separate tool, too?
-L implement foreground objects
 L animate action bar
 L clean up lua's queue library
 L provide mechanism for scaling objects based on y position

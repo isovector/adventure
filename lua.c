@@ -56,7 +56,6 @@ int register_door(lua_State *L) {
     HOTSPOT *hotspot = NULL;
     for (int i = 0; i < 256; i++)
         if (hotspots[i] && strcmp(hotspots[i]->internal_name, lua_tostring(L, 1)) == 0) {
-            printf("found %s:%s\n", hotspots[i]->internal_name, lua_tostring(L, 1));
             hotspot = hotspots[i];
             break;
         }
@@ -99,9 +98,9 @@ int lua_get_bitmap(lua_State *L) {
     }
     
     BITMAP *bmp = load_bitmap(lua_tostring(L, 1), NULL);
-    if (!bmp) {
-    printf("failed to load bitmap %s\n", lua_tostring(L, 1));
-    }
+    
+    if (!bmp)
+        printf("failed to load bitmap %s\n", lua_tostring(L, 1));
     lua_pushlightuserdata(L, bmp);
     
     return 1;
@@ -150,6 +149,17 @@ int lua_signal_goal(lua_State *L) {
     return 0;
 }
 
+int lua_enable_input(lua_State *L) {
+    if (lua_gettop(L) != 1 || !lua_isboolean(L, 1)) {
+        lua_pushstring(L, "disable_input expects (bool)");
+        lua_error(L);
+    }
+    
+    disable_input = !lua_toboolean(L, 1);
+    
+    return 0;
+}
+
 void init_script() {
     script = lua_open();
     luaL_openlibs(script);
@@ -166,6 +176,7 @@ void init_script() {
     lua_register(script, "get_image_size", &lua_get_image_size);
     lua_register(script, "get_bitmap", &lua_get_bitmap);
     lua_register(script, "signal_goal", &lua_signal_goal);
+    lua_register(script, "enable_input", &lua_enable_input);
     
     register_path();
     

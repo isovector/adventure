@@ -14,31 +14,45 @@ function do_callback(callback_type, object, method)
     tasks.begin({
         function()
             if room.events and room.events[name] then
-                return room.events[name]()
+                enable_input(false)
+                local result = room.events[name]()
+                enable_input(true)
+                return result
             end
             return true
         end,
         function()
             if item_events and item_events[name] then
-                return item_events[name]()
+                enable_input(false)
+                local result = item_events[name]()
+                enable_input(true)
+                return result
             end
             return true
         end,
         function()
             if obj and obj.events and obj.events[name] then
-                return obj.events[name]()
+                enable_input(false)
+                local result = obj.events[name]()
+                enable_input(true)
+                return result
             end
             return true
         end,
         function()
             if events and events[name] then
-                return events[name]()
+                enable_input(false)
+                local result = events[name]()
+                enable_input(true)
+                return result
             end
             return true
         end,
         function()
             if unhandled_event then
+                enable_input(false)
                 unhandled_event(callback_type, object, method)
+                enable_input(true)
             end
         end,
     }, true)
@@ -68,6 +82,10 @@ end
 function switch_room(r, door)
     debug.logm(debug.ROOM, "switching to room", r)
     debug.log("via door", door)
+    
+    if room and room.on_unload then
+        room.on_unload()
+    end
 
     if not rooms[r] then
         local roompath = "game/rooms/" .. r .. "/"

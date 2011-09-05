@@ -19,6 +19,7 @@ int fps = 0;
 int in_console = 0;
 int cursor = 0;
 int door_travel = 0;
+int disable_input = 0;
 
 volatile int ticks = 0;
 sem_t semaphore_rest;
@@ -142,6 +143,8 @@ void update_game() {
     object_name = "";
     cursor = 0;
 
+    if (disable_input) return;
+    
     if (action_state.result) { // we just returned from action
         const char *method;
 
@@ -726,19 +729,21 @@ void frame() {
         } lua_pop(script, 2);
     }
 
-    int cx, cy;
-    get_cursor_offset(cursor, &cx, &cy);
-    masked_blit(cursors, buffer, cursor * 32, 0, mouse_x - cx, mouse_y - cy, 32, 32);
+    if (!disable_input) {
+        int cx, cy;
+        get_cursor_offset(cursor, &cx, &cy);
+        masked_blit(cursors, buffer, cursor * 32, 0, mouse_x - cx, mouse_y - cy, 32, 32);
+    }
 
     if (active_item.active)
         masked_blit(active_item.image, buffer, 0, 0, mouse_x, mouse_y, 64, 64);
-
-    release_bitmap(buffer);
 
     char fps_buffer[10];
     sprintf(fps_buffer, "%d", fps);
     textout_ex(buffer, font, fps_buffer, SCREEN_WIDTH - 25, 25, makecol(255, 0, 0), -1);
 
+    release_bitmap(buffer);
+    
     blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 

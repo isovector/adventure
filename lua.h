@@ -82,6 +82,12 @@ POINT *actor_position();
         return 1; \
     }
 
+#define lua_call(state, args, rets) \
+    if (lua_pcall(state, args, rets, 0) != 0) { \
+        printf("LUA ERROR:\n%s\nat %s on line %d\n\n", lua_tostring(state, -1), __FILE__, __LINE__); \
+    }
+
+
 #ifndef DRAW_SPRITE_NORMAL
 #define DRAW_SPRITE_NORMAL 0
 #endif

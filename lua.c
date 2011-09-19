@@ -85,7 +85,7 @@ int lua_get_image_size(lua_State *L) {
         lua_pushnumber(L, bmp->h);
     } else {
         lua_pushnumber(L, 0);
-    lua_pushnumber(L, 0);
+        lua_pushnumber(L, 0);
     }
     
     return 2;

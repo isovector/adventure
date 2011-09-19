@@ -83,7 +83,8 @@ function switch_room(r, door)
     debug.logm(debug.ROOM, "switching to room", r)
     debug.log("via door", door)
     
-    if room and room.on_unload then
+    if current_room ~= r and room and room.on_unload then
+        conversation.clear()
         room.on_unload()
     end
 

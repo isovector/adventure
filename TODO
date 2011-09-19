@@ -1,6 +1,3 @@
-H procedurally calculate walkspots for objects
-
-M add support for permanent map labels
 M implement foreground objects
 M reorganize lua code
   * add debugging as you go
@@ -8,6 +5,7 @@ M reorganize lua code
 M reorganize C code
   - document at the same time
 
+L improve object walkspot algorithm
 L add support for sound effects and music
 L make helper classes to build animations
   * maybe a separate tool, too?

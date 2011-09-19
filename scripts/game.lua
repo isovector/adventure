@@ -18,6 +18,71 @@ function tick(state)
     table.sort(room.scene, zorder_sort)
 end
 
+function get_size(actor)
+    if actor.aplay then
+        return actor.aplay.set.width, actor.aplay.set.height
+    elseif actor.sprite then
+        return get_image_size(actor.sprite)
+    else
+        return 0, 0
+    end
+end
+
+function make_walkspot(actor)
+    if not actor then return 0, 0 end
+
+    if type(actor) == "string" then
+        actor = table.find(room.scene, function(key, val)
+            return val.id == actor
+        end)
+    end
+
+    local x = actor.pos.x
+    local y = actor.pos.y
+    local sx, sy = get_size(actor)
+    local ox, oy = get_origin(actor)
+    local flip = 1
+    
+    if actor.flipped then flip = -1 end
+    
+    x = x - ox + sx
+    y = y - oy + sy
+    
+    
+    for dist = sx / 2, sx * 5, sx / 2 do
+        for degree = 0, math.pi, math.pi / 12 do
+            local ax = math.cos(degree) * dist * flip
+            local ay = math.sin(degree) * dist
+            
+            if is_walkable(x + ax, y + ay) then
+                return x + ax, y + ay
+            end
+        end
+    end
+    
+    return x, y
+end
+
+function get_origin(actor)
+    if not actor then return 0, 0 end
+
+    if type(actor) == "string" then
+        actor = table.find(room.scene, function(key, val)
+            return val.id == actor
+        end)
+    end
+    
+    if actor.aplay then
+        return actor.aplay.set.xorigin, actor.aplay.set.yorigin
+    end
+    
+    if actor.height then
+        return 0, actor.height
+    end
+    
+    return 0, 0
+end
+
 function update_actor(actor, elapsed)
     local name = actor.id
 

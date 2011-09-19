@@ -182,6 +182,8 @@ int is_walkable(int x, int y) {
     return enabled_paths[(getpixel(room_hot, x, y) & (255 << 8)) >> 8] || getpixel(room_hot, x, y) == 255;
 }
 
+LUA_WRAP(is_walkable, 2, boolean, number, number)
+
 int closest_waypoint(int x, int y) {
     int dist = 9999999;
     int winner = 0;
@@ -205,4 +207,5 @@ void register_path() {
     lua_register(script, "get_walkspot", &lua_get_walkspot);
     lua_register(script, "get_closest_waypoint", &get_closest_waypoint);
     lua_register(script, "enable_path", &lua_enable_path);
+    lua_register(script, "is_walkable", &lua_is_walkable);
 }

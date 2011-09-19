@@ -1,2 +1,4 @@
 Persistent clicking can force the player through unwalkable zones.
  - the pathing routines are ugly anyway. rewrite them.
+
+Pixel perfect detection doesn't always work (see rope)

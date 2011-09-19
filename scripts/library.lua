@@ -34,6 +34,8 @@ function table.find(tab, predicate)
             return val
         end
     end
+    
+    return nil
 end
 
 function table.contains(tab, value)

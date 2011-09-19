@@ -101,11 +101,17 @@ function conversation.say(message, x, y, color, duration)
     return msg
 end
 
+function conversation.clear()
+    conversation.words = {}
+end
+
 function conversation.pump_words(elapsed)
     for key, val in ipairs(conversation.words) do
-        val.duration = val.duration - elapsed
+        if val.duration ~= 0 then
+            val.duration = val.duration - elapsed
+        end
 
-        if val.duration <= 0 then
+        if val.duration < 0 then
             table.remove(conversation.words, key)
         end
     end

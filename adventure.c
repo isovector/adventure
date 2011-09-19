@@ -30,6 +30,7 @@ struct {
     float started;
     STATE last_state;
     POINT* walkspot;
+    int owns_walkspot;
 } action_state;
 
 struct {
@@ -159,6 +160,9 @@ void update_game() {
         else
             fire_event(action_state.type, action_state.object, method);
         
+        if (action_state.owns_walkspot)
+            free(action_state.walkspot);
+        
         action_state.walkspot = NULL;
         action_state.result = 0;
     }
@@ -225,8 +229,19 @@ void update_game() {
                 if (active_item.active) {
                     fire_event("object", lua_tostring(script, -2), active_item.name);
                     active_item.active = 0;
-                } else
+                } else {
+                    lua_getglobal(script, "make_walkspot");
+                    lua_pushstring(script, lua_tostring(script, -3));
+                    lua_call(script, 1, 2);
+                    POINT* walkspot = malloc(sizeof(POINT));
+                    walkspot->x = (int)lua_tonumber(script, -2);
+                    walkspot->y = (int)lua_tonumber(script, -1);
+                    lua_pop(script, 2);
+                    
                     set_action("object", lua_tostring(script, -2));
+                    action_state.owns_walkspot = 1;
+                    action_state.walkspot = walkspot;
+                }
                 
             cursor = 5;
         }
@@ -249,9 +264,10 @@ void update_game() {
                     active_item.active = 0;
                     door_travel = 0;
                 } else if (hs->exit) {
+                    action_state.relevant = 0;
                     if (door_travel != hs->exit->door) {
                         door_travel = hs->exit->door;
-                        
+
                         walk_and_fire_event(walkspot, "door", hs->internal_name, "enter", walkspot->x > mouse_x);
                         
                         lua_getglobal(script, "append_switch");
@@ -265,6 +281,7 @@ void update_game() {
                     }
                 } else {
                     set_action("hotspot", hs->internal_name);
+                    action_state.owns_walkspot = 0;
                     action_state.walkspot = walkspot;
                     door_travel = 0;
                 }

@@ -29,6 +29,6 @@ room.objects = {
             name = "Rope",
             pos = {x = 910, y = 494}, 
             sprite = get_bitmap("game/rooms/outside/objects/rope.pcx"),
-	    height = 128
+            height = 128
         }
     }

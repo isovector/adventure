@@ -1,4 +1,3 @@
-M implement foreground objects
 M reorganize lua code
   * add debugging as you go
     < make debug.log take objects to log over instead of levels

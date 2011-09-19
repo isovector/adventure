@@ -507,6 +507,14 @@ void push_rendertable(const char *name, int x, int y, int w, int h) {
     lua_settable(script, -3);
 }
 
+void draw_foreground(int level) {
+    int col;
+    for (int y = 0; y < SCREEN_HEIGHT; y++)
+    for (int x = 0; x < SCREEN_WIDTH; x++)
+        if ((getpixel(room_hot, x, y) & 255) == level)
+            putpixel(buffer, x, y, getpixel(room_art, x, y));
+}
+
 void frame() {
     char cbuffer[10];
 
@@ -522,6 +530,17 @@ void frame() {
 
     lua_pushnil(script);
     while (lua_next(script, t) != 0) {
+        lua_pushstring(script, "baseline");
+        lua_gettable(script, -2);
+        if (!lua_isnil(script, -1)) {
+            lua_pop(script, 1);
+            lua_pushstring(script, "level");
+            lua_gettable(script, -2);
+            draw_foreground(lua_tonumber(script, -1));
+            lua_pop(script, 2);
+            continue;
+        } else lua_pop(script, 1);
+        
         lua_pushstring(script, "id");
         lua_gettable(script, -2);
         lua_pushvalue(script, -2);
@@ -745,7 +764,7 @@ void frame() {
             i++;
         } lua_pop(script, 2);
     }
-
+    
     if (!disable_input) {
         int cx, cy;
         get_cursor_offset(cursor, &cx, &cy);

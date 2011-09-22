@@ -29,13 +29,13 @@ function get_size(actor)
 end
 
 function make_walkspot(actor)
-    if not actor then return 0, 0 end
-
     if type(actor) == "string" then
         actor = table.find(room.scene, function(key, val)
             return val.id == actor
         end)
     end
+    
+    if not actor then return 0, 0 end
     
     if actor.walkspot then
         return actor.walkspot.x, actor.walkspot.y

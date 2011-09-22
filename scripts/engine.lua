@@ -119,4 +119,4 @@ function switch_room(r, door)
         animation.switch(player.aplay, "stand")
         player.goal = nil
     end
-end
+endh

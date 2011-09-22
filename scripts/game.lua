@@ -156,16 +156,27 @@ end
 
 function zorder_sort(a, b)
     if not a or not b then
-	return a
+        return a
     end
-
+    
     ah = a.height
     bh = b.height
+    
+    ay = a.baseline
+    by = b.baseline
+    
+    if not ay then
+        ay = a.pos.y
+    end
+    
+    if not by then
+        by = b.pos.y
+    end
 
     if not ah then ah = 0 end
     if not bh then bh = 0 end
-
-    return a.pos.y + ah < b.pos.y + bh
+    
+    return ay + ah < by + bh
 end
 
 -- this should be implemented in C

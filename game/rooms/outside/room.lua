@@ -24,6 +24,8 @@ function room.on_init()
     table.insert(room.scene, room.objects.sword)
     table.insert(room.scene, room.objects.note)
     table.insert(room.scene, room.objects.rope)
+    
+    register_foreground(17, 540)
 end
 
 function room.on_load()

@@ -58,6 +58,10 @@ function do_callback(callback_type, object, method)
     }, true)
 end
 
+function register_foreground(level, baseline)
+    table.insert(room.scene, { baseline = baseline, level = level })
+end
+
 function unhandled_event(callback_type, object, method)
     debug.log(debug.DISPATCH, "failed to dispatch event", object .. "_" .. method)
 end

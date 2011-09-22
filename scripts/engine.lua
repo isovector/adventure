@@ -95,7 +95,10 @@ function switch_room(r, door)
         room.artwork = get_bitmap(roompath .. "art.pcx")
         room.hotmap = get_bitmap(roompath .. "hot.pcx")
 
-        room.on_init()
+        if room.on_init then
+            room.on_init()
+        end
+        
         rooms[r] = room
     end
 

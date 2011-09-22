@@ -126,7 +126,22 @@ int load_room(lua_State *L) {
 
     build_walkspots();        
     build_waypoints();
+    
+    lua_setconstant(L, "room_width", number, room_art->w);
+    lua_setconstant(L, "room_height", number, room_art->h);
         
+    return 0;
+}
+
+int lua_set_viewport(lua_State *L) {
+    if (lua_gettop(L) != 2 || !lua_isnumber(L, 1) || !lua_isnumber(L, 2)) {
+        lua_pushstring(L, "set_viewport expects (int, int)");
+        lua_error(L);
+    }
+    
+    viewport_x = lua_tonumber(L, 1);
+    viewport_y = lua_tonumber(L, 2);
+    
     return 0;
 }
 
@@ -177,6 +192,7 @@ void init_script() {
     lua_register(script, "get_bitmap", &lua_get_bitmap);
     lua_register(script, "signal_goal", &lua_signal_goal);
     lua_register(script, "enable_input", &lua_enable_input);
+    lua_register(script, "set_viewport", &lua_set_viewport);
     
     register_path();
     

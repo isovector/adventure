@@ -1,4 +1,5 @@
 -- load the engine
+dofile("scripts/environment.lua")
 dofile("scripts/debug.lua")
 dofile("scripts/engine.lua")
 dofile("scripts/library.lua")

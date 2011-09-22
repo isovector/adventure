@@ -21,6 +21,8 @@ int cursor = 0;
 int door_travel = 0;
 int disable_input = 0;
 
+int viewport_x = 0, viewport_y = 0;
+
 volatile int ticks = 0;
 sem_t semaphore_rest;
 
@@ -156,7 +158,7 @@ void update_game() {
         }
 
         if (action_state.walkspot)
-            walk_and_fire_event(action_state.walkspot, action_state.type, action_state.object, method, action_state.walkspot->x > action_state.x);
+            walk_and_fire_event(action_state.walkspot, action_state.type, action_state.object, method, action_state.walkspot->x > action_state.x + viewport_x);
         else
             fire_event(action_state.type, action_state.object, method);
         
@@ -219,8 +221,8 @@ void update_game() {
         BITMAP *sheet = lua_touserdata(script, -1);
         lua_pop(script, 1);
 
-        if (in_rect(mouse_x, mouse_y, x, y, x + width, y + height)
-                && is_pixel_perfect(sheet, mouse_x - x, mouse_y - y, width, height, xorigin, yorigin, flipped)) {
+        if (in_rect(mouse_x, mouse_y, x - viewport_x, y - viewport_y, x - viewport_x + width, y - viewport_y + height)
+                && is_pixel_perfect(sheet, mouse_x - x - viewport_x, mouse_y - y - viewport_y, width, height, xorigin, yorigin, flipped)) {
             object_name = name;
             found = 1;
             door_travel = 0;
@@ -250,17 +252,17 @@ void update_game() {
     } lua_pop(script, 1);
 
     if (!found) {
-        HOTSPOT *hs = hotspots[hotspot(mouse_x, mouse_y)];
+        HOTSPOT *hs = hotspots[hotspot(mouse_x + viewport_x, mouse_y + viewport_y)];
 
         if (hs) {
             cursor = hs->cursor;
             object_name = hs->display_name;
 
-            POINT *walkspot = walkspots[hotspot(mouse_x, mouse_y)];
+            POINT *walkspot = walkspots[hotspot(mouse_x + viewport_x, mouse_y + viewport_y)];
             
             if (is_click(1))
                 if (active_item.active) {
-                    walk_and_fire_event(walkspot, "hotspot", hs->internal_name, active_item.name, walkspot->x > mouse_x);
+                    walk_and_fire_event(walkspot, "hotspot", hs->internal_name, active_item.name, walkspot->x > mouse_x + viewport_x);
                     active_item.active = 0;
                     door_travel = 0;
                 } else if (hs->exit) {
@@ -268,7 +270,7 @@ void update_game() {
                     if (door_travel != hs->exit->door) {
                         door_travel = hs->exit->door;
 
-                        walk_and_fire_event(walkspot, "door", hs->internal_name, "enter", walkspot->x > mouse_x);
+                        walk_and_fire_event(walkspot, "door", hs->internal_name, "enter", walkspot->x > mouse_x + viewport_x);
                         
                         lua_getglobal(script, "append_switch");
                         lua_getglobal(script, "player");
@@ -292,10 +294,10 @@ void update_game() {
                 lua_getglobal(script, "player");
                 POINT *player = actor_position();
 
-                if (is_pathable(player->x, player->y, mouse_x, mouse_y)) {
+                if (is_pathable(player->x, player->y, mouse_x + viewport_x, mouse_y + viewport_y)) {
                     lua_getglobal(script, "player");
                     lua_pushstring(script, "goal");
-                    LUA_PUSHPOS(mouse_x, mouse_y);
+                    LUA_PUSHPOS(mouse_x + viewport_x, mouse_y + viewport_y);
                     lua_settable(script, -3);
                     
                     lua_pushstring(script, "goals");
@@ -307,7 +309,7 @@ void update_game() {
                 } else {
                     lua_getglobal(script, "walk");
                     lua_getglobal(script, "player");
-                    LUA_PUSHPOS(mouse_x, mouse_y);
+                    LUA_PUSHPOS(mouse_x + viewport_x, mouse_y + viewport_y);
                     lua_call(script, 2, 0);
 
                     lua_pop(script, 1);
@@ -512,7 +514,7 @@ void frame() {
 
     acquire_bitmap(buffer);
     clear_to_color(buffer, 0);
-    blit(room_art, buffer, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    blit(room_art, buffer, viewport_x, viewport_y, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     lua_getglobal(script, "room");
     lua_pushstring(script, "scene");
@@ -616,7 +618,7 @@ void frame() {
 
         BITMAP *tmp = create_bitmap(width, height);
         blit(sheet, tmp, xsrc, ysrc, 0, 0, width, height);
-        draw_sprite_ex(buffer, tmp, pos->x - xorigin, pos->y - yorigin, DRAW_SPRITE_NORMAL, flipped);
+        draw_sprite_ex(buffer, tmp, pos->x - xorigin - viewport_x, pos->y - yorigin - viewport_y, DRAW_SPRITE_NORMAL, flipped);
 
         if (!ignore) {
             lua_getregister(script, "render_obj");
@@ -672,7 +674,7 @@ void frame() {
         lua_gettable(script, -2);
         int color = lua_tonumber(script, -1);
 
-        textprintf_centre_ex(buffer, font, x, y, color, -1, msg);
+        textprintf_centre_ex(buffer, font, x - viewport_x, y - viewport_y, color, -1, msg);
 
         lua_pop(script, 2);
     } lua_pop(script, 1);
@@ -798,6 +800,9 @@ int main(int argc, char* argv[]) {
     enabled_paths[255] = 1;
 
     init_script();
+    lua_setconstant(script, "screen_width", number, SCREEN_WIDTH);
+    lua_setconstant(script, "screen_height", number, SCREEN_HEIGHT);
+    
     init_console(32);
     install_int_ex(&ticker, BPS_TO_TIMER(FRAMERATE));
 

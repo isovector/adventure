@@ -111,7 +111,19 @@ function table.cdr(tab)
     return cdr
 end
 
+function math.clamp(val, low, high)
+    return math.max(low, math.min(high, val))
+end
+
 vector = {}
+
+function vec(a, b) 
+    if b then
+        return { x = a, y = b }
+    end
+    
+    return { x = a, y = a }
+end
 
 function vector.length(v)
     return math.sqrt(v.x * v.x + v.y * v.y)

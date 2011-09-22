@@ -36,6 +36,10 @@ function make_walkspot(actor)
             return val.id == actor
         end)
     end
+    
+    if actor.walkspot then
+        return actor.walkspot.x, actor.walkspot.y
+    end
 
     local x = actor.pos.x
     local y = actor.pos.y
@@ -141,6 +145,13 @@ function update_actor(actor, elapsed)
             actor.goal = true
         end
     end
+    
+    if actor == player then
+        local xoffset = math.clamp(player.pos.x - screen_width / 2, 0, room_width - screen_width)
+        local yoffset = math.clamp(player.pos.y - screen_height / 2, 0, room_height - screen_height)
+        
+        set_viewport(xoffset, yoffset)
+    end
 end
 
 function zorder_sort(a, b)
@@ -191,7 +202,11 @@ function do_pathfinding(from, to)
 end
 
 function walk(actor, to, y)
-    if y then to = {x = to, y = y} end
+    if y then 
+        to = { x = to, y = y }
+    else
+        to = { x = to.x, y = to.y } -- get a new vector
+    end
 
     actor.goal = get_waypoint(get_closest_waypoint(actor.pos))
     actor.goals = unwrap_path(do_pathfinding(get_closest_waypoint(actor.pos), get_closest_waypoint(to)))

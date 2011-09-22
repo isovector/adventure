@@ -16,9 +16,16 @@ extern lua_State *script;
 void init_script();
 POINT *actor_position();
 
-#define lua_getregister(L,s)  lua_getfield(L, LUA_REGISTRYINDEX, s)
-#define lua_setregister(L,s)  lua_setfield(L, LUA_REGISTRYINDEX, s)
+#define lua_getregister(L, s)  lua_getfield(L, LUA_REGISTRYINDEX, s)
+#define lua_setregister(L, s)  lua_setfield(L, LUA_REGISTRYINDEX, s)
 
+#define lua_setconstant(L, n, type, val) lua_getglobal(L, "readonly"); \
+    lua_pushstring(L, "locks"); \
+    lua_gettable(L, -2); \
+    lua_pushstring(L, n); \
+    lua_push##type(L, val); \
+    lua_settable(L, -3); \
+    lua_pop(L, 2);
 
 #define NTHARG11(n, arg, args ...) arg
 #define NTHARG12(n, arg, args ...) NTHARG2##n(n, args)

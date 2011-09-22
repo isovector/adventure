@@ -1,4 +1,4 @@
-current_room = "";
+current_room = ""
 room = nil
 rooms = {}
 
@@ -119,4 +119,4 @@ function switch_room(r, door)
         animation.switch(player.aplay, "stand")
         player.goal = nil
     end
-endh
+end

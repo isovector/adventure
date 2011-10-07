@@ -14,7 +14,7 @@
 extern lua_State *script;
 
 void init_script();
-POINT *actor_position();
+void actor_position(int*, int*);
 
 #define lua_getregister(L, s)  lua_getfield(L, LUA_REGISTRYINDEX, s)
 #define lua_setregister(L, s)  lua_setfield(L, LUA_REGISTRYINDEX, s)
@@ -80,7 +80,7 @@ POINT *actor_position();
 #define LUA_GETARG5_(type, args ...) LUA_GETARG4(NTHARG(4, args), args), lua_to##type(script, 5)
 
 #define LUA_WRAP(name, narg, type, args ...) \
-    int lua_##name (lua_State *L) { \
+    int script_##name (lua_State *L) { \
         if (lua_gettop(L) != narg LUA_CHECKARG##narg(NTHARG(narg, args), args)) { \
             lua_pushstring(L, #name " expects (" ")"); \
             lua_error(L);\

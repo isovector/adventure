@@ -118,7 +118,7 @@ int get_waypoint(lua_State *L) {
     return 1;
 }
 
-int lua_get_walkspot(lua_State *L) {
+int script_get_walkspot(lua_State *L) {
     if (lua_gettop(L) != 1 || !lua_isnumber(L, 1)) {
         lua_pushstring(L, "get_walkspot expects (int)");
         lua_error(L);
@@ -162,7 +162,7 @@ int get_closest_waypoint(lua_State *L) {
     return 1;
 }
 
-int lua_enable_path(lua_State *L) {
+int script_enable_path(lua_State *L) {
     if ((lua_gettop(L) == 1 && !lua_isnumber(L, 1)) ||
         (lua_gettop(L) >= 2 && (!lua_isnumber(L, 1) || !lua_isboolean(L, 2)))) {
         lua_pushstring(L, "enable_path expects (int, [bool])");
@@ -204,8 +204,8 @@ int closest_waypoint(int x, int y) {
 void register_path() {
     lua_register(script, "get_neighbors", &get_neighbors);
     lua_register(script, "get_waypoint", &get_waypoint);
-    lua_register(script, "get_walkspot", &lua_get_walkspot);
+    lua_register(script, "get_walkspot", &script_get_walkspot);
     lua_register(script, "get_closest_waypoint", &get_closest_waypoint);
-    lua_register(script, "enable_path", &lua_enable_path);
-    lua_register(script, "is_walkable", &lua_is_walkable);
+    lua_register(script, "enable_path", &script_enable_path);
+    lua_register(script, "is_walkable", &script_is_walkable);
 }

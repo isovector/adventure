@@ -2,24 +2,18 @@
 
 lua_State *script;
 
-POINT *actor_position() {
+void actor_position(int *x, int *y) {
     lua_pushvalue(script, -1);
     lua_pushstring(script, "pos");
     lua_gettable(script, -2);
     lua_pushstring(script, "x");
     lua_gettable(script, -2);
-    int x = (int)lua_tonumber(script, -1);
+    *x = (int)lua_tonumber(script, -1);
     lua_pop(script, 1);
     lua_pushstring(script, "y");
     lua_gettable(script, -2);
-    int y = (int)lua_tonumber(script, -1);
+    *y = (int)lua_tonumber(script, -1);
     lua_pop(script, 3);
-    
-    POINT *retval = malloc(sizeof(POINT));
-    retval->x = x;
-    retval->y = y;
-
-    return retval;
 }
 
 char *strdup(const char *str) {
@@ -30,7 +24,7 @@ char *strdup(const char *str) {
     return dup;
 }
 
-int register_hotspot(lua_State *L) {
+int script_register_hotspot(lua_State *L) {
     if (lua_gettop(L) != 3 || !lua_isnumber(L, 1) || !lua_isstring(L, 2)|| !lua_isstring(L, 3)  || lua_tonumber(L, 1) != (int)lua_tonumber(L, 1)) {
         lua_pushstring(L, "register_hotspot expects (int, string, string)");
         lua_error(L);
@@ -47,7 +41,7 @@ int register_hotspot(lua_State *L) {
     return 0;
 }
 
-int register_door(lua_State *L) {
+int script_register_door(lua_State *L) {
     if (lua_gettop(L) != 4 || !lua_isstring(L, 1) || !lua_isstring(L, 2)|| !lua_isnumber(L, 3)  || !lua_isnumber(L, 4)) {
         lua_pushstring(L, "register_door expects (string, string, int, int)");
         lua_error(L);
@@ -73,7 +67,7 @@ int register_door(lua_State *L) {
     return 0;
 }
 
-int lua_get_image_size(lua_State *L) {
+int script_get_image_size(lua_State *L) {
     if (lua_gettop(L) != 1 || !lua_isuserdata(L, 1)) {
         lua_pushstring(L, "get_image_size expects (BITMAP*)");
         lua_error(L);
@@ -91,7 +85,7 @@ int lua_get_image_size(lua_State *L) {
     return 2;
 }
 
-int lua_get_bitmap(lua_State *L) {
+int script_get_bitmap(lua_State *L) {
     if (lua_gettop(L) != 1 || !lua_isstring(L, 1)) {
         lua_pushstring(L, "get_bitmap expects (string)");
         lua_error(L);
@@ -106,7 +100,7 @@ int lua_get_bitmap(lua_State *L) {
     return 1;
 }
 
-int load_room(lua_State *L) {
+int script_load_room(lua_State *L) {
     if (lua_gettop(L) != 2 || !lua_isuserdata(L, 1) || !lua_isuserdata(L, 2)) {
         lua_pushstring(L, "__load_room expects (BITMAP*, BITMAP*)");
         lua_error(L);
@@ -133,7 +127,7 @@ int load_room(lua_State *L) {
     return 0;
 }
 
-int lua_set_viewport(lua_State *L) {
+int script_set_viewport(lua_State *L) {
     if (lua_gettop(L) != 2 || !lua_isnumber(L, 1) || !lua_isnumber(L, 2)) {
         lua_pushstring(L, "set_viewport expects (int, int)");
         lua_error(L);
@@ -145,7 +139,7 @@ int lua_set_viewport(lua_State *L) {
     return 0;
 }
 
-int lua_panic(lua_State *L) {
+int script_panic(lua_State *L) {
     lua_Debug debug;
     lua_getstack(L, 1, &debug);
     lua_getinfo(L, "nS", &debug);
@@ -153,7 +147,7 @@ int lua_panic(lua_State *L) {
     printf("LUA ERROR: %s\nat %s\n", lua_tostring(L, 1), debug.name);
 }
 
-int lua_signal_goal(lua_State *L) {
+int script_signal_goal(lua_State *L) {
     if (lua_gettop(L) != 0) {
         lua_pushstring(L, "signal_goal expects ()");
         lua_error(L);
@@ -164,7 +158,7 @@ int lua_signal_goal(lua_State *L) {
     return 0;
 }
 
-int lua_enable_input(lua_State *L) {
+int script_enable_input(lua_State *L) {
     if (lua_gettop(L) != 1 || !lua_isboolean(L, 1)) {
         lua_pushstring(L, "disable_input expects (bool)");
         lua_error(L);
@@ -178,21 +172,21 @@ int lua_enable_input(lua_State *L) {
 void init_script() {
     script = lua_open();
     luaL_openlibs(script);
-    lua_atpanic(script, lua_panic);
+    lua_atpanic(script, script_panic);
     
     lua_newtable(script);
     lua_setregister(script, "render_obj");
     lua_newtable(script);
     lua_setregister(script, "render_inv");
     
-    lua_register(script, "set_room_data", &load_room);
-    lua_register(script, "register_hotspot", &register_hotspot);
-    lua_register(script, "register_door", &register_door);
-    lua_register(script, "get_image_size", &lua_get_image_size);
-    lua_register(script, "get_bitmap", &lua_get_bitmap);
-    lua_register(script, "signal_goal", &lua_signal_goal);
-    lua_register(script, "enable_input", &lua_enable_input);
-    lua_register(script, "set_viewport", &lua_set_viewport);
+    lua_register(script, "set_room_data", &script_load_room);
+    lua_register(script, "register_hotspot", &script_register_hotspot);
+    lua_register(script, "register_door", &script_register_door);
+    lua_register(script, "get_image_size", &script_get_image_size);
+    lua_register(script, "get_bitmap", &script_get_bitmap);
+    lua_register(script, "signal_goal", &script_signal_goal);
+    lua_register(script, "enable_input", &script_enable_input);
+    lua_register(script, "set_viewport", &script_set_viewport);
     
     register_path();
     

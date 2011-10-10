@@ -11,7 +11,7 @@ tmp_anims.sign.anims.stand = {
 
 room = {
     scene = {
-        actors.gomez, actors.shaggy, actors.bouncer
+        actors.gomez, actors.shaggy, actors.bouncer, actors.diondre, actors.waldo
     },
     events = {}
 }

@@ -1,5 +1,8 @@
 actors = {}
 
-dofile("game/actors/gomez/gomez.lua")
-dofile("game/actors/shaggy/shaggy.lua")
-dofile("game/actors/bouncer/bouncer.lua")
+-- automatically load all actors
+for filename, attr in dirtree("game/actors", ".lua") do
+    if filename:sub(-13) ~= "animation.lua" and filename:sub(-10) ~= "actors.lua" then
+        dofile(filename);
+    end
+ end

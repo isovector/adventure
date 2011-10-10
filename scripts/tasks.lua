@@ -16,8 +16,7 @@ end
 
 function tasks.begin(chain, continue, chain_call)
     if not chain_call then
-        debug.log(debug.TASKS, "starting task", table.car(chain))
-        --debug.log(debug.TASKS, "with chain length", table.getn(table.cdr(chain)))
+        tasks.log = "starting task " .. tostring(table.car(chain))
     end
 
     table.insert(tasks.current_tasks, {

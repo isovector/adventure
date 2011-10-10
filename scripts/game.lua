@@ -96,7 +96,7 @@ function update_actor(actor, elapsed)
         end
         
         if type(actor.goal) == "table" then
-            actor.goal = vec(actor.goal)
+            actor.goal = actor.goal
         
             local speed = actor.speed * elapsed
             local dif = actor.goal - actor.pos

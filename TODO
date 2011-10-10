@@ -1,15 +1,16 @@
-M reorganize lua code
-  * add debugging as you go
-    < make debug.log take objects to log over instead of levels
-M reorganize C code
-  - document at the same time
+H  add support for narration
+H  fix pixel perfection
+H? write engine support for timed scripts
+   - check feasability first
 
-L improve object walkspot algorithm
-L add support for sound effects and music
+M improve object walkspot algorithm
+M provide mechanism for scaling objects based on y position
+M make walking paths more natural
+
 L make helper classes to build animations
-  * maybe a separate tool, too?
-L animate action bar
-L clean up lua's queue library
-L provide mechanism for scaling objects based on y position
-L make walking paths more natural
+  L maybe a separate tool, too?
+L clean up lua's prioritiyqueue library
 L write utility to build dialogues
+
+P animate action bar
+P add support for sound effects and music

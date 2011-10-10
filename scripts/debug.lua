@@ -1,13 +1,43 @@
-debug.ROOM = 2
-debug.DISPATCH = 3
-debug.TASKS = 3
-debug.ROOM = 3
+-- attaches the logger to a table, so any logs written to it will be
+-- rerouted to stdout
+function debug.attach(tab)
+    local mt = getmetatable(tab)
+    tab.log = nil
+    
+    
+    if not mt then
+        setmetatable(tab, {
+            __newindex = function(t, key, val)
+                    if key == "log" then
+                        debug.log(val)
+                    else
+                        rawset(t, key, val)
+                    end
+                end
+        })
+    else
+        if not mt.__newindex then
+            mt.__newindex = function(t, key, val)
+                    if key == "log" then
+                        debug.log(val)
+                    else
+                        rawset(t, key, val)
+                    end
+                end
+        else
+            local oldindex = mt.__newindex
+            mt.__newindex = function(t, key, val)
+                    if key == "log" then
+                        debug.log(val)
+                    else
+                        oldindex(t, key, val)
+                    end
+                end
+        end
+    end
+end
 
-
-debug.log_level = 5
-debug.log_details = true
-debug.last_level = 999
-
+-- calls func(name, val) for every local in the calling scope
 function debug.locals(func)
     if not func then func = print end
 
@@ -21,39 +51,16 @@ function debug.locals(func)
     end
 end
 
-function debug.logm(level, ...)
-    if type(level) ~= "number" then
-        arg = {level, unpack(arg)}
-        level = debug.last_level
+-- internal function to output data for the logger
+function debug.log(...)
+    local func = debug.getinfo(3)
+    print(unpack(arg))
+
+    print("\tfrom " .. func.short_src .. " at " .. func.currentline)
+
+    if func.namewhat ~= "" then
+        print("\tdefined in " .. func.namewhat .. " between " .. func.linedefined
+            .. ", " .. func.lastlinedefined)
     end
-
-    if level <= debug.log_level then
-        print(unpack(arg))
-    end
-
-    debug.last_level = level
-end
-
-function debug.log(level, ...)
-    if type(level) ~= "number" then
-        arg = {level, unpack(arg)}
-        level = debug.last_level
-    end
-
-    if level <= debug.log_level then
-        local func = debug.getinfo(2)
-        print(unpack(arg))
-
-        if debug.log_details then
-            print("from " .. func.short_src .. " at " .. func.currentline)
-
-            if func.namewhat ~= "" then
-                print("defined in " .. func.namewhat .. " between " .. func.linedefined
-                    .. ", " .. func.lastlinedefined)
-            end
-            print()
-        end
-    end
-
-    debug.last_level = level
+    print()
 end

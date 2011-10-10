@@ -8,15 +8,17 @@ function do_callback(callback_type, object, method)
             return val.id == object
         end)
 
-    debug.logm(debug.DISPATCH, "dispatching", callback_type, name)
-    debug.log("on", obj and obj.id)
-
+    obj.log = "dispatching " ..  callback_type .. " method " .. name .. " on " .. (obj and obj.id)
+        
     tasks.begin({
         function()
             if room.events and room.events[name] then
                 enable_input(false)
                 local result = room.events[name]()
                 enable_input(true)
+                
+                obj.log = "dispatched event as room event"
+                
                 return result
             end
             return true
@@ -26,6 +28,9 @@ function do_callback(callback_type, object, method)
                 enable_input(false)
                 local result = item_events[name]()
                 enable_input(true)
+                
+                obj.log = "dispatched event as item event"
+                
                 return result
             end
             return true
@@ -35,6 +40,9 @@ function do_callback(callback_type, object, method)
                 enable_input(false)
                 local result = obj.events[name]()
                 enable_input(true)
+                
+                obj.log = "dispatched event as object event"
+                
                 return result
             end
             return true
@@ -44,6 +52,9 @@ function do_callback(callback_type, object, method)
                 enable_input(false)
                 local result = events[name]()
                 enable_input(true)
+                
+                obj.log = "dispatched event as global event"
+                
                 return result
             end
             return true
@@ -53,6 +64,8 @@ function do_callback(callback_type, object, method)
                 enable_input(false)
                 unhandled_event(callback_type, object, method)
                 enable_input(true)
+                
+                obj.log = "failed to dispatch event " .. name
             end
         end,
     }, true)
@@ -63,7 +76,6 @@ function register_foreground(level, baseline)
 end
 
 function unhandled_event(callback_type, object, method)
-    debug.log(debug.DISPATCH, "failed to dispatch event", object .. "_" .. method)
 end
 
 function append_dispatch(actor, callback_type, object, method, flipped)
@@ -84,8 +96,9 @@ function append_switch(actor, room, door)
 end
 
 function switch_room(r, door)
-    debug.logm(debug.ROOM, "switching to room", r)
-    debug.log("via door", door)
+    if room then 
+        room.log = "switching to room " .. r .. " via door " .. door
+    end
     
     if current_room ~= r and room and room.on_unload then
         conversation.clear()

@@ -96,11 +96,13 @@ function update_actor(actor, elapsed)
         end
         
         if type(actor.goal) == "table" then
+            actor.goal = vec(actor.goal)
+        
             local speed = actor.speed * elapsed
-            local dif = vector.diff(actor.pos, actor.goal)
+            local dif = actor.goal - actor.pos
 
-            if vector.length(dif) > speed then
-                local dir = vector.normal(dif)
+            if dif.len() > speed then
+                local dir = dif.normal()
 
                 if dir.x < 0 then
                     actor.flipped = true
@@ -214,9 +216,9 @@ end
 
 function walk(actor, to, y)
     if y then 
-        to = { x = to, y = y }
+        to = vec(to, y)
     else
-        to = { x = to.x, y = to.y } -- get a new vector
+        to = vec(to.x, to.y)-- get a new vector
     end
 
     actor.goal = get_waypoint(get_closest_waypoint(actor.pos))

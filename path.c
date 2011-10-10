@@ -7,6 +7,13 @@ int enabled_paths[256] = {0};
 
 int waypoint_count = 0;
 
+void lua_vector(lua_State *L, int x, int y) {
+    lua_getglobal(L, "vec");
+    lua_pushnumber(L, x);
+    lua_pushnumber(L, y);
+    lua_call(L, 2, 1);
+}
+
 void connect_waypoints(int a, int b) {
     waypoint_connections[a] |= 1 << b;
     waypoint_connections[b] |= 1 << a;
@@ -107,14 +114,8 @@ int get_waypoint(lua_State *L) {
     if (!waypoint)
         waypoint = &defaultspot;
     
-    lua_newtable(L);
-    lua_pushstring(L, "x");
-    lua_pushnumber(L, waypoint->x);
-    lua_settable(L, -3);
-    lua_pushstring(L, "y");
-    lua_pushnumber(L, waypoint->y);
-    lua_settable(L, -3);
-    
+    lua_vector(L, waypoint->x, waypoint->y);
+        
     return 1;
 }
 
@@ -132,13 +133,7 @@ int script_get_walkspot(lua_State *L) {
     if (!walkspot)
         walkspot = &defaultspot;
     
-    lua_newtable(L);
-    lua_pushstring(L, "x");
-    lua_pushnumber(L, walkspot->x);
-    lua_settable(L, -3);
-    lua_pushstring(L, "y");
-    lua_pushnumber(L, walkspot->y);
-    lua_settable(L, -3);
+    lua_vector(L, walkspot->x, walkspot->y);
     
     return 1;
 }

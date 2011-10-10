@@ -115,25 +115,52 @@ function math.clamp(val, low, high)
     return math.max(low, math.min(high, val))
 end
 
-vector = {}
-
 function vec(a, b) 
+    local val = { x = a, y = a }
+
     if b then
-        return { x = a, y = b }
+        val = { x = a, y = b }
+    elseif type(a) == "table" then
+        -- only process things we need to
+        if not getmetatable(a) then
+            val = { x = a.x, y = a.y }
+        else
+            return a
+        end
     end
     
-    return { x = a, y = a }
+    setmetatable(val, {
+        __add = function(op1, op2)
+                return vec(op1.x + op2.x, op1.y + op2.y)
+            end,
+        __sub = function(op1, op2)
+                return vec(op1.x - op2.x, op1.y - op2.y)
+            end,
+        __mul = function(op, k)
+                return vec(op.x * k, op.y * k)
+            end,
+        __eq = function(op1, op2)
+                return op1.x == op2.x and op1.y == op2.y
+            end,
+        __index = function(tab, key)
+                if key == "normal" then
+                    return function()
+                        local len = tab.len()
+                        return vec(tab.x / len, tab.y / len)
+                    end
+                elseif key == "len" then
+                    return function()
+                        return math.sqrt(tab.x * tab.x + tab.y * tab.y)
+                    end
+                elseif key == "x" then
+                    return tab.x
+                elseif key == "y" then
+                    return tab.y
+                end
+                
+            end
+    })
+    
+    return val
 end
 
-function vector.length(v)
-    return math.sqrt(v.x * v.x + v.y * v.y)
-end
-
-function vector.diff(a, b)
-    return {x = b.x - a.x, y = b.y - a.y}
-end
-
-function vector.normal(v)
-    local len = vector.length(v)
-    return {x = v.x / len, y = v.y / len}
-end

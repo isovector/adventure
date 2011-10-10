@@ -3,14 +3,6 @@
 
 #include "adventure.h"
 
-#define LUA_PUSHPOS(x, y)   lua_newtable(script); \
-                            lua_pushstring(script, "x"); \
-                            lua_pushnumber(script, x); \
-                            lua_settable(script, -3); \
-                            lua_pushstring(script, "y"); \
-                            lua_pushnumber(script, y); \
-                            lua_settable(script, -3);
-
 extern lua_State *script;
 
 void init_script();

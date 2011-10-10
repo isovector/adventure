@@ -120,7 +120,7 @@ void walk_and_fire_event(POINT *walkpoint, const char *type, const char *obj, co
     if (walkpoint) {
         lua_getglobal(script, "walk");
         lua_getglobal(script, "player");
-        LUA_PUSHPOS(walkpoint->x, walkpoint->y);
+        lua_vector(script, walkpoint->x, walkpoint->y);
         lua_call(script, 2, 0);
     }
 
@@ -325,7 +325,7 @@ void update_game() {
                 if (is_pathable(x, y, mouse_x + viewport_x, mouse_y + viewport_y)) {
                     lua_getglobal(script, "player");
                     lua_pushstring(script, "goal");
-                    LUA_PUSHPOS(mouse_x + viewport_x, mouse_y + viewport_y);
+                    lua_vector(script, mouse_x + viewport_x, mouse_y + viewport_y);
                     lua_settable(script, -3);
                     
                     lua_pushstring(script, "goals");
@@ -336,7 +336,7 @@ void update_game() {
                 } else { // nope, do pathfinding
                     lua_getglobal(script, "walk");
                     lua_getglobal(script, "player");
-                    LUA_PUSHPOS(mouse_x + viewport_x, mouse_y + viewport_y);
+                    lua_vector(script, mouse_x + viewport_x, mouse_y + viewport_y);
                     lua_call(script, 2, 0);
 
                     lua_pop(script, 1);

@@ -11,6 +11,8 @@ void actor_position(int*, int*);
 #define lua_getregister(L, s)  lua_getfield(L, LUA_REGISTRYINDEX, s)
 #define lua_setregister(L, s)  lua_setfield(L, LUA_REGISTRYINDEX, s)
 
+#define lua_regtable(L, t, n, f) (lua_getglobal(L, t), lua_pushstring(Ln), lua_pushcfunction(L, f), lua_settable(L, -3), lua_pop(L, 1))
+
 #define lua_setconstant(L, n, type, val) lua_getglobal(L, "readonly"); \
     lua_pushstring(L, "locks"); \
     lua_gettable(L, -2); \
@@ -70,6 +72,16 @@ void actor_position(int*, int*);
 #define LUA_GETARG3_(type, args ...) LUA_GETARG2(NTHARG(2, args), args), lua_to##type(script, 3)
 #define LUA_GETARG4_(type, args ...) LUA_GETARG3(NTHARG(3, args), args), lua_to##type(script, 4)
 #define LUA_GETARG5_(type, args ...) LUA_GETARG4(NTHARG(4, args), args), lua_to##type(script, 5)
+
+#define LUA_WRAPVOID(name, narg, args ...) \
+    int script_##name (lua_State *L) { \
+        if (lua_gettop(L) != narg LUA_CHECKARG##narg(NTHARG(narg, args), args)) { \
+            lua_pushstring(L, #name " expects (" ")"); \
+            lua_error(L);\
+        } \
+        name(LUA_GETARG##narg(NTHARG(narg, args), args));\
+        return 0; \
+    }
 
 #define LUA_WRAP(name, narg, type, args ...) \
     int script_##name (lua_State *L) { \

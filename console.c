@@ -5,8 +5,7 @@
 #define CONSOLE_MARGIN 12
 
 typedef struct tagRQNODE {
-    char *value;
-    int is_result;
+    char *prompt, *value;
     struct tagRQNODE *next;
 } RQNODE;
 
@@ -17,9 +16,10 @@ struct tagROLLQUEUE {
 } rollqueue;
 
 char input[1024] = "";
+char prompt[] = ">  ";
 
-DIALOG the_dialog[] = {
-    { d_edit_proc,  CONSOLE_MARGIN, CONSOLE_HEIGHT - CONSOLE_MARGIN - 8, CONSOLE_WIDTH - CONSOLE_MARGIN * 2, 8, 0, 0, 0, D_EXIT, 1024, 0, (void*) input, NULL, NULL },
+DIALOG consolediag[] = {
+    { d_edit_proc,  CONSOLE_MARGIN + 20, CONSOLE_HEIGHT - CONSOLE_MARGIN - 8, CONSOLE_WIDTH - CONSOLE_MARGIN * 2, 8, 0, 0, 0, D_EXIT, 1024, 0, (void*) input, NULL, NULL },
     { d_yield_proc, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL },
     { NULL,         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL }
 };
@@ -27,13 +27,13 @@ DIALOG the_dialog[] = {
 RQNODE *alloc_rqnode() {
     RQNODE *node = (RQNODE*)malloc(sizeof(RQNODE));
     node->next = NULL;
+    node->prompt = NULL;
     node->value = NULL;
-    node->is_result = 0;
 
     return node;
 }
 
-void push_queue(const char *value, int result) {
+void push_queue(const char *cprompt, const char *value) {
     RQNODE *node = rollqueue.head;
     rollqueue.head = node->next;
     rollqueue.tail->next = node;
@@ -41,10 +41,14 @@ void push_queue(const char *value, int result) {
     node->next = NULL;
     if (node->value)
         free(node->value);
+    if (node->prompt)
+        free(node->prompt);
 
+    node->prompt = strdup(cprompt ? cprompt : prompt);
     node->value = value ? strdup(value) : NULL;
-    node->is_result = result;
 }
+
+LUA_WRAPVOID(push_queue, 2, string, string)
 
 void init_console(int n) {
     rollqueue.count = n;
@@ -56,13 +60,13 @@ void init_console(int n) {
         head->next = alloc_rqnode();
         head = head->next;
     }
+    
+    lua_register(script, "console_line", &script_push_queue);
 
     rollqueue.tail = head;
 }
 
 void open_console() {
-    char postupdate[1031];
-
     gui_fg_color = makecol(0, 0, 0);
     gui_mg_color = makecol(128, 128, 128);
     gui_bg_color = makecol(230, 220, 210);
@@ -71,51 +75,35 @@ void open_console() {
     RQNODE *node = rollqueue.head;
     for (int i = 0; i < rollqueue.count; i++) {
         if (node->value)
-            textprintf_ex(screen, font, CONSOLE_MARGIN, CONSOLE_MARGIN + i * 8, gui_fg_color, -1, node->is_result ? "%s" : "> %s", node->value);
+            textprintf_ex(screen, font, CONSOLE_MARGIN, CONSOLE_MARGIN + i * 8, gui_fg_color, -1, "%s%s", node->prompt, node->value);
         node = node->next;
     }
 
-    set_dialog_color(the_dialog, gui_fg_color, gui_mg_color);
+    textprintf_ex(screen, font, CONSOLE_MARGIN, CONSOLE_HEIGHT - CONSOLE_MARGIN - 8, gui_fg_color, -1, "%s", prompt);
+    
+    set_dialog_color(consolediag, gui_fg_color, gui_mg_color);
     in_console = 1;
-    do_dialog(the_dialog, 0);
+    do_dialog(consolediag, 0);
     in_console = 0;
 
     if (strlen(input) == 0)
         return;
 
-    int top = lua_gettop(script);
-
-    sprintf(postupdate, "%s", input);
-
-    if (!strchr(input, '=') && strncmp(input, "function", 8) != 0)
-        sprintf(postupdate, "return %s", input);
-
-    push_queue(input, 0);
-    luaL_dostring(script, postupdate);
-
-    for (int i = lua_gettop(script) - top; i >= 1; i--) {
-        if (lua_istable(script, -i)) {
-            lua_getglobal(script, "table");
-            lua_pushstring(script, "serialize");
-            lua_gettable(script, -2);
-            lua_pushvalue(script, -i - 2);
-            lua_call(script, 1, 1);
-            push_queue(lua_tostring(script, -1), 1);
-            lua_pop(script, 2);
-        } else if (!(lua_isstring(script, -i) || lua_isnumber(script, -i))) {
-            lua_getglobal(script, "type");
-            lua_pushvalue(script, -i - 1);
-            lua_call(script, 1, 1);
-            push_queue(lua_tostring(script, -1), 1);
-            lua_pop(script, 1);
-        } else {
-            push_queue(lua_tostring(script, -i), 1);
-        }
-    }
-
-    lua_pop(script, lua_gettop(script) - top);
+    push_queue(prompt, input);    
+   
+    lua_getglobal(script, "repl");
+    lua_pushstring(script, "line");
+    lua_gettable(script, -2);
+    lua_pushstring(script, input);
+    lua_call(script, 1, 1);
+    
+    prompt[1] = lua_toboolean(script, -1) ? '>' : ' ';
+    
+    if (!lua_toboolean(script, -1))
+        push_queue(NULL, 0);
+    
+    lua_pop(script, 2);
     input[0] = '\0';
 
-    push_queue(NULL, 0);
     open_console();
 }

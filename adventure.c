@@ -153,9 +153,15 @@ void do_exit(EXIT *exit) {
 // updates the regular game state
 void update_game() {
     // update lua's game loop
-    lua_getglobal(script, "tick");
+    lua_getglobal(script, "events");
+    lua_pushstring(script, "game");
+    lua_gettable(script, -2);
+    lua_pushstring(script, "tick");
+    lua_gettable(script, -2);
+    
     lua_pushstring(script, "game");
     lua_call(script, 1, 0);
+    lua_pop(script, 2);
 
     object_name = "";
     cursor = 0;

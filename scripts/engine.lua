@@ -2,6 +2,11 @@ current_room = ""
 room = nil
 rooms = {}
 
+events.room = {
+    unload = event.create(),
+    switch = event.create()
+}
+
 function do_callback(callback_type, object, method)
     local name = object .. "_" .. method
     local obj = table.find(room.scene, function(key, val)
@@ -102,6 +107,8 @@ function switch_room(r, door)
     
     if current_room ~= r and room and room.on_unload then
         conversation.clear()
+        
+        events.room.unload(current_room, r, door)
         room.on_unload()
     end
 
@@ -125,6 +132,8 @@ function switch_room(r, door)
         
         set_room_data(room.artwork, room.hotmap)
         room.on_load(door)
+        
+        events.room.switch(r, door)
     end
     
     if player then 

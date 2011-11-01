@@ -1,9 +1,10 @@
 -- load the engine
 dofile("scripts/environment.lua")
+dofile("scripts/library.lua")
 dofile("scripts/debug.lua")
 dofile("scripts/repl.lua")
+dofile("scripts/event.lua")
 dofile("scripts/engine.lua")
-dofile("scripts/library.lua")
 dofile("scripts/clock.lua")
 dofile("scripts/tasks.lua")
 dofile("scripts/animation.lua")

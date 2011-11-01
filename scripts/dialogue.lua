@@ -4,7 +4,7 @@ conversation = {
     words = {}
 }
 
-state = { mad = false }
+state = { }
 statecond = setmetatable({}, {
     __index = function(table, key)
         if key:sub(0, 4) == "not_" then
@@ -21,6 +21,12 @@ statecond = setmetatable({}, {
     end
 })
 
+events.dialogue = {
+    open = event.create(),
+    close = event.create(),
+    continue = event.create()
+}
+
 function open_topic(topic)
     conversation.topic = topic
     if topic._load and not topic.loaded then
@@ -28,11 +34,15 @@ function open_topic(topic)
         topic.loaded = true
     end
 
+    events.dialogue.open(topic)
+    
     if topic._enter then topic._enter() end
     coroutine.resume(conversation.continue_routine)
 end
 
 function end_conversation()
+    events.dialogue.close()
+
     conversation.topic = nil
 end
 
@@ -55,12 +65,15 @@ function conversation.continuer()
         end
 
         local opt = coroutine.yield("option")
+        
         conversation.options = {}
         if conversation.topic._options and conversation.topic._options.once then
             conversation.topic = nil
         end
 
         if  select[opt] then
+            events.dialogue.continue(opt)
+        
             if not select[opt].silent then
                 tasks.begin(function() say(player, select[opt].label) end, conversation.continue)
                 coroutine.yield()

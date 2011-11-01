@@ -5,8 +5,16 @@ clock = {
     day = 0
 }
 
+events.clock = {
+    day = event.create(),
+    hour = event.create(),
+    new_speed = event.create()
+}
+
+
 function clock.set_speed(gamemins, seconds)
     clock.timespeed = gamemins / (framerate * seconds * 100)
+    events.clock.new_speed(gamemins / seconds)
 end
 
 function clock.tick()
@@ -14,13 +22,14 @@ function clock.tick()
     clock.time = clock.time + clock.timespeed
     
     if math.ipart(clock.time) ~= hour then
-        do_callback("event", "__clock", "hour")
+        events.clock.hour((hour + 1) % clock.hours)
     end
     
     if math.ipart(clock.time) == clock.hours then
         clock.time = 0
         clock.day = clock.day + 1
-        do_callback("event", "__clock", "day")
+        
+        events.clock.day(clock.day)
     end
 end
 

@@ -1,8 +1,8 @@
-framerate = 60 -- this should be "magic" from the engine
-
 function tick(state)
     local elapsed = 1 / framerate
     tasks.update(elapsed * 1000)
+    clock.tick()
+    
     conversation.pump_words(elapsed)
 
     for key, actor in pairs(room.scene) do

@@ -77,6 +77,19 @@ function math.clamp(val, low, high)
     return math.max(low, math.min(high, val))
 end
 
+function math.ipart(value)
+    return value - math.mod(value, 1)
+end
+
+function math.fpart(value)
+    return math.mod(value, 1)
+end
+
+function math.round(num, idp)
+    local mult = 10^(idp or 0)
+    return math.floor(num * mult + 0.5) / mult
+end
+
 function vec(a, b) 
     local val = { x = a, y = a }
 

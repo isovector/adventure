@@ -818,6 +818,14 @@ void frame() {
     if (active_item.active)
         masked_blit(active_item.image, buffer, 0, 0, mouse_x, mouse_y, 64, 64);
 
+    lua_getglobal(script, "clock");
+    lua_pushstring(script, "get_time");
+    lua_gettable(script, -2);
+    lua_call(script, 0, 1);
+    textout_ex(buffer, font, lua_tostring(script, -1), 25, 32, makecol(255, 255, 0), -1);
+    lua_pop(script, 2);
+    
+    
     char fps_buffer[10];
     sprintf(fps_buffer, "%d", fps);
     textout_ex(buffer, font, fps_buffer, SCREEN_WIDTH - 25, 25, makecol(255, 0, 0), -1);
@@ -866,6 +874,9 @@ int main(int argc, char* argv[]) {
     init_script();
     lua_setconstant(script, "screen_width", number, SCREEN_WIDTH);
     lua_setconstant(script, "screen_height", number, SCREEN_HEIGHT);
+    lua_setconstant(script, "framerate", number, 60);
+    
+    luaL_dofile(script, "game/boot.lua");
     
     init_console(32);
     install_int_ex(&ticker, BPS_TO_TIMER(FRAMERATE));

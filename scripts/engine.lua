@@ -6,9 +6,9 @@ function do_callback(callback_type, object, method)
     local name = object .. "_" .. method
     local obj = table.find(room.scene, function(key, val)
             return val.id == object
-        end)
+        end) or { }
 
-    obj.log = "dispatching " ..  callback_type .. " method " .. name .. " on " .. (obj and obj.id)
+    obj.log = "dispatching " ..  callback_type .. " method " .. name .. " on " .. tostring(obj or obj.id)
         
     tasks.begin({
         function()

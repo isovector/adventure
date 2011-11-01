@@ -1,16 +1,19 @@
-H  add support for narration
 H  fix pixel perfection
-H? write engine support for timed scripts
+H  refactor the event dispatcher
+   < but first come up with a good way to scope events
+
+M  add support for narration
+M  write engine support for timed scripts
    - check feasability first
 
-M improve object walkspot algorithm
-M provide mechanism for scaling objects based on y position
-M make walking paths more natural
+L  improve object walkspot algorithm
+L  provide mechanism for scaling objects based on y position
+L  make walking paths more natural
 
-L make helper classes to build animations
-  L maybe a separate tool, too?
-L clean up lua's prioritiyqueue library
-L write utility to build dialogues
+L  make helper classes to build animations
+   - maybe a separate tool, too?
+L  clean up lua's prioritiyqueue library
+L  write utility to build dialogues
 
-P animate action bar
-P add support for sound effects and music
+P  animate action bar
+P  add support for sound effects and music

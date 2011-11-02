@@ -8,79 +8,33 @@ events.room = {
 }
 
 function do_callback(callback_type, object, method)
-    local name = object .. "_" .. method
-    local obj = table.find(room.scene, function(key, val)
-            return val.id == object
-        end) or { }
-
-    obj.log = "dispatching " ..  callback_type .. " method " .. name .. " on " .. tostring(obj or obj.id)
-        
-    tasks.begin({
-        function()
-            if room.hotspots[object] and room.hotspots[object][method] then
+    if callback_type == "hotspot" then
+        if room.hotspots[object] and room.hotspots[object][method] then
+            tasks.begin(function()
                 enable_input(false)
                 local result = room.hotspots[object][method]()
                 enable_input(true)
-                
-                obj.log = "dispatched event as room event"
-                
-                return result
-            end
-            return true
-        end,
-        function()
-            if item_events and item_events[name] then
+            end)
+        end
+    elseif callback_type == "object" then
+        local obj = table.find(room.scene, function(key, val)
+            return val.id == object
+        end)
+        
+        if obj.events and obj.events[method] then
+            tasks.begin(function()
                 enable_input(false)
-                local result = item_events[name]()
+                local result = obj.events[method]()
                 enable_input(true)
-                
-                obj.log = "dispatched event as item event"
-                
-                return result
-            end
-            return true
-        end,
-        function()
-            if obj and obj.events and obj.events[name] then
-                enable_input(false)
-                local result = obj.events[name]()
-                enable_input(true)
-                
-                obj.log = "dispatched event as object event"
-                
-                return result
-            end
-            return true
-        end,
-        function()
-            if events and events[name] then
-                enable_input(false)
-                local result = events[name]()
-                enable_input(true)
-                
-                obj.log = "dispatched event as global event"
-                
-                return result
-            end
-            return true
-        end,
-        function()
-            if unhandled_event then
-                enable_input(false)
-                unhandled_event(callback_type, object, method)
-                enable_input(true)
-                
-                obj.log = "failed to dispatch event " .. name
-            end
-        end,
-    }, true)
+            end)
+        end
+    elseif callback_type == "item" then
+        -- do something with items
+    end
 end
 
 function register_foreground(level, baseline)
     table.insert(room.scene, { baseline = baseline, level = level })
-end
-
-function unhandled_event(callback_type, object, method)
 end
 
 function append_dispatch(actor, callback_type, object, method, flipped)

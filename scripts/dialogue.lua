@@ -131,13 +131,11 @@ function conversation.pump_words(elapsed)
 end
 
 function say_ex(actor, message)
-    tasks.begin(function() say(actor, message) end)
+    actor.say_async(message)
 end
 
 function say(actor, message)
-    print(actor.name .. "> " .. message)
-    msg = conversation.say(message, actor.pos.x, actor.pos.y - actor.aplay.set.height - 20, actor.color)
-    wait(msg.duration * 1000)
+    actor.say(message)
 end
 
 conversation.continue_routine = coroutine.create(conversation.continuer)

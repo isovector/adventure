@@ -35,9 +35,9 @@ room.events.load.sub(function()
 end)
 
 room.hotspots.window.look.sub(function()
-    say(player, "I can't reach it")
+    player.say("I can't reach it")
 end)
 
 room.hotspots.ladder.touch.sub(function()
-    say(player, "That won't fit in my pants")
+    player.say("That won't fit in my pants")
 end)

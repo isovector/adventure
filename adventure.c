@@ -40,7 +40,6 @@ struct {
 } active_item;
 
 
-
 // calculates the active pixel for a given cursor
 void get_cursor_offset(int cursor, int *x, int *y) {
     *x = *y = 0;
@@ -376,6 +375,7 @@ void update_inventory() {
     int t = lua_gettop(script);
 
     int found = 0;
+    cursor = 0;
 
     lua_pushnil(script);
     while (lua_next(script, t) != 0) {
@@ -407,6 +407,7 @@ void update_inventory() {
         if (in_rect(mouse_x, mouse_y, x, y, x + width, y + height)) {
             object_name = name;
             found = 1;
+            cursor = 5;
 
             if (is_click(1))
                 if (active_item.active) {
@@ -434,7 +435,7 @@ void update_inventory() {
 
     if (mouse_b & 1 && action_state.relevant) { // time to bring up the action menu
         if (life > action_state.started + ACTION_TIME) {
-            game_state = STATE_ACTION;
+            game_state = STATE_ACTION | STATE_INVENTORY;
             action_state.last_state = STATE_GAME;
         }
     } else if (is_click(2)) {
@@ -450,17 +451,22 @@ void update_inventory() {
 
 // update the actionbar gamestate
 void update_action() {
-    if (!(mouse_b & 1)) {
-        game_state = action_state.last_state;
-
-        action_state.result = 0;
-        if (in_rect(mouse_x, mouse_y, action_state.x - 72, action_state.y - 24, action_state.x - 24, action_state.y + 24))
-            action_state.result = 2;
-        else if (in_rect(mouse_x, mouse_y, action_state.x - 24, action_state.y - 24, action_state.x + 24, action_state.y + 24))
-            action_state.result = 1;
-        else if (in_rect(mouse_x, mouse_y, action_state.x + 24, action_state.y - 24, action_state.x + 72, action_state.y + 24))
-            action_state.result = 3;
+    action_state.result = 0;
+    cursor = 0;
+    
+    if (in_rect(mouse_x, mouse_y, action_state.x - 72, action_state.y - 24, action_state.x - 24, action_state.y + 24)) {
+        action_state.result = 2;
+        cursor = 5;
+    } else if (in_rect(mouse_x, mouse_y, action_state.x - 24, action_state.y - 24, action_state.x + 24, action_state.y + 24)) {
+        action_state.result = 1;
+        cursor = 5;
+    } else if (in_rect(mouse_x, mouse_y, action_state.x + 24, action_state.y - 24, action_state.x + 72, action_state.y + 24)) {
+        action_state.result = 3;
+        cursor = 5;
     }
+    
+    if (!(mouse_b & 1))
+        game_state = action_state.last_state;
 }
 
 // returns the number of dialogue options available
@@ -526,7 +532,7 @@ void update() {
     } else {
         if (game_state & STATE_ACTION) 
             update_action();
-        if (game_state & STATE_INVENTORY) 
+        else if (game_state & STATE_INVENTORY)
             update_inventory();
     }
 

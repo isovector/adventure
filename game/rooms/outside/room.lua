@@ -17,8 +17,10 @@ room.place(actors.bouncer)
 room.place(actors.diondre)
 room.place(actors.waldo)
 
+local cup = actors.temp("cup", "Milkshape Cup", "game/rooms/outside/objects/cup.pcx") 
+
 room.place(actors.temp("sign", "Sign", animation.start(tmp_anims.sign, "stand"), 1), vec(940, 156))
-room.place(actors.temp("cup", "Milkshape Cup", "game/rooms/outside/objects/cup.pcx"), vec(830, 436))
+room.place(cup, vec(830, 436))
 room.place(actors.temp("sword", "Sword", "game/rooms/outside/objects/sword.pcx"), vec(110, 445))
 room.place(actors.temp("note", "Note", "game/rooms/outside/objects/letter.pcx"), vec(580, 97))
 room.place(actors.temp("rope", "Rope", "game/rooms/outside/objects/rope.pcx"), vec(910, 494))
@@ -40,4 +42,10 @@ end)
 
 room.hotspots.ladder.touch.sub(function()
     player.say("That won't fit in my pants")
+end)
+
+cup.events.touch.sub(function()
+    player.say("Hey! This is beer!")
+    player.say("Score!")
+    give_item(player, "beer")
 end)

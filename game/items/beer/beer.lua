@@ -1,13 +1,10 @@
-items.beer = {
-        label = "Cheap Beer",
-        image = get_bitmap("game/items/beer/beer.pcx")
-}
+local item = items.create("beer", "Cheap Beer", "game/items/beer/beer.pcx")
 
-function item_events.beer_look()
-    say("Jack", "A fine bottle of beer")
-end
+item.events.look.sub(function()
+    player.say("A fine bottle of beer")
+end)
 
-function item_events.beer_talk()
-    say("Jack", "Don't mind if I do!")
+item.events.talk.sub(function()
+    player.say("Don't mind if I do!")
     player.inventory["beer"] = nil
-end
+end)

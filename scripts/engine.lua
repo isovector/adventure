@@ -12,7 +12,7 @@ function do_callback(callback_type, object, method)
         if room.hotspots[object] and room.hotspots[object][method] then
             tasks.begin(function()
                 enable_input(false)
-                local result = room.hotspots[object][method]()
+                room.hotspots[object][method]()
                 enable_input(true)
             end)
         end
@@ -24,12 +24,20 @@ function do_callback(callback_type, object, method)
         if obj.events and obj.events[method] then
             tasks.begin(function()
                 enable_input(false)
-                local result = obj.events[method]()
+                obj.events[method]()
                 enable_input(true)
             end)
         end
     elseif callback_type == "item" then
-        -- do something with items
+        local obj = items[object]
+        
+        if obj and obj.events and obj.events[method] then
+            tasks.begin(function()
+                enable_input(false)
+                obj.events[method]()
+                enable_input(true)
+            end)
+        end
     end
 end
 

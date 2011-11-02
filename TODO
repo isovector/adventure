@@ -1,7 +1,9 @@
-H  fix pixel perfection
+H  implement real prototypes 
+H  refactor update_actor to use events
 H  refactor the event dispatcher
    < but first come up with a good way to scope events
 
+M  fix pixel perfection
 M  add support for narration
 M  write engine support for timed scripts
    - check feasability first

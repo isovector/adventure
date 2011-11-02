@@ -1,13 +1,5 @@
 dofile("game/actors/diondre/animation.lua")
 
-actors.diondre = {
-        id = "diondre",
-        name = "Diondre Morgan",
-        pos = {x = 200, y = 700},
-        color = 255000,
-        speed = 110,
-        inventory = {},
-        flipped = false,
-        aplay = animation.start(animations.diondre, "stand")
-    }
-
+local actor = actors.create("diondre", "Diondre Morgan", animation.start(animations.diondre, "stand"), 1)
+actor.pos = vec(200, 700)
+actor.color = 0x0000FF

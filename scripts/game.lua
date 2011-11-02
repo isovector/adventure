@@ -130,7 +130,7 @@ function update_actor(actor, elapsed)
                 end
 
                 if not actor.goal then
-                    do_callback("event", name, "goal")
+                    actor.events.goal()
 
                     if actor == player then
                         signal_goal()

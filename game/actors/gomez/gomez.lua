@@ -1,16 +1,6 @@
 dofile("game/actors/gomez/animation.lua")
 
-actors.gomez = {
-    id = "gomez",
-    name = "Gomez",
-    ignore_ui = true,
-    pos = vec(600, 500),
-    color = 255,
-    speed = 150,
-    goal = nil,
-    goals = {},
-    events = {},
-    inventory = {},
-    flipped = false,
-    aplay = animation.start(animations.gomez, "stand")
-}
+local actor = actors.create("gomez", "Gomez Lupe", animation.start(animations.gomez, "stand"), 1)
+actor.ignore_ui = true
+actor.pos = vec(600, 500)
+actor.color = 0xFF8800

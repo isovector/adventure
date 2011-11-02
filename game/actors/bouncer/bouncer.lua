@@ -1,13 +1,5 @@
 dofile("game/actors/bouncer/animation.lua")
 
-actors.bouncer = {
-        id = "bouncer",
-        name = "Bouncer",
-        pos = {x = 1050, y = 600},
-        color = 255000,
-        speed = 150,
-        inventory = {},
-        flipped = true,
-        aplay = animation.start(animations.bouncer, "stand")
-    }
-
+local actor = actors.create("bouncer", "Bouncer", animation.start(animations.bouncer, "stand"), 1)
+actor.pos = vec(1050, 600)
+actor.color = 255000

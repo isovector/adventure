@@ -9,108 +9,35 @@ tmp_anims.sign.anims.stand = {
     { duration = 0.2, frame = 1 }
 }
 
-room = {
-    scene = {
-        actors.gomez, actors.shaggy, actors.bouncer, actors.diondre, actors.waldo
-    },
-    events = {}
-}
+local room = rooms.create("outside")
 
-dofile("game/rooms/outside/objects/objects.lua")
+room.place(actors.gomez)
+room.place(actors.shaggy)
+room.place(actors.bouncer)
+room.place(actors.diondre)
+room.place(actors.waldo)
 
-function room.on_init()
-    table.insert(room.scene, room.objects.sign)
-    table.insert(room.scene, room.objects.cup)
-    table.insert(room.scene, room.objects.sword)
-    table.insert(room.scene, room.objects.note)
-    table.insert(room.scene, room.objects.rope)
-    
-    register_foreground(17, 540)
-end
+room.place(actors.temp("sign", "Sign", animation.start(tmp_anims.sign, "stand"), 1), vec(940, 156))
+room.place(actors.temp("cup", "Milkshape Cup", "game/rooms/outside/objects/cup.pcx"), vec(830, 436))
+room.place(actors.temp("sword", "Sword", "game/rooms/outside/objects/sword.pcx"), vec(110, 445))
+room.place(actors.temp("note", "Note", "game/rooms/outside/objects/letter.pcx"), vec(580, 97))
+room.place(actors.temp("rope", "Rope", "game/rooms/outside/objects/rope.pcx"), vec(910, 494))
 
-function room.on_load()
-    print("loaded test2")
-    
-    register_hotspot(17, "door", "Door");
-    register_door("door", "outside", 51, 8)
-    register_hotspot(34, "window", "Window");
-    register_hotspot(51, "drain", "Drain Pipe");
-    register_door("drain", "outside", 17, 3)
-    register_hotspot(68, "sign", "Sign");
-    register_hotspot(85, "rear", "Back Alley");
-    register_hotspot(102, "ladder", "Ladder");
-    register_hotspot(119, "rope", "Rope");
-end
+room.hotspot(34, "window", "Window");
+room.hotspot(68, "sign", "Sign");
+room.hotspot(85, "rear", "Back Alley");
+room.hotspot(102, "ladder", "Ladder");
+room.hotspot(119, "rope", "Rope");
 
-function room.events.sword_look()
-    say(player, "There's a sword sticking out of this wall")
-    say(player, "I wonder what this wall is made of...")
-end
+room.events.load.sub(function()
+    room.foreground(17, 54)
+    room.door(17, "door", "Door", "outside", 17, 8)
+end)
 
-function room.events.sword_touch()
-    say(player, "I'll just... liberate this")
-    room.scene.sword = nil
-	table.remove(room.scene, table.contains(room.scene, room.objects.sword))
-end
+room.hotspots.window.look.sub(function()
+    say(player, "I can't reach it")
+end)
 
-function room.events.note_look()
-    say(player, "A note is mounted here")
-    say(player, "\"SANDY IS COOL\"")
-    say(player, "I'd believe that")
-end
-
-function room.events.note_touch()
-    say(player, "I'll just... liberate this")
-    table.remove(room.scene, table.contains(room.scene, room.objects.note))
-end
-
-function room.events.cup_look()
-    say(player, "It's an old milkshape cup.")
-end
-
-function room.events.cup_touch()
-    say(player, "THE GARBAGE MAN IS HERE")
-    table.remove(room.scene, table.contains(room.scene, room.objects.cup))
-end
-
-function room.events.sign_look()
-    say(player, "It says \"Flannigans\"")
-    say(player, "This is my favorite pub")
-end
-
-function room.events.sign_touch()
-    say(player, "I can't reach it!")
-end
-
-function room.events.window_touch()
-    say(player, "I can't reach it!")
-end
-
-function room.events.rope_touch()
-    say(player, "I can't reach it!")
-end
-
-function room.events.rope_sword()
-    say(player, "That's a good idea, but my arm isn't that long")
-    say(player, "Maybe I should try cutting a closer rope?")
-end
-
-function room.events.rope_look()
-    say(player, "It's a rope to keep the bouncer clear")
-end
-
-function room.events.rear_look()
-    say(player, "It's the back alley. I can't get to there")
-end
-
-function room.events.drain_look()
-    say(player, "Hey! Now THIS is a nice drain pipe!")
-end
-
-function room.events.ladder_look()
-    say(player, "There is a conveniently placed ladder here")
-end
-
-function room.events.ladder_touch()
-    say(player, "I can't put THAT in my pants!")
-end
+room.hotspots.ladder.touch.sub(function()
+    say(player, "That won't fit in my pants")
+end)

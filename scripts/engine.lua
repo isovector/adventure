@@ -17,9 +17,9 @@ function do_callback(callback_type, object, method)
         
     tasks.begin({
         function()
-            if room.events and room.events[name] then
+            if room.hotspots[object] and room.hotspots[object][method] then
                 enable_input(false)
-                local result = room.events[name]()
+                local result = room.hotspots[object][method]()
                 enable_input(true)
                 
                 obj.log = "dispatched event as room event"
@@ -109,21 +109,13 @@ function switch_room(r, door)
         conversation.clear()
         
         events.room.unload(current_room, r, door)
-        room.on_unload()
     end
 
     if not rooms[r] then
         local roompath = "game/rooms/" .. r .. "/"
 
         dofile(roompath .. "room.lua")
-        room.artwork = get_bitmap(roompath .. "art.pcx")
-        room.hotmap = get_bitmap(roompath .. "hot.pcx")
-
-        if room.on_init then
-            room.on_init()
-        end
-        
-        rooms[r] = room
+        rooms[r].events.init()
     end
 
     if current_room ~= r then 
@@ -131,7 +123,7 @@ function switch_room(r, door)
         current_room = r
         
         set_room_data(room.artwork, room.hotmap)
-        room.on_load(door)
+        room.events.load()
         
         events.room.switch(r, door)
     end

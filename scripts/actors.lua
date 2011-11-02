@@ -1,6 +1,6 @@
 actors = { } 
 
-function actors.create(id, name, bitmap, xframes, yframes)
+function actors.temp(id, name, bitmap, xframes, yframes)
     local actor = { 
         id = id,
         name = name,
@@ -37,6 +37,10 @@ function actors.create(id, name, bitmap, xframes, yframes)
         actor.aplay = bitmap
     end
     
-    actors[id] = actor
     return actor
+end
+
+function actors.create(id, name, bitmap, xframes, yframes)
+    actors[id] = actors.temp(id, name, bitmap, xframes, yframes)
+    return actors[id]
 end

@@ -49,3 +49,5 @@ cup.events.touch.sub(function()
     player.say("Score!")
     give_item(player, "beer")
 end)
+
+room.hotspots.window.item.sub(print)

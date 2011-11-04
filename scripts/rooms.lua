@@ -19,8 +19,9 @@ function rooms.create(id)
     room.artwork = get_bitmap(roompath .. "art.pcx")
     room.hotmap = get_bitmap(roompath .. "hot.pcx")
 
-    room = rooms.prototype(room)
+    rooms.prototype(room)
     rooms[id] = room
+    
     return room
 end
 
@@ -47,6 +48,10 @@ function rooms.prototype(room)
             touch = event.create(),
             talk = event.create(),
             look = event.create(),
+            item = event.create(),
+            
+            press = event.create(),
+            release = event.create(),
             
             enter = event.create(),
             exit = event.create()
@@ -68,6 +73,4 @@ function rooms.prototype(room)
             register_hotspot(hs.shade, hs.id, hs.name)
         end
     end)
-    
-    return room
 end

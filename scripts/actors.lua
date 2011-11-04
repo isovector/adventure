@@ -21,6 +21,10 @@ function actors.temp(id, name, bitmap, xframes, yframes)
             touch = event.create(),
             talk = event.create(),
             look = event.create(),
+            item = event.create(),
+            
+            obtain = event.create(),
+            lose = event.create(),
             
             tick = event.create(),
             idle = event.create(),
@@ -48,7 +52,7 @@ function actors.create(id, name, bitmap, xframes, yframes)
 end
 
 function actors.prototype(actor)
-    actor.events.tick.sub(function(elapsed)
+    actor.events.tick.sub(function(sender, target, elapsed)
         local name = actor.id
 
         if actor.goal and type(actor.goal) ~= "boolean" then

@@ -18,9 +18,14 @@ function event.create()
     
     setmetatable(ev, {
         __call = function(event, ...)
+            local count = 0
+        
             for key, subscriber in ipairs(event.subscribers) do
                 subscriber(...)
+                count = count + 1
             end
+            
+            return count
         end
     })
     

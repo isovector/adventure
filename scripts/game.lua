@@ -15,7 +15,7 @@ events.game.tick.sub(function(state)
         end
 
         if state == "game" and actor.events then
-            actor.events.tick(elapsed)
+            actor.events.tick(nil, actor, elapsed)
         end
     end
 

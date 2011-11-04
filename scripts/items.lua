@@ -9,7 +9,8 @@ function items.create(id, name, bitmap)
         events = {
             touch = event.create(),
             talk = event.create(),
-            look = event.create()
+            look = event.create(),
+            item = event.create()
         }
     }
     

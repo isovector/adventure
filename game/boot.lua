@@ -1,4 +1,4 @@
-switch_room("outside")
+rooms["outside"].switch()
 player = actors.gomez
 
 clock.set_speed(25, 60)

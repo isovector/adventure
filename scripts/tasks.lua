@@ -27,7 +27,10 @@ function tasks.begin(chain, continue, chain_call)
     })
 end
 
-function tasks.update(tick)
+function tasks.update()
+    local elapsed = 1 / framerate
+    tick = elapsed * 1000
+
     ticks = ticks + tick
 
     for key, task in ipairs(tasks.current_tasks) do

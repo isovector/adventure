@@ -115,10 +115,12 @@ function conversation.say(message, x, y, color, duration)
 end
 
 function conversation.clear()
-    conversation.words = {}
+    conversation.words = { }
 end
 
-function conversation.pump_words(elapsed)
+function conversation.pump_words()
+    local elapsed = 1 / framerate
+
     for key, val in ipairs(conversation.words) do
         if val.duration ~= 0 then
             val.duration = val.duration - elapsed

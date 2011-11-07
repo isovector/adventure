@@ -1,21 +1,39 @@
+function load_module(file)
+    --print("Loading " .. file .. "...")
+    dofile(file)
+end
+
+function load_dir(dir, func)
+    for filename, attr in fs.directories(dir) do
+        load_module(dir  .. "/" .. filename .. "/" .. filename .. ".lua");
+        
+        if func then
+            func(filename)
+        end
+    end
+end
+
 -- load the engine
-dofile("scripts/environment.lua")
-dofile("scripts/library.lua")
-dofile("scripts/debug.lua")
-dofile("scripts/repl.lua")
-dofile("scripts/event.lua")
-dofile("scripts/engine.lua")
-dofile("scripts/clock.lua")
-dofile("scripts/tasks.lua")
-dofile("scripts/animation.lua")
-dofile("scripts/actors.lua")
-dofile("scripts/rooms.lua")
-dofile("scripts/items.lua")
-dofile("scripts/game.lua")
-dofile("scripts/dialogue.lua")
-dofile("scripts/filesystem.lua")
+load_module("scripts/environment.lua")
+load_module("scripts/library.lua")
+load_module("scripts/debug.lua")
+load_module("scripts/repl.lua")
+load_module("scripts/event.lua")
+load_module("scripts/engine.lua")
+load_module("scripts/clock.lua")
+load_module("scripts/tasks.lua")
+load_module("scripts/animation.lua")
+load_module("scripts/actors.lua")
+load_module("scripts/rooms.lua")
+load_module("scripts/items.lua")
+load_module("scripts/dialogue.lua")
+load_module("scripts/filesystem.lua")
+load_module("scripts/game.lua")
 
 -- load the game
-dofile("game/actors/actors.lua")
-dofile("game/dialogue/dialogue.lua")
-dofile("game/items/items.lua")
+load_module("game/dialogue/dialogue.lua")
+load_dir("game/actors")
+load_dir("game/items")
+load_dir("game/rooms", function(filename)
+    rooms[filename].events.init()
+end)

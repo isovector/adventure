@@ -26,9 +26,19 @@ function rooms.create(id)
 end
 
 function rooms.prototype(room)
-    function room.load(door)
-        -- make this better!
-        switch_room(room.id, door)
+    function room.switch(door)
+        if _G["room"] == room then
+            return
+        end
+        
+        conversation.clear()
+        events.room.unload(room) -- make this cancelable?
+        
+        _G["room"] = room
+        set_room_data(room.artwork, room.hotmap)
+
+        room.events.load()
+        events.room.switch()
     end
     
     function room.place(actor, pos)

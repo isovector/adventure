@@ -9,7 +9,11 @@ tmp_anims.sign.anims.stand = {
     { duration = 0.2, frame = 1 }
 }
 
+
+
 local room = rooms.create("outside")
+
+
 
 room.place(actors.gomez)
 room.place(actors.shaggy)
@@ -31,10 +35,14 @@ room.hotspot(85, "rear", "Back Alley");
 room.hotspot(102, "ladder", "Ladder");
 room.hotspot(119, "rope", "Rope");
 
+
+
 room.events.load.sub(function()
     room.foreground(17, 54)
     room.door(17, "door", "Door", "outside", 17, 8)
 end)
+
+
 
 room.hotspots.window.look.sub(function()
     player.say("I can't reach it")
@@ -44,10 +52,8 @@ room.hotspots.ladder.touch.sub(function()
     player.say("That won't fit in my pants")
 end)
 
-cup.events.touch.sub(function()
+room.hotspots.cup.touch.sub(function()
     player.say("Hey! This is beer!")
     player.say("Score!")
     give_item(player, "beer")
 end)
-
-room.hotspots.window.item.sub(print)

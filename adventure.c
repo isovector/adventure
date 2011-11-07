@@ -143,10 +143,14 @@ void fire_event(const char *type, const char *obj, const char *method) {
 
 // performs a room exit
 void do_exit(EXIT *exit) {
-    lua_getglobal(script, "switch_room");
+// TODO(sandy): do something about exits
+    lua_getglobal(script, "rooms");
     lua_pushstring(script, exit->room);
-    lua_pushnumber(script, exit->door);
-    lua_call(script, 2, 0);
+    lua_gettable(script, -2);
+    lua_pushstring(script, "switch");
+    lua_gettable(script, -2);
+    lua_call(script, 0, 0);
+    lua_pop(script, 2);
 }
 
 // updates the regular game state
@@ -339,11 +343,11 @@ void update_game() {
                     
                     lua_pop(script, 2);
                 } else { // nope, do pathfinding
-                    lua_getglobal(script, "walk");
                     lua_getglobal(script, "player");
+                    lua_pushstring(script, "walk");
+                    lua_gettable(script, -2);
                     lua_vector(script, mouse_x + viewport_x, mouse_y + viewport_y);
-                    lua_call(script, 2, 0);
-
+                    lua_call(script, 1, 0);
                     lua_pop(script, 1);
                 }
             }
@@ -577,6 +581,19 @@ void frame() {
 
     acquire_bitmap(buffer);
     clear_to_color(buffer, 0);
+    
+    if (!room_art) {
+        textout_ex(buffer, font, "Room failed to load.", 32, 64, makecol(255, 255, 255), -1);
+        textout_ex(buffer, font, "This is probably indicative of an error in the engine... :'(", 32, 76, makecol(255, 255, 255), -1);
+        
+        if (!room_hot) {
+            room_hot = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
+            luaL_dofile(script, "scripts/panic.lua");
+        }
+        
+        goto finish_drawing;
+    }
+    
     blit(room_art, buffer, viewport_x, viewport_y, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     lua_getglobal(script, "room");
@@ -837,8 +854,9 @@ void frame() {
     textout_ex(buffer, font, lua_tostring(script, -1), 25, 32, makecol(255, 255, 0), -1);
     lua_pop(script, 2);
     
-    
+
     char fps_buffer[10];
+finish_drawing:
     sprintf(fps_buffer, "%d", fps);
     textout_ex(buffer, font, fps_buffer, SCREEN_WIDTH - 25, 25, makecol(255, 0, 0), -1);
 

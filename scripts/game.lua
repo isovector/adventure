@@ -4,11 +4,7 @@ events.game = {
 
 events.game.tick.sub(function(state)
     local elapsed = 1 / framerate
-    tasks.update(elapsed * 1000)
-    clock.tick()
     
-    conversation.pump_words(elapsed)
-
     for key, actor in pairs(room.scene) do
         if actor.aplay then
             animation.play(actor.aplay, elapsed)
@@ -18,9 +14,12 @@ events.game.tick.sub(function(state)
             actor.events.tick(nil, actor, elapsed)
         end
     end
-
-    table.sort(room.scene, zorder_sort)
 end)
+
+events.game.tick.sub(clock.tick)
+events.game.tick.sub(tasks.update)
+events.game.tick.sub(conversation.pump_words)
+events.game.tick.sub(function () table.sort(room.scene, zorder_sort) end)
 
 function get_size(actor)
     if actor.aplay then

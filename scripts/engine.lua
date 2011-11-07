@@ -1,4 +1,3 @@
-current_room = ""
 room = nil
 rooms = {}
 
@@ -70,41 +69,7 @@ function append_switch(actor, room, door)
     if not actor.goals then return end
 
     table.insert(actor.goals, function()
-        switch_room(room, door)
+        -- TODO(sandy): do something about doors
+        rooms[room].switch()
     end)
-end
-
-function switch_room(r, door)
-    if room then 
-        room.log = "switching to room " .. r .. " via door " .. door
-    end
-    
-    if current_room ~= r and room and room.on_unload then
-        conversation.clear()
-        
-        events.room.unload(current_room, r, door)
-    end
-    
-    if not rooms[r] then
-        local roompath = "game/rooms/" .. r .. "/"
-
-        dofile(roompath .. "room.lua")
-        rooms[r].events.init(r)
-    end
-    
-    if current_room ~= r then 
-        room = rooms[r]
-        current_room = r
-        
-        set_room_data(room.artwork, room.hotmap)
-        room.events.load(r, door)
-        
-        events.room.switch(r, door)
-    end
-    
-    if player then 
-        player.pos = get_walkspot(door)
-        animation.switch(player.aplay, "stand")
-        player.goal = nil
-    end
 end

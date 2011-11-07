@@ -1,7 +1,3 @@
-ROOMS
-- refactor switch_room and other globals to the room prototype  [1]
-  - rewrite the engine's door routines to use this
-
 ACTORS
 - add a flag to automatically follow an actor through rooms     [2]
 - wire up entering/exiting events on rooms                      [2]

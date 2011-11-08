@@ -11,7 +11,7 @@ void actor_position(int*, int*);
 #define lua_getregister(L, s)  lua_getfield(L, LUA_REGISTRYINDEX, s)
 #define lua_setregister(L, s)  lua_setfield(L, LUA_REGISTRYINDEX, s)
 
-#define lua_regtable(L, t, n, f) (lua_getglobal(L, t), lua_pushstring(Ln), lua_pushcfunction(L, f), lua_settable(L, -3), lua_pop(L, 1))
+#define lua_regtable(L, t, n, f) (lua_getglobal(L, t), lua_pushstring(L, n), lua_pushcfunction(L, f), lua_settable(L, -3), lua_pop(L, 1))
 
 #define lua_setconstant(L, n, type, val) lua_getglobal(L, "readonly"); \
     lua_pushstring(L, "locks"); \

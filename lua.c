@@ -189,6 +189,7 @@ void init_script() {
     lua_register(script, "set_viewport", &script_set_viewport);
     
     register_path();
+    register_drawing();
     
     luaL_dofile(script, "scripts/init.lua");
 }

@@ -580,7 +580,26 @@ void frame() {
     char cbuffer[10];
 
     acquire_bitmap(buffer);
-    clear_to_color(buffer, 0);
+
+    lua_getglobal(script, "engine");
+    lua_pushstring(script, "events");
+    lua_gettable(script, -2);
+    
+    lua_pushstring(script, "draw");
+    lua_gettable(script, -2);
+    
+    lua_call(script, 0, 0);
+    lua_pop(script, 2);
+    
+    
+    char fps_buffer[10];
+    sprintf(fps_buffer, "%d", fps);
+    textout_ex(buffer, font, fps_buffer, SCREEN_WIDTH - 25, 25, makecol(255, 0, 0), -1);
+    
+    release_bitmap(buffer);
+    blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    
+    //clear_to_color(buffer, 0);
     
     if (!room_art) {
         textout_ex(buffer, font, "Room failed to load.", 32, 64, makecol(255, 255, 255), -1);
@@ -594,7 +613,7 @@ void frame() {
         goto finish_drawing;
     }
     
-    blit(room_art, buffer, viewport_x, viewport_y, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    //blit(room_art, buffer, viewport_x, viewport_y, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     lua_getglobal(script, "room");
     lua_pushstring(script, "scene");
@@ -708,9 +727,9 @@ void frame() {
             ysrc = 0;
         }
 
-        BITMAP *tmp = create_bitmap(width, height);
-        blit(sheet, tmp, xsrc, ysrc, 0, 0, width, height);
-        draw_sprite_ex(buffer, tmp, x - xorigin - viewport_x, y - yorigin - viewport_y, DRAW_SPRITE_NORMAL, flipped);
+        //BITMAP *tmp = create_bitmap(width, height);
+        //blit(sheet, tmp, xsrc, ysrc, 0, 0, width, height);
+        //draw_sprite_ex(buffer, tmp, x - xorigin - viewport_x, y - yorigin - viewport_y, DRAW_SPRITE_NORMAL, flipped);
 
         if (!ignore) {
             lua_getregister(script, "render_obj");
@@ -733,7 +752,7 @@ void frame() {
             lua_pop(script, 1);
         }
 
-        destroy_bitmap(tmp);
+        //destroy_bitmap(tmp);
         lua_pop(script, 3);
     } lua_pop(script, 3);
 
@@ -851,18 +870,18 @@ void frame() {
     lua_pushstring(script, "get_time");
     lua_gettable(script, -2);
     lua_call(script, 0, 1);
-    textout_ex(buffer, font, lua_tostring(script, -1), 25, 32, makecol(255, 255, 0), -1);
+    //textout_ex(buffer, font, lua_tostring(script, -1), 25, 32, makecol(255, 255, 0), -1);
     lua_pop(script, 2);
     
 
-    char fps_buffer[10];
+    //char fps_buffer[10];
 finish_drawing:
     sprintf(fps_buffer, "%d", fps);
-    textout_ex(buffer, font, fps_buffer, SCREEN_WIDTH - 25, 25, makecol(255, 0, 0), -1);
+    //textout_ex(buffer, font, fps_buffer, SCREEN_WIDTH - 25, 25, makecol(255, 0, 0), -1);
 
-    release_bitmap(buffer);
+    //release_bitmap(buffer);
     
-    blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    //blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 // interrupt for the sempahore ticker

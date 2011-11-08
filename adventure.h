@@ -49,6 +49,7 @@ typedef enum tagOBJTYPE {
 } OBJTYPE;
 
 #include "path.h"
+#include "drawing.h"
 #include "lua.h"
 
 extern BITMAP *buffer;

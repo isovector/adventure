@@ -28,6 +28,7 @@ load_module("scripts/rooms.lua")
 load_module("scripts/items.lua")
 load_module("scripts/dialogue.lua")
 load_module("scripts/filesystem.lua")
+load_module("scripts/drawing.lua")
 load_module("scripts/game.lua")
 
 -- load the game

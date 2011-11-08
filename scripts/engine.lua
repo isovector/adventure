@@ -1,15 +1,30 @@
 room = nil
+rooms = { }
 
 engine = {
     life = 0,
     cursor = 0,
+    
+    events = {
+        draw = event.create()
+    }
 }
+
+HAX = 0
+engine.events.draw.sub(function()
+    HAX = (HAX + 5) % 1280
+    
+    drawing.clear(color.black)
+    drawing.blit(room.artwork, vec(0), false, vec(0), vec(1280 - HAX, 720))
+    drawing.blit(room.hotmap, vec(1280 - HAX, 0), false, vec(1280 - HAX, 0), vec(HAX, 720))
+    
+    drawing.text(vec(15), color.make(255, 0, 0), color.transparent, "FPS: %d", 50)
+end)
 
 events.room = {
     unload = event.create(),
     switch = event.create()
 }
-
 
 --disable_input: this should be ALL lua; remove the c primitives
 --engine.action: port the action_state object from C, obj -> object
@@ -102,7 +117,7 @@ function engine.interface()
             action.last_state = "game"
             engine.state = "action"
         end
-    else if mouse.is_click(2) then
+    elseif mouse.is_click(2) then
         engine.action = nil
         
         if item then

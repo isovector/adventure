@@ -1,4 +1,4 @@
-animations.bouncer = animation.build_set(get_bitmap("game/actors/bouncer/bouncer.pcx"), 3, 1)
+animations.bouncer = animation.build_set(bitmap("game/actors/bouncer/bouncer.pcx"), 3, 1)
 animations.bouncer.anims.stand = {
     {
         duration = 1,

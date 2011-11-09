@@ -14,11 +14,23 @@ HAX = 0
 engine.events.draw.sub(function()
     HAX = (HAX + 5) % 1280
     
-    drawing.clear(color.black)
-    drawing.blit(room.artwork, vec(0), false, vec(0), vec(1280 - HAX, 720))
-    drawing.blit(room.hotmap, vec(1280 - HAX, 0), false, vec(1280 - HAX, 0), vec(HAX, 720))
-    
-    drawing.text(vec(15), color.make(255, 0, 0), color.transparent, "FPS: %d", 50)
+    if room and room.artwork then
+        drawing.blit(room.artwork, vec(0), false, vec(0), vec(1280 - HAX, 720))
+        drawing.blit(room.hotmap, vec(1280 - HAX, 0), false, vec(1280 - HAX, 0), vec(HAX, 720))
+        
+        for _, actor in ipairs(room.scene) do
+            if actor.aplay then
+                local set = actor.aplay.set
+                drawing.blit(set.image, actor.pos - vec(set.xorigin, set.yorigin), actor.flipped, vec(animation.get_frame(set, actor.aplay.frame)), vec(set.width, set.height))
+            elseif actor.sprite then
+                drawing.blit(actor.sprite, actor.pos, actor.flipped, vec(0), actor.sprite.size)
+            end
+        end
+    else
+        drawing.clear(color.black)
+        drawing.text(vec(32, 32), color.make(255, 200, 0), color.transparent, "Room failed to load")
+        drawing.text(vec(32, 46), color.make(255, 200, 0), color.transparent, "This is generally indicative of a big lua problem")
+    end
 end)
 
 events.room = {

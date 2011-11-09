@@ -1,6 +1,6 @@
 actors = { } 
 
-function actors.temp(id, name, bitmap, xframes, yframes)
+function actors.temp(id, name, bmpfile, xframes, yframes)
     local actor = { 
         id = id,
         name = name,
@@ -37,16 +37,16 @@ function actors.temp(id, name, bitmap, xframes, yframes)
     
     -- HACK(sandy): this really should create an aplay given xyframes
     if not xframes then
-        actor.sprite = get_bitmap(bitmap)
+        actor.sprite = bitmap(bmpfile)
     else
-        actor.aplay = bitmap
+        actor.aplay = bmpfile
     end
     
     return actor
 end
 
-function actors.create(id, name, bitmap, xframes, yframes)
-    actors[id] = actors.temp(id, name, bitmap, xframes, yframes)
+function actors.create(id, name, bmp, xframes, yframes)
+    actors[id] = actors.temp(id, name, bmp, xframes, yframes)
     actors.prototype(actors[id])
     return actors[id]
 end

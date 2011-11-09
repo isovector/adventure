@@ -591,13 +591,14 @@ void frame() {
     lua_call(script, 0, 0);
     lua_pop(script, 2);
     
-    
     char fps_buffer[10];
     sprintf(fps_buffer, "%d", fps);
     textout_ex(buffer, font, fps_buffer, SCREEN_WIDTH - 25, 25, makecol(255, 0, 0), -1);
     
     release_bitmap(buffer);
     blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    
+    return;
     
     //clear_to_color(buffer, 0);
     
@@ -715,7 +716,7 @@ void frame() {
             lua_pop(script, 1);
             lua_pushstring(script, "sprite");
             lua_gettable(script, -2);
-            sheet = (BITMAP*)lua_touserdata(script, -1);
+            sheet = *(BITMAP**)lua_touserdata(script, -1);
             lua_pop(script, 1);
 
             width = sheet->w;
@@ -731,7 +732,7 @@ void frame() {
         //blit(sheet, tmp, xsrc, ysrc, 0, 0, width, height);
         //draw_sprite_ex(buffer, tmp, x - xorigin - viewport_x, y - yorigin - viewport_y, DRAW_SPRITE_NORMAL, flipped);
 
-        if (!ignore) {
+        if (0) {
             lua_getregister(script, "render_obj");
             lua_pushvalue(script, -3);
             push_rendertable(name, x - xorigin, y - yorigin, width, height);
@@ -818,7 +819,7 @@ void frame() {
             int xpos = 270 + 75 * (i % 10);
             int ypos = 215 + 75 * (i / 10);
 
-            BITMAP *bmp = (BITMAP*)lua_touserdata(script, -1);
+            BITMAP *bmp = *(BITMAP**)lua_touserdata(script, -1);
             masked_blit(bmp, buffer, 0, 0, xpos, ypos, 64, 64);
 
             lua_getregister(script, "render_inv");

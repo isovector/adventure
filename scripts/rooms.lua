@@ -16,8 +16,8 @@ function rooms.create(id)
 
     local roompath = "game/rooms/" .. id .. "/"
     
-    room.artwork = get_bitmap(roompath .. "art.pcx")
-    room.hotmap = get_bitmap(roompath .. "hot.pcx")
+    room.artwork = bitmap(roompath .. "art.pcx")
+    room.hotmap = bitmap(roompath .. "hot.pcx")
 
     rooms.prototype(room)
     rooms[id] = room

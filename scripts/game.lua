@@ -25,7 +25,7 @@ function get_size(actor)
     if actor.aplay then
         return actor.aplay.set.width, actor.aplay.set.height
     elseif actor.sprite then
-        return get_image_size(actor.sprite)
+        return actor.sprite.size.x, actor.sprite.size.y
     else
         return 0, 0
     end

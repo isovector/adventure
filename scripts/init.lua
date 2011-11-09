@@ -1,5 +1,4 @@
 function load_module(file)
-    --print("Loading " .. file .. "...")
     dofile(file)
 end
 

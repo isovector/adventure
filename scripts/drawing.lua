@@ -19,6 +19,6 @@ function drawing.text_center(pos, color, background, format, ...)
     drawing.raw_text_center(pos.x, pos.y, color, background, string.format(format, ...))
 end
     
-function drawing.blit(bitmap, pos, flipped, src, size)
-    drawing.raw_blit(bitmap, pos.x, pos.y, flipped, src.x, src.y, size.x, size.y)
+function drawing.blit(bmp, pos, flipped, src, size)
+    drawing.raw_blit(bmp, pos.x, pos.y, flipped, src.x, src.y, size.x, size.y)
 end

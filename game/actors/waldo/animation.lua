@@ -1,4 +1,4 @@
-animations.waldo = animation.build_set(get_bitmap("game/actors/waldo/waldo.pcx"), 7, 2)
+animations.waldo = animation.build_set(bitmap("game/actors/waldo/waldo.pcx"), 7, 2)
 animations.waldo.anims.stand = {
     {
         duration = 0.4,

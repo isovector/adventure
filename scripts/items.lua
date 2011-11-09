@@ -1,10 +1,10 @@
 items = { }
 
-function items.create(id, name, bitmap)
+function items.create(id, name, bmpfile)
     local item = {
         id = id,
         label = name,
-        image = get_bitmap(bitmap),
+        image = bitmap(bmpfile),
 
         events = {
             touch = event.create(),

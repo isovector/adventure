@@ -3,7 +3,7 @@ animations = {}
 
 function animation.build_set(image, xcount, ycount, xorigin, yorigin)
     local set = {image = image, xcount = xcount, ycount = ycount}
-    local width, height = get_image_size(image)
+    local width, height = image.size.x, image.size.y
     set.width = width / xcount
     set.height = height / ycount
     set.xorigin = set.width / 2

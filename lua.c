@@ -67,47 +67,14 @@ int script_register_door(lua_State *L) {
     return 0;
 }
 
-int script_get_image_size(lua_State *L) {
-    if (lua_gettop(L) != 1 || !lua_isuserdata(L, 1)) {
-        lua_pushstring(L, "get_image_size expects (BITMAP*)");
-        lua_error(L);
-    }
-    
-    BITMAP *bmp = (BITMAP*)lua_touserdata(L, 1);
-    if (bmp) {
-        lua_pushnumber(L, bmp->w);
-        lua_pushnumber(L, bmp->h);
-    } else {
-        lua_pushnumber(L, 0);
-        lua_pushnumber(L, 0);
-    }
-    
-    return 2;
-}
-
-int script_get_bitmap(lua_State *L) {
-    if (lua_gettop(L) != 1 || !lua_isstring(L, 1)) {
-        lua_pushstring(L, "get_bitmap expects (string)");
-        lua_error(L);
-    }
-    
-    BITMAP *bmp = load_bitmap(lua_tostring(L, 1), NULL);
-    
-    if (!bmp)
-        printf("failed to load bitmap %s\n", lua_tostring(L, 1));
-    lua_pushlightuserdata(L, bmp);
-    
-    return 1;
-}
-
 int script_load_room(lua_State *L) {
     if (lua_gettop(L) != 2 || !lua_isuserdata(L, 1) || !lua_isuserdata(L, 2)) {
         lua_pushstring(L, "__load_room expects (BITMAP*, BITMAP*)");
         lua_error(L);
     }
 
-    room_art = (BITMAP*)lua_touserdata(L, 1);
-    room_hot = (BITMAP*)lua_touserdata(L, 2);
+    room_art = *(BITMAP**)lua_touserdata(L, 1);
+    room_hot = *(BITMAP**)lua_touserdata(L, 2);
     
     for (int i = 0; i < 256; i++)
         if (hotspots[i] != NULL) {
@@ -174,6 +141,8 @@ void init_script() {
     luaL_openlibs(script);
     lua_atpanic(script, script_panic);
     
+
+    
     lua_newtable(script);
     lua_setregister(script, "render_obj");
     lua_newtable(script);
@@ -182,8 +151,6 @@ void init_script() {
     lua_register(script, "set_room_data", &script_load_room);
     lua_register(script, "register_hotspot", &script_register_hotspot);
     lua_register(script, "register_door", &script_register_door);
-    lua_register(script, "get_image_size", &script_get_image_size);
-    lua_register(script, "get_bitmap", &script_get_bitmap);
     lua_register(script, "signal_goal", &script_signal_goal);
     lua_register(script, "enable_input", &script_enable_input);
     lua_register(script, "set_viewport", &script_set_viewport);

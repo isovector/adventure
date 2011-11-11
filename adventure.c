@@ -2,7 +2,7 @@
 
 #define ACTION_TIME 0.5
 
-BITMAP *buffer, *cursors, *actionbar, *inventory;
+BITMAP *buffer, *actionbar, *inventory;
 BITMAP *room_art = NULL, *room_hot = NULL;
 
 HOTSPOT *hotspots[256];
@@ -11,15 +11,13 @@ float life = 0;
 
 STATE game_state = STATE_GAME;
 
+int cursor = 0;
+
 int last_mouse, last_key[KEY_MAX];
 int quit = 0;
 int fps = 0;
 int in_console = 0;
-int cursor = 0;
 int door_travel = 0;
-int disable_input = 0;
-
-int viewport_x = 0, viewport_y = 0;
 
 volatile int ticks = 0;
 sem_t semaphore_rest;
@@ -39,42 +37,6 @@ struct {
     BITMAP *image;
 } active_item;
 
-
-// calculates the active pixel for a given cursor
-void get_cursor_offset(int cursor, int *x, int *y) {
-    *x = *y = 0;
-    switch (cursor) {
-        case 0:
-        case 5:
-            *x = *y = 16;
-            break;
-        case 1:
-        case 3:
-        case 7:
-        case 9:
-            *x = 3;
-            *y = 27;
-            break;
-        case 2:
-        case 8:
-            *x = 16;
-            *y = 29;
-            break;
-        case 4:
-        case 6:
-            *x = 3;
-            *y = 16;
-            break;
-    }
-
-    // we calculate for the low-order cursors
-    // if we have a high-order, flip the position
-    
-    if (cursor && (cursor - 1) % 3 > 1)
-        *x = 32 - *x;
-    if (cursor > 5)
-        *y = 32 - *y;
-}
 
 // gets the hotspot id associated with a pixel
 int hotspot(int x, int y) {
@@ -155,6 +117,8 @@ void do_exit(EXIT *exit) {
 
 // updates the regular game state
 void update_game() {
+    update_mouse();
+    
     // update lua's game loop
     lua_getglobal(script, "events");
     lua_pushstring(script, "game");
@@ -165,11 +129,13 @@ void update_game() {
     lua_pushstring(script, "game");
     lua_call(script, 1, 0);
     lua_pop(script, 2);
+    
+    return;
 
     object_name = "";
     cursor = 0;
 
-    if (disable_input) return;
+    if (0) return; // disable input
     
     // did we just return from the actionbar?
     if (action_state.result) {
@@ -183,7 +149,7 @@ void update_game() {
 
         // if we have a walkspot, use it
         if (action_state.walkspot)
-            walk_and_fire_event(action_state.walkspot, action_state.type, action_state.object, method, action_state.walkspot->x > action_state.x + viewport_x);
+            walk_and_fire_event(action_state.walkspot, action_state.type, action_state.object, method, action_state.walkspot->x > action_state.x );
         else
             fire_event(action_state.type, action_state.object, method);
         
@@ -250,8 +216,8 @@ void update_game() {
         lua_pop(script, 1);
 
         // is our mouse on top of this object?
-        if (in_rect(mouse_x, mouse_y, x - viewport_x, y - viewport_y, x - viewport_x + width, y - viewport_y + height)
-                && is_pixel_perfect(sheet, mouse_x - x - viewport_x, mouse_y - y - viewport_y, width, height, xorigin, yorigin, flipped)) {
+        if (in_rect(mouse_x, mouse_y, x , y , x  + width, y  + height)
+                && is_pixel_perfect(sheet, mouse_x - x , mouse_y - y , width, height, xorigin, yorigin, flipped)) {
             object_name = name;
             found = 1;
             door_travel = 0;
@@ -284,18 +250,18 @@ void update_game() {
 
     // we didn't get a render object
     if (!found) {
-        HOTSPOT *hs = hotspots[hotspot(mouse_x + viewport_x, mouse_y + viewport_y)];
+        HOTSPOT *hs = hotspots[hotspot(mouse_x , mouse_y )];
 
         // but we are on a hotspot!
         if (hs) {
             cursor = hs->cursor;
             object_name = hs->display_name;
 
-            POINT *walkspot = walkspots[hotspot(mouse_x + viewport_x, mouse_y + viewport_y)];
+            POINT *walkspot = walkspots[hotspot(mouse_x , mouse_y )];
             
             if (is_click(1))
                 if (active_item.active) { // item?
-                    walk_and_fire_event(walkspot, "hotspot", hs->internal_name, active_item.name, walkspot->x > mouse_x + viewport_x);
+                    walk_and_fire_event(walkspot, "hotspot", hs->internal_name, active_item.name, walkspot->x > mouse_x );
                     active_item.active = 0;
                     door_travel = 0;
                 } else if (hs->exit) { // no item, door
@@ -305,7 +271,7 @@ void update_game() {
                     if (door_travel != hs->exit->door) {
                         door_travel = hs->exit->door;
 
-                        walk_and_fire_event(walkspot, "door", hs->internal_name, "enter", walkspot->x > mouse_x + viewport_x);
+                        walk_and_fire_event(walkspot, "door", hs->internal_name, "enter", walkspot->x > mouse_x );
                         
                         lua_getglobal(script, "append_switch");
                         lua_getglobal(script, "player");
@@ -331,10 +297,10 @@ void update_game() {
                 actor_position(&x, &y);
 
                 // can we get there directly?
-                if (is_pathable(x, y, mouse_x + viewport_x, mouse_y + viewport_y)) {
+                if (is_pathable(x, y, mouse_x , mouse_y )) {
                     lua_getglobal(script, "player");
                     lua_pushstring(script, "goal");
-                    lua_vector(script, mouse_x + viewport_x, mouse_y + viewport_y);
+                    lua_vector(script, mouse_x , mouse_y );
                     lua_settable(script, -3);
                     
                     lua_pushstring(script, "goals");
@@ -346,7 +312,7 @@ void update_game() {
                     lua_getglobal(script, "player");
                     lua_pushstring(script, "walk");
                     lua_gettable(script, -2);
-                    lua_vector(script, mouse_x + viewport_x, mouse_y + viewport_y);
+                    lua_vector(script, mouse_x , mouse_y );
                     lua_call(script, 1, 0);
                     lua_pop(script, 1);
                 }
@@ -546,26 +512,6 @@ void update() {
         last_key[i] = key[i];
 }
 
-// we want to add a rendertable
-void push_rendertable(const char *name, int x, int y, int w, int h) {
-    lua_newtable(script);
-    lua_pushstring(script, "name");
-    lua_pushstring(script, name);
-    lua_settable(script, -3);
-    lua_pushstring(script, "x");
-    lua_pushnumber(script, x);
-    lua_settable(script, -3);
-    lua_pushstring(script, "y");
-    lua_pushnumber(script, y);
-    lua_settable(script, -3);
-    lua_pushstring(script, "width");
-    lua_pushnumber(script, w);
-    lua_settable(script, -3);
-    lua_pushstring(script, "height");
-    lua_pushnumber(script, h);
-    lua_settable(script, -3);
-}
-
 // draws the foreground of a hot image
 void draw_foreground(int level) {
     int col;
@@ -602,166 +548,11 @@ void frame() {
     
     //clear_to_color(buffer, 0);
     
-    if (!room_art) {
-        textout_ex(buffer, font, "Room failed to load.", 32, 64, makecol(255, 255, 255), -1);
-        textout_ex(buffer, font, "This is probably indicative of an error in the engine... :'(", 32, 76, makecol(255, 255, 255), -1);
-        
-        if (!room_hot) {
-            room_hot = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
-            luaL_dofile(script, "scripts/panic.lua");
-        }
-        
-        goto finish_drawing;
-    }
-    
-    //blit(room_art, buffer, viewport_x, viewport_y, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    lua_getglobal(script, "room");
-    lua_pushstring(script, "scene");
-    lua_gettable(script, -2);
-
-    int t = lua_gettop(script);
-
-    lua_pushnil(script);
-    while (lua_next(script, t) != 0) {
-        lua_pushstring(script, "baseline");
-        lua_gettable(script, -2);
-        if (!lua_isnil(script, -1)) {
-            lua_pop(script, 1);
-            lua_pushstring(script, "level");
-            lua_gettable(script, -2);
-            draw_foreground(lua_tonumber(script, -1));
-            lua_pop(script, 2);
-            continue;
-        } else lua_pop(script, 1);
-        
-        lua_pushstring(script, "id");
-        lua_gettable(script, -2);
-        lua_pushvalue(script, -2);
-
-        int x, y;
-        actor_position(&x, &y);
-
-        lua_pushstring(script, "flipped");
-        lua_gettable(script, -2);
-        int flipped = lua_toboolean(script, -1);
-        lua_pop(script, 1);
-
-        lua_pushstring(script, "ignore_ui");
-        lua_gettable(script, -2);
-        int ignore = 0;
-        if (!lua_isnil(script, -1))
-            ignore = lua_toboolean(script, -1);
-        lua_pop(script, 1);
-
-        lua_pushstring(script, "name");
-        lua_gettable(script, -2);
-        const char *name = lua_tostring(script, -1);
-        lua_pop(script, 1);
-
-        lua_pushstring(script, "aplay");
-        lua_gettable(script, -2);
-
-        BITMAP *sheet;
-        int xorigin, yorigin, width, height, frame, xsrc, ysrc;
-
-        if (!lua_isnil(script, -1)) {
-            lua_pushstring(script, "set");
-            lua_gettable(script, -2);
-            lua_pushstring(script, "image");
-            lua_gettable(script, -2);
-            sheet = (BITMAP*)lua_touserdata(script, -1);
-            lua_pop(script, 1);
-
-            lua_pushstring(script, "xorigin");
-            lua_gettable(script, -2);
-            xorigin = lua_tonumber(script, -1);
-            lua_pop(script, 1);
-
-            lua_pushstring(script, "yorigin");
-            lua_gettable(script, -2);
-            yorigin = lua_tonumber(script, -1);
-            lua_pop(script, 1);
-
-            lua_pushstring(script, "width");
-            lua_gettable(script, -2);
-            width = lua_tonumber(script, -1);
-            lua_pop(script, 1);
-
-            lua_pushstring(script, "height");
-            lua_gettable(script, -2);
-            height = lua_tonumber(script, -1);
-            lua_pop(script, 2);
-
-            lua_pushstring(script, "frame");
-            lua_gettable(script, -2);
-            frame = lua_tonumber(script, -1);
-            lua_pop(script, 1);
-
-            lua_pushstring(script, "set");
-            lua_gettable(script, -2);
-
-            lua_getglobal(script, "animation");
-            lua_pushstring(script, "get_frame");
-            lua_gettable(script, -2);
-            lua_pushvalue(script, -3);
-            lua_pushnumber(script, frame);
-            lua_call(script, 2, 2);
-
-            xsrc = lua_tonumber(script, -2);
-            ysrc = lua_tonumber(script, -1);
-
-            lua_pop(script, 5);
-        } else {
-            lua_pop(script, 1);
-            lua_pushstring(script, "sprite");
-            lua_gettable(script, -2);
-            sheet = *(BITMAP**)lua_touserdata(script, -1);
-            lua_pop(script, 1);
-
-            width = sheet->w;
-            height = sheet->h;
-            xorigin = 0;
-            yorigin = 0;
-            frame = 0;
-            xsrc = 0;
-            ysrc = 0;
-        }
-
-        //BITMAP *tmp = create_bitmap(width, height);
-        //blit(sheet, tmp, xsrc, ysrc, 0, 0, width, height);
-        //draw_sprite_ex(buffer, tmp, x - xorigin - viewport_x, y - yorigin - viewport_y, DRAW_SPRITE_NORMAL, flipped);
-
-        if (0) {
-            lua_getregister(script, "render_obj");
-            lua_pushvalue(script, -3);
-            push_rendertable(name, x - xorigin, y - yorigin, width, height);
-            lua_pushstring(script, "sheet");
-            lua_pushlightuserdata(script, sheet);
-            lua_settable(script, -3);
-            lua_pushstring(script, "xorigin");
-            lua_pushnumber(script, xsrc);
-            lua_settable(script, -3);
-            lua_pushstring(script, "yorigin");
-            lua_pushnumber(script, ysrc);
-            lua_settable(script, -3);
-            lua_pushstring(script, "flipped");
-            lua_pushnumber(script, flipped);
-            lua_settable(script, -3);
-
-            lua_settable(script, -3);
-            lua_pop(script, 1);
-        }
-
-        //destroy_bitmap(tmp);
-        lua_pop(script, 3);
-    } lua_pop(script, 3);
-
 
     lua_getglobal(script, "conversation");
     lua_pushstring(script, "words");
     lua_gettable(script, -2);
-    t = lua_gettop(script);
+    int t = lua_gettop(script);
 
     lua_pushnil(script);
     while (lua_next(script, t) != 0) {
@@ -784,7 +575,7 @@ void frame() {
         lua_gettable(script, -2);
         int color = lua_tonumber(script, -1);
 
-        textprintf_centre_ex(buffer, font, x - viewport_x, y - viewport_y, color, -1, msg);
+        textprintf_centre_ex(buffer, font, x , y , color, -1, msg);
 
         lua_pop(script, 2);
     } lua_pop(script, 1);
@@ -860,29 +651,11 @@ void frame() {
     
     if (!disable_input) {
         int cx, cy;
-        get_cursor_offset(cursor, &cx, &cy);
-        masked_blit(cursors, buffer, cursor * 32, 0, mouse_x - cx, mouse_y - cy, 32, 32);
+        //masked_blit(cursors, buffer, cursor * 32, 0, mouse_x - cx, mouse_y - cy, 32, 32);
     }
 
     if (active_item.active)
         masked_blit(active_item.image, buffer, 0, 0, mouse_x, mouse_y, 64, 64);
-
-    lua_getglobal(script, "clock");
-    lua_pushstring(script, "get_time");
-    lua_gettable(script, -2);
-    lua_call(script, 0, 1);
-    //textout_ex(buffer, font, lua_tostring(script, -1), 25, 32, makecol(255, 255, 0), -1);
-    lua_pop(script, 2);
-    
-
-    //char fps_buffer[10];
-finish_drawing:
-    sprintf(fps_buffer, "%d", fps);
-    //textout_ex(buffer, font, fps_buffer, SCREEN_WIDTH - 25, 25, makecol(255, 0, 0), -1);
-
-    //release_bitmap(buffer);
-    
-    //blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 // interrupt for the sempahore ticker
@@ -910,9 +683,6 @@ int main(int argc, char* argv[]) {
 
     // load resources
     buffer = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
-    actionbar = load_bitmap("resources/actionbar.pcx", NULL);
-    inventory = load_bitmap("resources/inventory.pcx", NULL);
-    cursors = load_bitmap("resources/cursors.pcx", NULL);
     
     // set state
     action_state.relevant = 0;
@@ -941,6 +711,12 @@ int main(int argc, char* argv[]) {
             fps = frames_done;
             frames_done = 0;
             old_time = life;
+            
+            lua_getglobal(script, "engine");
+            lua_pushstring(script, "fps");
+            lua_pushnumber(script, fps);
+            lua_settable(script, -3);
+            lua_pop(script, 1);
         }
 
         while (ticks > 0) {

@@ -38,8 +38,12 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
     -- HACK(sandy): this really should create an aplay given xyframes
     if not xframes then
         actor.sprite = bitmap(bmpfile)
+        actor.size = actor.sprite.size
+        actor.origin = vec(0)
     else
         actor.aplay = bmpfile
+        actor.size = vec(actor.aplay.set.width, actor.aplay.set.height)
+        actor.origin = vec(actor.aplay.set.xorigin, actor.aplay.set.yorigin)
     end
     
     return actor
@@ -94,7 +98,7 @@ function actors.prototype(actor)
                         actor.events.goal()
 
                         if actor == player then
-                            signal_goal()
+                            --signal_goal()
                         end
                     end
                 end

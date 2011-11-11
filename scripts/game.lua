@@ -16,6 +16,8 @@ events.game.tick.sub(function(state)
     end
 end)
 
+events.game.tick.sub(engine.interface)
+
 events.game.tick.sub(clock.tick)
 events.game.tick.sub(tasks.update)
 events.game.tick.sub(conversation.pump_words)
@@ -61,7 +63,7 @@ function make_walkspot(actor)
             local ax = math.cos(degree) * dist * flip
             local ay = math.sin(degree) * dist
             
-            if is_walkable(x + ax, y + ay) then
+            if room.is_walkable(x + ax, y + ay) then
                 return x + ax, y + ay
             end
         end

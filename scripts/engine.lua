@@ -3,25 +3,63 @@ rooms = { }
 
 engine = {
     life = 0,
-    cursor = 0,
+    state = "game",
+    fps = 0,
+    allow_input = true,
     
     events = {
         draw = event.create()
+    },
+    
+    mouse = {
+        cursor = 0,
+        pos = vec(0),
+        buttons = {
+            left = false,
+            middle = false,
+            right = false,
+            
+            last_left = false,
+            last_middle = false,
+            last_right = false
+        }
+    },
+    
+    cursors = {
+        image = bitmap("resources/cursors.pcx"),
+        offsets = {
+            vec(16, 16),
+            vec(3, 27),
+            vec(16, 29),
+             vec(29, 27),
+             vec(3, 16),
+             vec(16, 16),
+             vec(29, 16),
+             vec(3, 5),
+             vec(16, 3),
+             vec(29, 5)
+        }
     }
 }
 
-HAX = 0
+function engine.mouse.is_click(button)
+    return engine.mouse.buttons[button] 
+        and not engine.mouse.buttons["last_" .. button]
+end
+
+function engine.mouse.is_anticlick(button)
+    return not engine.mouse.buttons[button] 
+        and engine.mouse.buttons["last_" .. button]
+end
+
 engine.events.draw.sub(function()
-    HAX = (HAX + 5) % 1280
-    
     if room and room.artwork then
-        drawing.blit(room.artwork, vec(0), false, vec(0), vec(1280 - HAX, 720))
-        drawing.blit(room.hotmap, vec(1280 - HAX, 0), false, vec(1280 - HAX, 0), vec(HAX, 720))
+        drawing.blit(room.artwork, vec(0), false, vec(0), room.artwork.size)
         
         for _, actor in ipairs(room.scene) do
             if actor.aplay then
                 local set = actor.aplay.set
-                drawing.blit(set.image, actor.pos - vec(set.xorigin, set.yorigin), actor.flipped, vec(animation.get_frame(set, actor.aplay.frame)), vec(set.width, set.height))
+                drawing.blit(set.image, actor.pos - actor.origin, actor.flipped, vec(animation.get_frame(set, actor.aplay.frame)), actor.size)
             elseif actor.sprite then
                 drawing.blit(actor.sprite, actor.pos, actor.flipped, vec(0), actor.sprite.size)
             end
@@ -31,6 +69,8 @@ engine.events.draw.sub(function()
         drawing.text(vec(32, 32), color.make(255, 200, 0), color.transparent, "Room failed to load")
         drawing.text(vec(32, 46), color.make(255, 200, 0), color.transparent, "This is generally indicative of a big lua problem")
     end
+    
+    drawing.blit(engine.cursors.image, engine.mouse.pos - engine.cursors.offsets[engine.mouse.cursor + 1], false, vec(32 * engine.mouse.cursor, 0), vec(32))
 end)
 
 events.room = {
@@ -40,20 +80,15 @@ events.room = {
 
 --disable_input: this should be ALL lua; remove the c primitives
 --engine.action: port the action_state object from C, obj -> object
---engine.cursor: c's cursor
---mouse = { pos, cursor, is_click, is_anti_click } 
 ----walkspot -> spot
---make a rect library
---viewport_* to lua
 --make actor.size
---make room.hotspots.*.contains()
 --engine.tooltip -> c's object_name
 
 function engine.interface()
     local elapsed = 1 / framerate
     engine.life = engine.life + elapsed
 
-    if disable_input then return end
+    if not engine.allow_input then return end
     
     local action = engine.action
     local item = engine.item
@@ -72,64 +107,71 @@ function engine.interface()
     end
     
     local found = false
-    for actor in room.scene do
-        local hitbox = rect.create(actor.pos - viewport, actor.size)
-        if hitbox.contains(mouse.pos) 
-            --[[or pixel perfect]] then
-            found = 1
-            mouse.cursor = 5
-            
-            if mouse.is_click(1) then
-                if item then
-                    do_callback(item.type, item.object, item.method)
-                    engine.item = nil
-                else
-                    local spot = make_walkspot(actor)
-                    engine.action = {
-                        type = "object",
-                        object = actor.name,
-                        spot = spot,
-                        activates_at = life + 0.5
-                    }
+    for _, actor in ipairs(room.scene) do
+        if actor.pos then -- flush out foreground elements
+            local hitbox = rect.create(actor.pos - actor.origin, actor.size)
+            if hitbox.contains(mouse.pos) then
+                --[[or pixel perfect]]
+                found = 1
+                mouse.cursor = 5
+                
+                if mouse.is_click("left") then
+                    if item then
+                        do_callback(item.type, item.object, item.method)
+                        engine.item = nil
+                    else
+                        local spot = make_walkspot(actor)
+                        engine.action = {
+                            type = "object",
+                            object = actor.name,
+                            spot = spot,
+                            activates_at = engine.life + 0.5
+                        }
+                    end
                 end
             end
         end
     end
     
     if not found then
-        for hotspot in room.hotspots do
-            if hotspot.contains(mouse + viewport) then
+        for _, hotspot in pairs(room.hotspots) do
+            if hotspot.contains(mouse.pos) then
                 engine.tooltip = hotspot.name
                 mouse.cursor = hotspot.cursor
+                found = true
                 
-                if item then
-                    player.walk(hotspot.spot)
-                    do_callback(item.type, item.object, item.method)
-                    engine.item = nil
-                else -- something about doors?
-                    engine.action = {
-                        type = "hotspot",
-                        object = hotspot.id,
-                        spot = hotspot.spot,
-                        activates_at = life + 0.5
-                    }
+                if mouse.is_click("left") then
+                    if item then
+                        player.walk(hotspot.spot)
+                        do_callback(item.type, item.object, item.method)
+                        engine.item = nil
+                    else -- something about doors?
+                        engine.action = {
+                            type = "hotspot",
+                            object = hotspot.id,
+                            spot = hotspot.spot,
+                            activates_at = engine.life + 0.5
+                        }
+                    end
                 end
-            elseif mouse.is_click(1) then
-                if room.is_walkable(mouse + viewport) then
-                    -- do pathfinding
-                end
-                
-                engine.action = nil
             end
         end
     end
     
-    if mouse.left and engine.action then
+    if not found and mouse.is_click("left") then
+        if room.is_walkable(mouse.pos) then
+            player.walk(mouse.pos)
+        end
+        
+        engine.action = nil
+    end
+    
+    if mouse.buttons.left and engine.action then
         if life >= action.activates_at then
             action.last_state = "game"
             engine.state = "action"
         end
-    elseif mouse.is_click(2) then
+    elseif mouse.is_click("right") then
         engine.action = nil
         
         if item then
@@ -138,7 +180,15 @@ function engine.interface()
             engine.state = "inventory"
         end
     end
+    
+    for button, value in pairs(mouse.buttons) do
+        if type(mouse.buttons["last_" .. button]) ~= "nil"  then
+            mouse.buttons["last_" .. button] = mouse.buttons[button]
+        end
+    end
 end
+
+
 
 
 function do_callback(callback_type, object, method)
@@ -155,9 +205,9 @@ function do_callback(callback_type, object, method)
     if callback_type == "hotspot" then
         if room.hotspots[object] and room.hotspots[object][method] then
             tasks.begin(function()
-                enable_input(false)
+                --enable_input(false)
                 room.hotspots[object][method](player, room.hotspots[object], item_type)
-                enable_input(true)
+                --enable_input(true)
             end)
         end
         
@@ -168,9 +218,9 @@ function do_callback(callback_type, object, method)
         
         if obj.events and obj.events[method] then
             tasks.begin(function()
-                enable_input(false)
+                --enable_input(false)
                 obj.events[method](player, obj, item_type)
-                enable_input(true)
+                --enable_input(true)
             end)
         end
         
@@ -179,9 +229,9 @@ function do_callback(callback_type, object, method)
         
         if obj and obj.events and obj.events[method] then
             tasks.begin(function()
-                enable_input(false)
+                --enable_input(false)
                 obj.events[method](player, obj, item_type)
-                enable_input(true)
+                --enable_input(true)
             end)
         end
     end

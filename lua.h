@@ -7,6 +7,7 @@ extern lua_State *script;
 
 void init_script();
 void actor_position(int*, int*);
+void update_mouse();
 
 #define lua_getregister(L, s)  lua_getfield(L, LUA_REGISTRYINDEX, s)
 #define lua_setregister(L, s)  lua_setfield(L, LUA_REGISTRYINDEX, s)

@@ -94,18 +94,6 @@ int script_load_room(lua_State *L) {
     return 0;
 }
 
-int script_set_viewport(lua_State *L) {
-    if (lua_gettop(L) != 2 || !lua_isnumber(L, 1) || !lua_isnumber(L, 2)) {
-        lua_pushstring(L, "set_viewport expects (int, int)");
-        lua_error(L);
-    }
-    
-    viewport_x = lua_tonumber(L, 1);
-    viewport_y = lua_tonumber(L, 2);
-    
-    return 0;
-}
-
 int script_panic(lua_State *L) {
     lua_Debug debug;
     lua_getstack(L, 1, &debug);
@@ -114,26 +102,52 @@ int script_panic(lua_State *L) {
     printf("LUA ERROR: %s\nat %s\n", lua_tostring(L, 1), debug.name);
 }
 
-int script_signal_goal(lua_State *L) {
-    if (lua_gettop(L) != 0) {
-        lua_pushstring(L, "signal_goal expects ()");
+int script_which_hotspot(lua_State *L) {
+    if (lua_gettop(L) != 1 || !lua_istable(L, 1)) {
+        lua_pushstring(L, "which_hotspot expects (vec)");
         lua_error(L);
     }
     
-    door_travel = 0;
+    lua_pushstring(L, "x");
+    lua_gettable(L, -2);
+    int x = lua_tonumber(L, -1);
+    lua_pop(L, 1);
     
-    return 0;
+    lua_pushstring(L, "y");
+    lua_gettable(L, -2);
+    int y = lua_tonumber(L, -1);
+    
+    lua_pushnumber(L, (getpixel(room_hot, x, y) & (255 << 16)) >> 16);
+    return 1;
 }
 
-int script_enable_input(lua_State *L) {
-    if (lua_gettop(L) != 1 || !lua_isboolean(L, 1)) {
-        lua_pushstring(L, "disable_input expects (bool)");
-        lua_error(L);
-    }
+void update_mouse() {
+    lua_getglobal(script, "engine");
+    lua_pushstring(script, "mouse");
+    lua_gettable(script, -2);
     
-    disable_input = !lua_toboolean(L, 1);
+    lua_pushstring(script, "pos");
+    lua_gettable(script, -2);
+    lua_pushstring(script, "x");
+    lua_pushnumber(script, mouse_x);
+    lua_settable(script, -3);
+    lua_pushstring(script, "y");
+    lua_pushnumber(script, mouse_y);
+    lua_settable(script, -3);
+    lua_pop(script, 1);
     
-    return 0;
+    lua_pushstring(script, "buttons");
+    lua_gettable(script, -2);
+    lua_pushstring(script, "left");
+    lua_pushboolean(script, mouse_b & 1);
+    lua_settable(script, -3);
+    lua_pushstring(script, "right");
+    lua_pushboolean(script, mouse_b & 2);
+    lua_settable(script, -3);
+    lua_pushstring(script, "middle");
+    lua_pushboolean(script, mouse_b & 4);
+    lua_settable(script, -3);
+    lua_pop(script, 3);
 }
 
 void init_script() {
@@ -151,9 +165,8 @@ void init_script() {
     lua_register(script, "set_room_data", &script_load_room);
     lua_register(script, "register_hotspot", &script_register_hotspot);
     lua_register(script, "register_door", &script_register_door);
-    lua_register(script, "signal_goal", &script_signal_goal);
-    lua_register(script, "enable_input", &script_enable_input);
-    lua_register(script, "set_viewport", &script_set_viewport);
+    
+    lua_register(script, "which_hotspot", &script_which_hotspot);
     
     register_path();
     register_drawing();

@@ -177,7 +177,33 @@ int is_walkable(int x, int y) {
     return enabled_paths[(getpixel(room_hot, x, y) & (255 << 8)) >> 8] || getpixel(room_hot, x, y) == 255;
 }
 
-LUA_WRAP(is_walkable, 2, boolean, number, number)
+int script_is_walkable(lua_State *L) {
+    if (lua_gettop(L) != 2 || !lua_isuserdata(L, 1) || !lua_istable(L, 2)) {
+        lua_pushstring(L, "is_walkable expects (bitmap, vector)");
+        lua_error(L);
+    }
+    
+    BITMAP* bmp = *(BITMAP**)lua_touserdata(L, 1);
+    
+    lua_pushstring(L, "x");
+    lua_gettable(L, -2);
+    int x = lua_tonumber(L, -1);
+    lua_pop(L, 1);
+    
+    lua_pushstring(L, "y");
+    lua_gettable(L, -2);
+    int y = lua_tonumber(L, -1);
+    lua_pop(L, 1);
+    
+    int pixel = getpixel(bmp, x, y);
+    
+    if (pixel == 255)
+        lua_pushnumber(L, 255);
+    else
+        lua_pushnumber(L, (pixel & (255 << 8)) >> 8);
+    
+    return 1;
+}
 
 int closest_waypoint(int x, int y) {
     int dist = 9999999;

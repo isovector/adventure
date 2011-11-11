@@ -1,3 +1,13 @@
+REFACTORING
+- move the C update loop to lua                                 [1]
+  - specifically the action bar
+  - inventory/dialogue states
+- move the C draw loop to lua                                   [1]
+  - dialogue
+  - conversation states
+  - inventory
+- refactor dialogue's gamestate to a new subsystem              [5]
+
 ACTORS
 - add a flag to automatically follow an actor through rooms     [2]
 - wire up entering/exiting events on rooms                      [2]
@@ -6,14 +16,11 @@ ACTORS
 - wire up entering/exiting events for hotspots                  [5]
 - wire up obtain/lose item events                               [5]
 
+REIMPLEMENT
+- viewports                                                     [5]
+
 PROTOTYPES
 - write a real subsystem to handle prototyping                  [5]
-
-REFACTORING
-- move the C update loop to lua                                 [4]
-- refactor dialogue's gamestate to a new subsystem              [4]
-- move the C draw loop to lua                                   [6]
-  - export allegro to lua
 
 PATHING
 - improve object walkspot creation                              [6]

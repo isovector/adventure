@@ -4,14 +4,17 @@ function rooms.create(id)
     local room = {
         id = id,
         scene = { },
-        hotspots = { internal = { } },
+        hotspots = { },
+        
         events = { 
             init = event.create(),
             load = event.create(),
             
             enter = event.create(),
             exit = event.create()
-        }
+        },
+        
+        enabled_paths = { }
     }
 
     local roompath = "game/rooms/" .. id .. "/"
@@ -19,6 +22,14 @@ function rooms.create(id)
     room.artwork = bitmap(roompath .. "art.pcx")
     room.hotmap = bitmap(roompath .. "hot.pcx")
 
+    
+    
+    for i = 1, 254 do
+        table.insert(room.enabled_paths, false)
+    end
+    
+    table.insert(room.enabled_paths, true)
+    
     rooms.prototype(room)
     rooms[id] = room
     
@@ -52,19 +63,29 @@ function rooms.prototype(room)
     end
     
     function room.hotspot(shade, id, name)
-        table.insert(room.hotspots.internal, { shade = shade, id = id, name = name })
-        
         room.hotspots[id] = {
-            touch = event.create(),
-            talk = event.create(),
-            look = event.create(),
-            item = event.create(),
+            shade = shade,
+            id = id,
+            name = name,
+            spot = vec(0), ---- TODO(sandy): FIX THIS
+            cursor = 5,
+        
+            events = {
+                touch = event.create(),
+                talk = event.create(),
+                look = event.create(),
+                item = event.create(),
             
-            press = event.create(),
-            release = event.create(),
+                press = event.create(),
+                release = event.create(),
             
-            enter = event.create(),
-            exit = event.create()
+                enter = event.create(),
+                exit = event.create()
+            },
+            
+            contains = function(pos)
+                return shade == which_hotspot(pos)
+            end
         }
     end
     
@@ -78,9 +99,25 @@ function rooms.prototype(room)
         register_foreground(shade, baseline)
     end
     
-    room.events.load.sub(function()
-        for key, hs in ipairs(room.hotspots.internal) do
-            register_hotspot(hs.shade, hs.id, hs.name)
+    function room.is_walkable(pos, y)
+        if y then
+            pos = vec(pos, y)
         end
+        
+        return room.enabled_paths[is_walkable(room.hotmap, pos)]
+    end
+    
+    function room.enable_path(key, val)
+        if not val then
+            val = true
+        end
+        
+        room[key] = val
+    end
+    
+    room.events.load.sub(function()
+        --for key, hs in ipairs(room.hotspots.internal) do
+        --    register_hotspot(hs.shade, hs.id, hs.name)
+        --end
     end)
 end

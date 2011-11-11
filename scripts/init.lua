@@ -1,4 +1,5 @@
 function load_module(file)
+    --print(file)
     dofile(file)
 end
 
@@ -15,6 +16,7 @@ end
 -- load the engine
 load_module("scripts/environment.lua")
 load_module("scripts/library.lua")
+load_module("scripts/geometry.lua")
 load_module("scripts/debug.lua")
 load_module("scripts/repl.lua")
 load_module("scripts/event.lua")

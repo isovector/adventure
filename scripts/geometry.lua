@@ -37,12 +37,7 @@ function vec(a, b)
     if b then
         val = { x = a, y = b }
     elseif type(a) == "table" then
-        -- only process things we need to
-        if not getmetatable(a) then
-            val = { x = a.x, y = a.y }
-        else
-            return a
-        end
+        val = { x = a.x, y = a.y }
     end
     
     setmetatable(val, {

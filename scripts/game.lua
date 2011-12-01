@@ -40,10 +40,10 @@ function make_walkspot(actor)
         end)
     end
     
-    if not actor then return 0, 0 end
+    if not actor then return vec(0) end
     
     if actor.walkspot then
-        return actor.walkspot.x, actor.walkspot.y
+        return vec(actor.walkspot.x, actor.walkspot.y)
     end
 
     local x = actor.pos.x
@@ -64,12 +64,12 @@ function make_walkspot(actor)
             local ay = math.sin(degree) * dist
             
             if room.is_walkable(x + ax, y + ay) then
-                return x + ax, y + ay
+                return vec(x + ax, y + ay)
             end
         end
     end
     
-    return x, y
+    return vec(x, y)
 end
 
 function get_origin(actor)

@@ -37,12 +37,6 @@ struct {
     BITMAP *image;
 } active_item;
 
-
-// gets the hotspot id associated with a pixel
-int hotspot(int x, int y) {
-    return (getpixel(room_hot, x, y) & (255 << 16)) >> 16;
-}
-
 // is (x1, y1) < (x, y) < (x2, y2)?
 int in_rect(int x, int y, int x1, int y1, int x2, int y2) {
     return x >= x1 && x < x2 && y >= y1 && y < y2;
@@ -74,24 +68,6 @@ void set_action(const char *type, const char *obj) {
     action_state.type = type;
     action_state.object = obj;
     action_state.relevant = 1;
-}
-
-// walks to a point and then fires a game event
-void walk_and_fire_event(POINT *walkpoint, const char *type, const char *obj, const char *method, int flip) {
-    if (walkpoint) {
-        lua_getglobal(script, "walk");
-        lua_getglobal(script, "player");
-        lua_vector(script, walkpoint->x, walkpoint->y);
-        lua_call(script, 2, 0);
-    }
-
-    lua_getglobal(script, "append_dispatch");
-    lua_getglobal(script, "player");
-    lua_pushstring(script, type);
-    lua_pushstring(script, obj);
-    lua_pushstring(script, method);
-    lua_pushboolean(script, flip);
-    lua_call(script, 5, 0);
 }
 
 // fires a game event
@@ -131,212 +107,6 @@ void update_game() {
     lua_pop(script, 2);
     
     return;
-
-    object_name = "";
-    cursor = 0;
-
-    if (0) return; // disable input
-    
-    // did we just return from the actionbar?
-    if (action_state.result) {
-        const char *method;
-
-        switch (action_state.result) {
-            case 1: method = "look";  break;
-            case 2: method = "talk";  break;
-            case 3: method = "touch"; break;
-        }
-
-        // if we have a walkspot, use it
-        if (action_state.walkspot)
-            walk_and_fire_event(action_state.walkspot, action_state.type, action_state.object, method, action_state.walkspot->x > action_state.x );
-        else
-            fire_event(action_state.type, action_state.object, method);
-        
-        // if it is OUR walkspot, we can delete it
-        if (action_state.owns_walkspot)
-            free(action_state.walkspot);
-        
-        action_state.walkspot = NULL;
-        action_state.result = 0;
-    }
-
-    // gets the list of rendered objects
-    lua_getregister(script, "render_obj");
-    int t = lua_gettop(script);
-
-    int found = 0;
-
-    lua_pushnil(script);
-    while (lua_next(script, t) != 0) {
-        // get the properties of this object
-        lua_pushstring(script, "name");
-        lua_gettable(script, -2);
-        const char *name = lua_tostring(script, -1);
-        lua_pop(script, 1);
-
-        lua_pushstring(script, "x");
-        lua_gettable(script, -2);
-        int x = lua_tonumber(script, -1);
-        lua_pop(script, 1);
-
-        lua_pushstring(script, "y");
-        lua_gettable(script, -2);
-        int y = lua_tonumber(script, -1);
-        lua_pop(script, 1);
-
-        lua_pushstring(script, "width");
-        lua_gettable(script, -2);
-        int width = lua_tonumber(script, -1);
-        lua_pop(script, 1);
-
-        lua_pushstring(script, "height");
-        lua_gettable(script, -2);
-        int height = lua_tonumber(script, -1);
-        lua_pop(script, 1);
-
-        lua_pushstring(script, "flipped");
-        lua_gettable(script, -2);
-        int flipped = lua_toboolean(script, -1);
-        lua_pop(script, 1);
-
-        lua_pushstring(script, "xorigin");
-        lua_gettable(script, -2);
-        int xorigin = lua_tonumber(script, -1);
-        lua_pop(script, 1);
-
-        lua_pushstring(script, "yorigin");
-        lua_gettable(script, -2);
-        int yorigin = lua_tonumber(script, -1);
-        lua_pop(script, 1);
-
-        lua_pushstring(script, "sheet");
-        lua_gettable(script, -2);
-        BITMAP *sheet = lua_touserdata(script, -1);
-        lua_pop(script, 1);
-
-        // is our mouse on top of this object?
-        if (in_rect(mouse_x, mouse_y, x , y , x  + width, y  + height)
-                && is_pixel_perfect(sheet, mouse_x - x , mouse_y - y , width, height, xorigin, yorigin, flipped)) {
-            object_name = name;
-            found = 1;
-            door_travel = 0;
-
-            if (is_click(1))
-                if (active_item.active) { // are we using an item?
-                    fire_event("object", lua_tostring(script, -2), active_item.name);
-                    active_item.active = 0;
-                } else {
-                    // nope, we are just using our action bar
-                    lua_getglobal(script, "make_walkspot");
-                    lua_pushstring(script, lua_tostring(script, -3));
-                    lua_call(script, 1, 2);
-                    POINT* walkspot = malloc(sizeof(POINT));
-                    walkspot->x = (int)lua_tonumber(script, -2);
-                    walkspot->y = (int)lua_tonumber(script, -1);
-                    lua_pop(script, 2);
-                    
-                    set_action("object", lua_tostring(script, -2));
-                    action_state.owns_walkspot = 1;
-                    action_state.walkspot = walkspot;
-                }
-            
-            // use the active cursor
-            cursor = 5;
-        }
-
-        lua_pop(script, 1);
-    } lua_pop(script, 1);
-
-    // we didn't get a render object
-    if (!found) {
-        HOTSPOT *hs = hotspots[hotspot(mouse_x , mouse_y )];
-
-        // but we are on a hotspot!
-        if (hs) {
-            cursor = hs->cursor;
-            object_name = hs->display_name;
-
-            POINT *walkspot = walkspots[hotspot(mouse_x , mouse_y )];
-            
-            if (is_click(1))
-                if (active_item.active) { // item?
-                    walk_and_fire_event(walkspot, "hotspot", hs->internal_name, active_item.name, walkspot->x > mouse_x );
-                    active_item.active = 0;
-                    door_travel = 0;
-                } else if (hs->exit) { // no item, door
-                    action_state.relevant = 0;
-                    
-                    // first click?
-                    if (door_travel != hs->exit->door) {
-                        door_travel = hs->exit->door;
-
-                        walk_and_fire_event(walkspot, "door", hs->internal_name, "enter", walkspot->x > mouse_x );
-                        
-                        lua_getglobal(script, "append_switch");
-                        lua_getglobal(script, "player");
-                        lua_pushstring(script, hs->exit->room);
-                        lua_pushnumber(script, hs->exit->door);
-                        lua_call(script, 3, 0);
-                    } else { // double click
-                        door_travel = 0;
-                        do_exit(hs->exit);
-                    }
-                } else { // use the action bar
-                    set_action("hotspot", hs->internal_name);
-                    action_state.owns_walkspot = 0;
-                    action_state.walkspot = walkspot;
-                    door_travel = 0;
-                }
-        } else if (is_click(1)) { // clicking on nothing
-            door_travel = 0;
-            
-            if (is_walkable(mouse_x, mouse_y)) { // on walkable ground
-                lua_getglobal(script, "player");
-                int x, y;
-                actor_position(&x, &y);
-
-                // can we get there directly?
-                if (is_pathable(x, y, mouse_x , mouse_y )) {
-                    lua_getglobal(script, "player");
-                    lua_pushstring(script, "goal");
-                    lua_vector(script, mouse_x , mouse_y );
-                    lua_settable(script, -3);
-                    
-                    lua_pushstring(script, "goals");
-                    lua_newtable(script);
-                    lua_settable(script, -3);
-                    
-                    lua_pop(script, 2);
-                } else { // nope, do pathfinding
-                    lua_getglobal(script, "player");
-                    lua_pushstring(script, "walk");
-                    lua_gettable(script, -2);
-                    lua_vector(script, mouse_x , mouse_y );
-                    lua_call(script, 1, 0);
-                    lua_pop(script, 1);
-                }
-            }
-
-            // you can't get an actionbar on nothing
-            action_state.relevant = 0;
-        }
-    }
-
-    // are we holding the mouse button?
-    if (mouse_b & 1 && action_state.relevant) {
-        // it's time to bring up the action bar
-        if (life > action_state.started + ACTION_TIME) {
-            game_state = STATE_ACTION;
-            action_state.last_state = STATE_GAME;
-        }
-    } else if (is_click(2)) { // we want the inventory instead
-        action_state.relevant = 0;
-        if (active_item.active)
-            active_item.active = 0;
-        else
-            game_state = STATE_INVENTORY;
-    }
 }
 
 // see update_game(). it is very parallel
@@ -419,26 +189,6 @@ void update_inventory() {
     }
 }
 
-// update the actionbar gamestate
-void update_action() {
-    action_state.result = 0;
-    cursor = 0;
-    
-    if (in_rect(mouse_x, mouse_y, action_state.x - 72, action_state.y - 24, action_state.x - 24, action_state.y + 24)) {
-        action_state.result = 2;
-        cursor = 5;
-    } else if (in_rect(mouse_x, mouse_y, action_state.x - 24, action_state.y - 24, action_state.x + 24, action_state.y + 24)) {
-        action_state.result = 1;
-        cursor = 5;
-    } else if (in_rect(mouse_x, mouse_y, action_state.x + 24, action_state.y - 24, action_state.x + 72, action_state.y + 24)) {
-        action_state.result = 3;
-        cursor = 5;
-    }
-    
-    if (!(mouse_b & 1))
-        game_state = action_state.last_state;
-}
-
 // returns the number of dialogue options available
 // if 0, we are not in a conversation
 int get_dialogue_count() {
@@ -495,16 +245,16 @@ void update() {
 
     int dialogue = get_dialogue_count();
     
-    if (game_state & STATE_GAME && !dialogue) 
+    //if (game_state & STATE_GAME && !dialogue) 
         update_game();
-    else if (dialogue) {
-        update_dialogue();
-    } else {
-        if (game_state & STATE_ACTION) 
-            update_action();
-        else if (game_state & STATE_INVENTORY)
-            update_inventory();
-    }
+    //else if (dialogue) {
+        //update_dialogue();
+    //} else {
+        //if (game_state & STATE_ACTION) 
+            //update_action();
+        //else if (game_state & STATE_INVENTORY)
+            //update_inventory();
+    //}
 
     last_mouse = mouse_b;
 
@@ -537,17 +287,10 @@ void frame() {
     lua_call(script, 0, 0);
     lua_pop(script, 2);
     
-    char fps_buffer[10];
-    sprintf(fps_buffer, "%d", fps);
-    textout_ex(buffer, font, fps_buffer, SCREEN_WIDTH - 25, 25, makecol(255, 0, 0), -1);
-    
     release_bitmap(buffer);
     blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     
     return;
-    
-    //clear_to_color(buffer, 0);
-    
 
     lua_getglobal(script, "conversation");
     lua_pushstring(script, "words");
@@ -579,9 +322,6 @@ void frame() {
 
         lua_pop(script, 2);
     } lua_pop(script, 1);
-
-    if (object_name)
-        textout_ex(buffer, font, object_name, 10, 10, 0, -1);
 
     if (game_state & STATE_INVENTORY) {
         masked_blit(inventory, buffer, 0, 0, 270, 210, 741, 300);
@@ -615,7 +355,7 @@ void frame() {
 
             lua_getregister(script, "render_inv");
             lua_pushvalue(script, -4);
-            push_rendertable(name, xpos, ypos, 64, 64);
+            //push_rendertable(name, xpos, ypos, 64, 64);
             lua_pushstring(script, "image");
             lua_pushlightuserdata(script, bmp);
             lua_settable(script, -3);
@@ -625,9 +365,6 @@ void frame() {
             i++;
         } lua_pop(script, 1);
     }
-
-    if (game_state & STATE_ACTION)
-        masked_blit(actionbar, buffer, 0, 0, action_state.x - 72, action_state.y - 24, 144, 48);
 
     int dialogue = get_dialogue_count();
     if (dialogue) {
@@ -648,14 +385,6 @@ void frame() {
             i++;
         } lua_pop(script, 2);
     }
-    
-    if (!disable_input) {
-        int cx, cy;
-        //masked_blit(cursors, buffer, cursor * 32, 0, mouse_x - cx, mouse_y - cy, 32, 32);
-    }
-
-    if (active_item.active)
-        masked_blit(active_item.image, buffer, 0, 0, mouse_x, mouse_y, 64, 64);
 }
 
 // interrupt for the sempahore ticker

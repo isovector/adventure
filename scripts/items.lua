@@ -3,7 +3,7 @@ items = { }
 function items.create(id, name, bmpfile)
     local item = {
         id = id,
-        label = name,
+        name = name,
         image = bitmap(bmpfile),
 
         events = {

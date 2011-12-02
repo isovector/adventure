@@ -16,7 +16,7 @@ events.game.tick.sub(function(state)
     end
 end)
 
-events.game.tick.sub(engine.interface)
+events.game.tick.sub(engine.update)
 
 events.game.tick.sub(clock.tick)
 events.game.tick.sub(tasks.update)

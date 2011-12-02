@@ -1,6 +1,5 @@
 REFACTORING
 - move the C update loop to lua                                 [1]
-  - specifically the action bar
   - inventory/dialogue states
 - move the C draw loop to lua                                   [1]
   - dialogue

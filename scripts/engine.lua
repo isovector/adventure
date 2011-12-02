@@ -27,33 +27,73 @@ engine = {
         }
     },
     
-    actionbar = bitmap("resources/actionbar.pcx"),
-    
     cursors = {
-        image = bitmap("resources/cursors.pcx"),
         offsets = {
             vec(16, 16),
             vec(3, 27),
             vec(16, 29),
-             vec(29, 27),
-             vec(3, 16),
-             vec(16, 16),
-             vec(29, 16),
-             vec(3, 5),
-             vec(16, 3),
-             vec(29, 5)
+            vec(29, 27),
+            vec(3, 16),
+            vec(16, 16),
+            vec(29, 16),
+            vec(3, 5),
+            vec(16, 3),
+            vec(29, 5)
         }
-    }
+    },
+    
+    resources = {
+        action_bar = bitmap("resources/actionbar.pcx"),
+        cursors = bitmap("resources/cursors.pcx"),
+        inventory = bitmap("resources/inventory.pcx")
+    },
+    
+    verbs = { }
 }
+
+function engine.add_verb(name, use, offset, size)
+    engine.verbs[name] = {
+        use = use,
+        offset = offset,
+        size = size
+    }
+end
+
+function engine.set_action(type, id, name, spot, flip)
+    if not flip then
+        flip = false
+    end
+
+    engine.action = {
+        active = false,
+        flip = flip,
+        type = type,
+        object = id,
+        name = name,
+        pos = engine.mouse.pos - (engine.resources.action_bar.size * 0.5),
+        spot = spot,
+        activates_at = engine.life + 0.5
+    }
+end
 
 function engine.mouse.is_click(button)
     return engine.mouse.buttons[button] 
         and not engine.mouse.buttons["last_" .. button]
 end
 
-function engine.mouse.is_anticlick(button)
+function engine.mouse.is_upclick(button)
     return not engine.mouse.buttons[button] 
         and engine.mouse.buttons["last_" .. button]
+end
+
+function engine.mouse.pump()
+    local mouse = engine.mouse
+
+    for button, value in pairs(mouse.buttons) do
+        if type(mouse.buttons["last_" .. button]) ~= "nil"  then
+            mouse.buttons["last_" .. button] = mouse.buttons[button]
+        end
+    end
 end
 
 events.room = {
@@ -65,10 +105,15 @@ events.room = {
 function engine.callback(callback_type, object, method)
     local item_type
     
-    if  method ~= "touch" and
-        method ~= "talk" and
-        method ~= "look" and
-        method ~= "door" then
+    local is_item = true
+    
+    for verb, _ in pairs(engine.verbs) do
+        if method == verb then
+            is_item = false
+        end
+    end
+    
+    if is_item then
         item_type = method
         method = "item"
     end
@@ -114,8 +159,6 @@ end
 
 function append_dispatch(actor, callback_type, object, method, flipped)
     if not actor or not actor.goals then return end
-    
-    print(actor, callback_type, object, method, flipped)
     
     table.insert(actor.goals, function()
         actor.flipped = flipped

@@ -1,4 +1,37 @@
 rect = { }
+geometry = {
+    vector_mt = {
+        __add = function(op1, op2)
+                return vec(op1.x + op2.x, op1.y + op2.y)
+            end,
+        __sub = function(op1, op2)
+                return vec(op1.x - op2.x, op1.y - op2.y)
+            end,
+        __mul = function(op, k)
+                return vec(op.x * k, op.y * k)
+            end,
+        __eq = function(op1, op2)
+                return op1.x == op2.x and op1.y == op2.y
+            end,
+        __index = function(tab, key)
+                if key == "normal" then
+                    return function()
+                        local len = tab.len()
+                        return vec(tab.x / len, tab.y / len)
+                    end
+                elseif key == "len" then
+                    return function()
+                        return math.sqrt(tab.x * tab.x + tab.y * tab.y)
+                    end
+                elseif key == "x" then
+                    return tab.x
+                elseif key == "y" then
+                    return tab.y
+                end
+                
+            end
+    }
+}
 
 function rect.create(pos, size, w, h)
     if w then
@@ -40,37 +73,7 @@ function vec(a, b)
         val = { x = a.x, y = a.y }
     end
     
-    setmetatable(val, {
-        __add = function(op1, op2)
-                return vec(op1.x + op2.x, op1.y + op2.y)
-            end,
-        __sub = function(op1, op2)
-                return vec(op1.x - op2.x, op1.y - op2.y)
-            end,
-        __mul = function(op, k)
-                return vec(op.x * k, op.y * k)
-            end,
-        __eq = function(op1, op2)
-                return op1.x == op2.x and op1.y == op2.y
-            end,
-        __index = function(tab, key)
-                if key == "normal" then
-                    return function()
-                        local len = tab.len()
-                        return vec(tab.x / len, tab.y / len)
-                    end
-                elseif key == "len" then
-                    return function()
-                        return math.sqrt(tab.x * tab.x + tab.y * tab.y)
-                    end
-                elseif key == "x" then
-                    return tab.x
-                elseif key == "y" then
-                    return tab.y
-                end
-                
-            end
-    })
+    setmetatable(val, geometry.vector_mt)
     
     return val
 end

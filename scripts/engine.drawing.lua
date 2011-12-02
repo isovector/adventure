@@ -16,12 +16,25 @@ engine.events.draw.sub(function()
         drawing.text(vec(32, 46), color.make(255, 200, 0), color.transparent, "This is generally indicative of a big lua problem")
     end
     
-   
-    if engine.action and engine.action.active then
-        drawing.blit(engine.actionbar, engine.action.pos, false, vec(0), engine.actionbar.size)
+    if engine.state == "inventory" then
+        drawing.blit(engine.resources.inventory, vec(270, 210), false, vec(0), engine.resources.inventory.size)
+        
+        local i = 0
+        for _, item in pairs(player.inventory) do
+            drawing.blit(item.image, vec(270 + 75 * (i % 10), 215 + 75 * math.floor(i / 10)), false, vec(0), item.image.size)
+            i = i + 1
+        end
     end
     
-    drawing.blit(engine.cursors.image, engine.mouse.pos - engine.cursors.offsets[engine.mouse.cursor + 1], false, vec(32 * engine.mouse.cursor, 0), vec(32))
+    if engine.action and engine.action.active then
+        drawing.blit(engine.resources.action_bar, engine.action.pos, false, vec(0), engine.resources.action_bar.size)
+    end
+    
+    if engine.item then
+        drawing.blit(engine.item.image, engine.mouse.pos, false, vec(0), engine.item.image.size)
+    end
+    
+    drawing.blit(engine.resources.cursors, engine.mouse.pos - engine.cursors.offsets[engine.mouse.cursor + 1], false, vec(32 * engine.mouse.cursor, 0), vec(32))
     drawing.text(vec(32), color.make(255, 255, 255), color.transparent, engine.hovertext)
     drawing.text(vec(screen_width - 50, 32), color.make(255, 0, 0), color.transparent, engine.fps)
 end)

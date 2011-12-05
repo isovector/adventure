@@ -1,10 +1,6 @@
 REFACTORING
 - move the C update loop to lua                                 [1]
   - inventory/dialogue states
-- move the C draw loop to lua                                   [1]
-  - dialogue
-  - conversation states
-  - inventory
 - refactor dialogue's gamestate to a new subsystem              [5]
 
 ACTORS

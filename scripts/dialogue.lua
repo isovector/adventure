@@ -92,7 +92,7 @@ function conversation.continue(opt)
     coroutine.resume(conversation.continue_routine, opt)
 end
 
-function conversation.say(message, x, y, color, duration)
+function conversation.say(message, pos, color, duration)
     if not color then
         color = 0
     end
@@ -104,8 +104,7 @@ function conversation.say(message, x, y, color, duration)
     msg = {
         message = message,
         color = color,
-        x = x,
-        y = y,
+        pos = pos,
         duration = duration
     }
 

@@ -71,16 +71,16 @@ function conversation.continuer()
             conversation.topic = nil
         end
 
-        if  select[opt] then
+        if select[opt] then
             events.dialogue.continue(opt)
         
             if not select[opt].silent then
-                tasks.begin(function() say(player, select[opt].label) end, conversation.continue)
+                tasks.begin({ function() say(player, select[opt].label) end, conversation.continue })
                 coroutine.yield()
             end
 
             if select[opt].action then
-                tasks.begin(select[opt].action, conversation.continue)
+                tasks.begin({ select[opt].action, conversation.continue })
                 coroutine.yield()
             end
         end

@@ -103,8 +103,7 @@ events.room = {
 
 
 function engine.callback(callback_type, object, method)
-    local item_type
-    
+    local item_type = nil
     local is_item = true
     
     for verb, _ in pairs(engine.verbs) do
@@ -126,12 +125,12 @@ function engine.callback(callback_type, object, method)
                 --enable_input(true)
             end)
         end
-        
+
     elseif callback_type == "object" then
         local obj = table.find(room.scene, function(key, val)
             return val.id == object
         end)
-        
+
         if obj.events and obj.events[method] then
             tasks.begin(function()
                 --enable_input(false)

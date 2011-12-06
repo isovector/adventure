@@ -2,20 +2,6 @@
 
 lua_State *script;
 
-void actor_position(int *x, int *y) {
-    lua_pushvalue(script, -1);
-    lua_pushstring(script, "pos");
-    lua_gettable(script, -2);
-    lua_pushstring(script, "x");
-    lua_gettable(script, -2);
-    *x = (int)lua_tonumber(script, -1);
-    lua_pop(script, 1);
-    lua_pushstring(script, "y");
-    lua_gettable(script, -2);
-    *y = (int)lua_tonumber(script, -1);
-    lua_pop(script, 3);
-}
-
 char *strdup(const char *str) {
     int n = strlen(str) + 1;
     char *dup = malloc(n);

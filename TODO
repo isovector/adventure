@@ -1,8 +1,3 @@
-REFACTORING
-- move the C update loop to lua                                 [1]
-  - inventory/dialogue states
-- refactor dialogue's gamestate to a new subsystem              [5]
-
 ACTORS
 - add a flag to automatically follow an actor through rooms     [2]
 - wire up entering/exiting events on rooms                      [2]
@@ -10,6 +5,9 @@ ACTORS
   - and clean it up too
 - wire up entering/exiting events for hotspots                  [5]
 - wire up obtain/lose item events                               [5]
+
+REFACTORING
+- refactor dialogue's gamestate to a new subsystem              [5]
 
 REIMPLEMENT
 - viewports                                                     [5]

@@ -1,5 +1,5 @@
 tmp_anims = {}
-tmp_anims.sign = animation.build_set(bitmap("game/rooms/outside/objects/sign.pcx"), 1, 2, 0, 0)
+tmp_anims.sign = animation.build_set(bitmap("game/rooms/outside/giobjects/sign.pcx"), 1, 2, 0, 0)
 tmp_anims.sign.anims.stand = {
     { duration = 3, frame = 0 },
     { duration = 0.3, frame = 1 },
@@ -53,6 +53,7 @@ room.hotspots.ladder.touch.sub(function()
 end)
 
 cup.events.touch.sub(function()
+    print("hello")
     player.say("Hey! This is beer!")
     player.say("Score!")
     give_item(player, "beer")

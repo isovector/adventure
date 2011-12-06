@@ -32,22 +32,6 @@ typedef struct tagHOTSPOT {
     EXIT *exit;
 } HOTSPOT;
 
-typedef enum tagSTATE {
-    STATE_PAUSED = 1,
-    STATE_GAME = 2,
-    STATE_ACTION = 4,
-    STATE_INVENTORY = 8,
-    STATE_MENU = 16
-} STATE;
-
-typedef enum tagOBJTYPE {
-    OBJ_HOTSPOT,
-    OBJ_ACTOR,
-    OBJ_OBJECT,
-    OBJ_ITEM,
-    OBJ_NOTHING
-} OBJTYPE;
-
 #include "path.h"
 #include "drawing.h"
 #include "lua.h"
@@ -59,8 +43,6 @@ extern POINT *waypoints[MAX_WAYPOINTS];
 extern int waypoint_count;
 extern unsigned int waypoint_connections[MAX_WAYPOINTS];
 extern int in_console;
-extern int door_travel;
-extern int disable_input;
 
 void init_console(int);
 void open_console();

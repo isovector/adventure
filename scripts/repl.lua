@@ -46,6 +46,7 @@ function repl.dump(tab)
    
     for key, _ in pairs(tab) do
         table.insert(keys, key)
+        key = tostring(key)
         
         if #key > len then
             len = #key
@@ -57,6 +58,7 @@ function repl.dump(tab)
     for _, key in ipairs(keys) do
         local val = tab[key]
         local prefix = ""
+        key = tostring(key)
         
         for i = 0, len - #key do
             prefix = prefix .. " "

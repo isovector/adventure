@@ -1,5 +1,5 @@
 tmp_anims = {}
-tmp_anims.sign = animation.build_set(bitmap("game/rooms/outside/giobjects/sign.pcx"), 1, 2, 0, 0)
+tmp_anims.sign = animation.build_set(bitmap("game/rooms/outside/objects/sign.pcx"), 1, 2, 0, 0)
 tmp_anims.sign.anims.stand = {
     { duration = 3, frame = 0 },
     { duration = 0.3, frame = 1 },

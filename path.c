@@ -25,30 +25,33 @@ int is_pathable(int x1, int y1, int x2, int y2) {
     float dx = x2 - x1, 
           dy = y2 - y1;
     float dist = sqrt(dx * dx + dy * dy);
+    int i;
     
     dx /= dist;
     dy /= dist;
 
-    for (int i = 0; i < (int)dist; i++) {
+    for (i = 0; i < (int)dist; i++) {
         x += dx;
         y += dy;
-        if (!is_walkable((int)x, (int)y)) {
+        
+        if (!is_walkable((int)x, (int)y))
             return 0;
-        }
     }
     
     return 1;
 }
 
 void build_walkspots() {
-    for (int i = 0; i < 255; i++)
+    int i, color, x, y;
+    
+    for (i = 0; i < 255; i++)
         free(walkspots[i]);
     
     waypoint_count = 0;
     
-    int color = 0;
-    for (int y = 0; y < SCREEN_HEIGHT; y++)
-    for (int x = 0; x < SCREEN_WIDTH; x++)
+    color = 0;
+    for (y = 0; y < SCREEN_HEIGHT; y++)
+    for (x = 0; x < SCREEN_WIDTH; x++)
         if ((color = getpixel(room_hot, x, y)) && color < 255) {
             walkspots[color] = malloc(sizeof(POINT));
             walkspots[color]->x = x;
@@ -57,23 +60,25 @@ void build_walkspots() {
 }
 
 void build_waypoints() {
-    for (int i = 0; i < waypoint_count; i++) {
+    int i, x, y, a, b;
+
+    for (i = 0; i < waypoint_count; i++) {
         free(waypoints[i]);
         waypoint_connections[i] = 0;
     }
     
     waypoint_count = 0;
     
-    for (int y = 0; y < SCREEN_HEIGHT; y++)
-    for (int x = 0; x < SCREEN_WIDTH; x++)
+    for (y = 0; y < SCREEN_HEIGHT; y++)
+    for (x = 0; x < SCREEN_WIDTH; x++)
         if (getpixel(room_hot, x, y) == 255) {
             waypoints[waypoint_count] = malloc(sizeof(POINT));
             waypoints[waypoint_count]->x = x;
             waypoints[waypoint_count++]->y = y;
         }
     
-    for (int a = 0; a < waypoint_count; a++)
-    for (int b = a + 1; b < waypoint_count; b++) {
+    for (a = 0; a < waypoint_count; a++)
+    for (b = a + 1; b < waypoint_count; b++) {
         POINT pa = *waypoints[a], pb = *waypoints[b];
         if (is_pathable(pa.x, pa.y, pb.x, pb.y))
             connect_waypoints(a, b);
@@ -81,16 +86,17 @@ void build_waypoints() {
 }
 
 int get_neighbors(lua_State *L) {
+    int i, j = 1, connection;
+    
     if (lua_gettop(L) != 1 || !lua_isnumber(L, 1)) {
         lua_pushstring(L, "get_neighbors expects (int)");
         lua_error(L);
     }
     
-    int connection = waypoint_connections[(int)lua_tonumber(L, 1)];
+    connection = waypoint_connections[(int)lua_tonumber(L, 1)];
     lua_newtable(L);
     
-    int j = 1;
-    for (int i = 0; i < MAX_WAYPOINTS; i++)
+    for (i = 0; i < MAX_WAYPOINTS; i++)
         if (connection & (1 << i)) {
             lua_pushnumber(L, j++);
             lua_pushnumber(L, i);
@@ -101,16 +107,17 @@ int get_neighbors(lua_State *L) {
 }
 
 int get_waypoint(lua_State *L) {
+    POINT defaultspot, *waypoint;
+    
     if (lua_gettop(L) != 1 || !lua_isnumber(L, 1)) {
         lua_pushstring(L, "get_waypoint expects (int)");
         lua_error(L);
     }
     
-    POINT defaultspot;
     defaultspot.x = 0;
     defaultspot.y = 0;
     
-    POINT *waypoint = waypoints[(int)lua_tonumber(L, 1)];
+    waypoint = waypoints[(int)lua_tonumber(L, 1)];
     if (!waypoint)
         waypoint = &defaultspot;
     
@@ -120,16 +127,18 @@ int get_waypoint(lua_State *L) {
 }
 
 int script_get_walkspot(lua_State *L) {
+    POINT defaultspot, *walkspot;
+    
     if (lua_gettop(L) != 1 || !lua_isnumber(L, 1)) {
         lua_pushstring(L, "get_walkspot expects (int)");
         lua_error(L);
     }
 
-    POINT defaultspot;
+    
     defaultspot.x = 0;
     defaultspot.y = 0;
     
-    POINT *walkspot = walkspots[(int)lua_tonumber(L, 1)];
+    walkspot = walkspots[(int)lua_tonumber(L, 1)];
     if (!walkspot)
         walkspot = &defaultspot;
     
@@ -139,6 +148,8 @@ int script_get_walkspot(lua_State *L) {
 }
 
 int get_closest_waypoint(lua_State *L) {
+    int x, y;
+    
     if (lua_gettop(L) != 1 || !lua_istable(L, 1)) {
         lua_pushstring(L, "get_closest_waypoint expects (table)");
         lua_error(L);
@@ -146,11 +157,11 @@ int get_closest_waypoint(lua_State *L) {
     
     lua_pushstring(L, "x");
     lua_gettable(L, -2);
-    int x = (int)lua_tonumber(L, -1);
+    x = (int)lua_tonumber(L, -1);
     lua_pop(L, 1);
     lua_pushstring(L, "y");
     lua_gettable(L, -2);
-    int y = (int)lua_tonumber(L, -1);
+    y = (int)lua_tonumber(L, -1);
     lua_pop(L, 2);
     
     lua_pushnumber(L, closest_waypoint(x, y));
@@ -158,14 +169,16 @@ int get_closest_waypoint(lua_State *L) {
 }
 
 int script_enable_path(lua_State *L) {
+    int n, b;
+    
     if ((lua_gettop(L) == 1 && !lua_isnumber(L, 1)) ||
         (lua_gettop(L) >= 2 && (!lua_isnumber(L, 1) || !lua_isboolean(L, 2)))) {
         lua_pushstring(L, "enable_path expects (int, [bool])");
         lua_error(L);
     }
     
-    int n = lua_tonumber(L, 1);
-    int b = lua_gettop(L) == 2 ? lua_toboolean(L, 2) : 1;
+    n = lua_tonumber(L, 1);
+    b = lua_gettop(L) == 2 ? lua_toboolean(L, 2) : 1;
     
     enabled_paths[n] = b;
     build_waypoints();
@@ -178,24 +191,27 @@ int is_walkable(int x, int y) {
 }
 
 int script_is_walkable(lua_State *L) {
+    BITMAP *bmp;
+    int x, y, pixel;
+    
     if (lua_gettop(L) != 2 || !lua_isuserdata(L, 1) || !lua_istable(L, 2)) {
         lua_pushstring(L, "is_walkable expects (bitmap, vector)");
         lua_error(L);
     }
     
-    BITMAP* bmp = *(BITMAP**)lua_touserdata(L, 1);
+    bmp = *(BITMAP**)lua_touserdata(L, 1);
     
     lua_pushstring(L, "x");
     lua_gettable(L, -2);
-    int x = lua_tonumber(L, -1);
+    x = lua_tonumber(L, -1);
     lua_pop(L, 1);
     
     lua_pushstring(L, "y");
     lua_gettable(L, -2);
-    int y = lua_tonumber(L, -1);
+    y = lua_tonumber(L, -1);
     lua_pop(L, 1);
     
-    int pixel = getpixel(bmp, x, y);
+    pixel = getpixel(bmp, x, y);
     
     if (pixel == 255)
         lua_pushnumber(L, 255);
@@ -206,13 +222,13 @@ int script_is_walkable(lua_State *L) {
 }
 
 int closest_waypoint(int x, int y) {
-    int dist = 9999999;
-    int winner = 0;
+    int dist = 9999999, winner = 0;
+    int i, tx, ty, dif;
     
-    for (int i = 0; i < waypoint_count; i++) {
-        int tx = waypoints[i]->x - x;
-        int ty = waypoints[i]->y - y;
-        int dif = sqrt(tx * tx + ty * ty);
+    for (i = 0; i < waypoint_count; i++) {
+        tx = waypoints[i]->x - x;
+        ty = waypoints[i]->y - y;
+        dif = sqrt(tx * tx + ty * ty);
         if (dif < dist) {
             dist = dif;
             winner = i;

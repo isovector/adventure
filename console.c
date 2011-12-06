@@ -26,6 +26,7 @@ DIALOG consolediag[] = {
 
 RQNODE *alloc_rqnode() {
     RQNODE *node = (RQNODE*)malloc(sizeof(RQNODE));
+    
     node->next = NULL;
     node->prompt = NULL;
     node->value = NULL;
@@ -35,10 +36,12 @@ RQNODE *alloc_rqnode() {
 
 void push_queue(const char *cprompt, const char *value) {
     RQNODE *node = rollqueue.head;
+    
     rollqueue.head = node->next;
     rollqueue.tail->next = node;
     rollqueue.tail = node;
     node->next = NULL;
+    
     if (node->value)
         free(node->value);
     if (node->prompt)
@@ -51,12 +54,13 @@ void push_queue(const char *cprompt, const char *value) {
 LUA_WRAPVOID(push_queue, 2, string, string)
 
 void init_console(int n) {
-    rollqueue.count = n;
-
     RQNODE *head = alloc_rqnode();
+    int i;
+    
+    rollqueue.count = n;
     rollqueue.head = head;
 
-    for (int i = 1; i < n; i++) {
+    for (i = 1; i < n; i++) {
         head->next = alloc_rqnode();
         head = head->next;
     }
@@ -67,13 +71,15 @@ void init_console(int n) {
 }
 
 void open_console() {
+    int i;
+    
     gui_fg_color = makecol(0, 0, 0);
     gui_mg_color = makecol(128, 128, 128);
     gui_bg_color = makecol(230, 220, 210);
 
     rectfill(screen, 0, 0, CONSOLE_WIDTH, CONSOLE_HEIGHT, gui_bg_color);
     RQNODE *node = rollqueue.head;
-    for (int i = 0; i < rollqueue.count; i++) {
+    for (i = 0; i < rollqueue.count; i++) {
         if (node->value)
             textprintf_ex(screen, font, CONSOLE_MARGIN, CONSOLE_MARGIN + i * 8, gui_fg_color, -1, "%s%s", node->prompt, node->value);
         node = node->next;

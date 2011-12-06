@@ -34,6 +34,8 @@ void update_game() {
 
 // generic update - dispatches on gamestate
 void update() {
+    int i;
+    
     life += 1 / (float)FRAMERATE;
 
     if (key[KEY_ESC] && !last_key[KEY_ESC]) quit = 1;
@@ -41,15 +43,15 @@ void update() {
 
     update_game();
 
-    for (int i = 0; i < KEY_MAX; i++)
+    for (i = 0; i < KEY_MAX; i++)
         last_key[i] = key[i];
 }
 
 // draws the foreground of a hot image
 void draw_foreground(int level) {
-    int col;
-    for (int y = 0; y < SCREEN_HEIGHT; y++)
-    for (int x = 0; x < SCREEN_WIDTH; x++)
+    int col, y, x;
+    for (y = 0; y < SCREEN_HEIGHT; y++)
+    for (x = 0; x < SCREEN_WIDTH; x++)
         if ((getpixel(room_hot, x, y) & 255) == level)
             putpixel(buffer, x, y, getpixel(room_art, x, y));
 }
@@ -84,6 +86,10 @@ void ticker() {
 END_OF_FUNCTION(ticker);
 
 int main(int argc, char* argv[]) {
+    int frames_done = 0;
+    float old_time = 0;
+    int old_ticks = 0;
+    
     sem_init(&semaphore_rest, 0, 1);
 
     allegro_init();
@@ -113,9 +119,6 @@ int main(int argc, char* argv[]) {
     init_console(32);
     install_int_ex(&ticker, BPS_TO_TIMER(FRAMERATE));
 
-    int frames_done = 0;
-    float old_time = 0;
-
     while (!quit) {
         sem_wait(&semaphore_rest);
 
@@ -132,7 +135,7 @@ int main(int argc, char* argv[]) {
         }
 
         while (ticks > 0) {
-            int old_ticks = ticks;
+            old_ticks = ticks;
             update();
             ticks--;
 

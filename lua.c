@@ -11,12 +11,14 @@ char *strdup(const char *str) {
 }
 
 int script_register_hotspot(lua_State *L) {
+    HOTSPOT *hotspot;
+    
     if (lua_gettop(L) != 3 || !lua_isnumber(L, 1) || !lua_isstring(L, 2)|| !lua_isstring(L, 3)  || lua_tonumber(L, 1) != (int)lua_tonumber(L, 1)) {
         lua_pushstring(L, "register_hotspot expects (int, string, string)");
         lua_error(L);
     }
     
-    HOTSPOT *hotspot = malloc(sizeof(HOTSPOT));
+    hotspot = malloc(sizeof(HOTSPOT));
     hotspot->internal_name = strdup(lua_tostring(L, 2));
     hotspot->display_name = strdup(lua_tostring(L, 3));
     hotspot->cursor = 5;
@@ -28,13 +30,16 @@ int script_register_hotspot(lua_State *L) {
 }
 
 int script_register_door(lua_State *L) {
+    HOTSPOT *hotspot;
+    int i;
+    
     if (lua_gettop(L) != 4 || !lua_isstring(L, 1) || !lua_isstring(L, 2)|| !lua_isnumber(L, 3)  || !lua_isnumber(L, 4)) {
         lua_pushstring(L, "register_door expects (string, string, int, int)");
         lua_error(L);
     }
     
-    HOTSPOT *hotspot = NULL;
-    for (int i = 0; i < 256; i++)
+    hotspot = NULL;
+    for (i = 0; i < 256; i++)
         if (hotspots[i] && strcmp(hotspots[i]->internal_name, lua_tostring(L, 1)) == 0) {
             hotspot = hotspots[i];
             break;
@@ -54,6 +59,8 @@ int script_register_door(lua_State *L) {
 }
 
 int script_load_room(lua_State *L) {
+    int i;
+    
     if (lua_gettop(L) != 2 || !lua_isuserdata(L, 1) || !lua_isuserdata(L, 2)) {
         lua_pushstring(L, "__load_room expects (BITMAP*, BITMAP*)");
         lua_error(L);
@@ -62,7 +69,7 @@ int script_load_room(lua_State *L) {
     room_art = *(BITMAP**)lua_touserdata(L, 1);
     room_hot = *(BITMAP**)lua_touserdata(L, 2);
     
-    for (int i = 0; i < 256; i++)
+    for (i = 0; i < 256; i++)
         if (hotspots[i] != NULL) {
             if (hotspots[i]->exit)
                 free(hotspots[i]->exit);
@@ -89,6 +96,8 @@ int script_panic(lua_State *L) {
 }
 
 int script_which_hotspot(lua_State *L) {
+    int x, y;
+    
     if (lua_gettop(L) != 1 || !lua_istable(L, 1)) {
         lua_pushstring(L, "which_hotspot expects (vec)");
         lua_error(L);
@@ -96,12 +105,12 @@ int script_which_hotspot(lua_State *L) {
     
     lua_pushstring(L, "x");
     lua_gettable(L, -2);
-    int x = lua_tonumber(L, -1);
+    x = lua_tonumber(L, -1);
     lua_pop(L, 1);
     
     lua_pushstring(L, "y");
     lua_gettable(L, -2);
-    int y = lua_tonumber(L, -1);
+    y = lua_tonumber(L, -1);
     
     lua_pushnumber(L, (getpixel(room_hot, x, y) & (255 << 16)) >> 16);
     return 1;
@@ -140,8 +149,6 @@ void init_script() {
     script = lua_open();
     luaL_openlibs(script);
     lua_atpanic(script, script_panic);
-    
-
     
     lua_newtable(script);
     lua_setregister(script, "render_obj");

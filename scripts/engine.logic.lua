@@ -118,7 +118,7 @@ function engine.game_state()
                         engine.callback(item.type, item.object, item.method)
                         engine.item = nil
                     else -- something about doors?
-                        engine.set_action("hotspot", hotspot.id, hotspot.name, hotspot.spot)
+                        engine.set_action("hotspot", hotspot.id, hotspot.name, get_walkspot(hotspot.shade))
                     end
                 end
             end

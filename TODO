@@ -22,14 +22,13 @@ PATHING
   - clean up the priority queue implementation at the same time
 
 ANIMATION
-- fix pixel perfect detection                                   [6]
+- reimplement pixel perfect detection                           [6]
 - rewrite the animation scripting system                        [8]
 - build helper classes to design animations                     [9]
   - and perhaps an external utility
 
 DIALOGUE
 - add support for narration                                     [7]
-- write a utility to design dialogue trees                      [9]
 
 COSMETICS
 - provide object scaling based on y position                    [8]

@@ -13,13 +13,11 @@ tmp_anims.sign.anims.stand = {
 
 local room = rooms.create("outside")
 
-
+load_module("game/rooms/outside/dialogue.lua")
 
 room.place(actors.gomez)
-room.place(actors.shaggy)
 room.place(actors.bouncer)
-room.place(actors.diondre)
-room.place(actors.waldo)
+actors.bouncer.flipped = true
 
 local cup = actors.temp("cup", "Milkshape Cup", "game/rooms/outside/objects/cup.pcx")
 
@@ -27,7 +25,7 @@ room.place(actors.temp("sign", "Sign", animation.start(tmp_anims.sign, "stand"),
 room.place(cup, vec(830, 436))
 room.place(actors.temp("sword", "Sword", "game/rooms/outside/objects/sword.pcx"), vec(110, 445))
 room.place(actors.temp("note", "Note", "game/rooms/outside/objects/letter.pcx"), vec(580, 97))
-room.place(actors.temp("rope", "Rope", "game/rooms/outside/objects/rope.pcx"), vec(910, 494))
+--room.place(actors.temp("rope", "Rope", "game/rooms/outside/objects/rope.pcx"), vec(910, 494))
 
 room.hotspot(34, "window", "Window");
 room.hotspot(68, "sign", "Sign");
@@ -36,12 +34,9 @@ room.hotspot(102, "ladder", "Ladder");
 room.hotspot(119, "rope", "Rope");
 
 
-
-room.events.load.sub(function()
-    room.foreground(17, 54)
-    room.door(17, "door", "Door", "outside", 17, 8)
+actors.bouncer.events.talk.sub(function()
+    open_topic(room.dialogue.bouncer)
 end)
-
 
 
 room.hotspots.window.events.look.sub(function()

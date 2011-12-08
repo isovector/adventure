@@ -1,4 +1,5 @@
 rooms["outside"].switch()
+enable_path(17)
 player = actors.gomez
 
 engine.add_verb("talk", "Talk to %s", vec(0), vec(48))

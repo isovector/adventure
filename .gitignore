@@ -1,5 +1,7 @@
+adventure
 a.out
 .dropbox
 win32/adventure/Debug
+win32/adventure/Release
 win32/adventure/ipch
 win32/adventure/adventure.sdf

@@ -67,7 +67,6 @@ function rooms.prototype(room)
             shade = shade,
             id = id,
             name = name,
-            spot = vec(0), ---- TODO(sandy): FIX THIS
             cursor = 5,
         
             events = {

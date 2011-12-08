@@ -118,10 +118,10 @@ function engine.callback(callback_type, object, method)
     end
 
     if callback_type == "hotspot" then
-        if room.hotspots[object] and room.hotspots[object][method] then
+        if room.hotspots[object] and room.hotspots[object].events[method] then
             tasks.begin(function()
                 --enable_input(false)
-                room.hotspots[object][method](player, room.hotspots[object], item_type)
+                room.hotspots[object].events[method](player, room.hotspots[object], item_type)
                 --enable_input(true)
             end)
         end

@@ -83,6 +83,10 @@ function conversation.continuer()
                 tasks.begin({ select[opt].action, conversation.continue })
                 coroutine.yield()
             end
+            
+            if select[opt].once then
+                table.remove(conversation.topic, opt)
+            end
         end
         print()
     end

@@ -21,7 +21,7 @@ room.place(actors.bouncer)
 room.place(actors.diondre)
 room.place(actors.waldo)
 
-local cup = actors.temp("cup", "Milkshape Cup", "game/rooms/outside/objects/cup.pcx") 
+local cup = actors.temp("cup", "Milkshape Cup", "game/rooms/outside/objects/cup.pcx")
 
 room.place(actors.temp("sign", "Sign", animation.start(tmp_anims.sign, "stand"), 1), vec(940, 156))
 room.place(cup, vec(830, 436))
@@ -44,11 +44,11 @@ end)
 
 
 
-room.hotspots.window.look.sub(function()
+room.hotspots.window.events.look.sub(function()
     player.say("I can't reach it")
 end)
 
-room.hotspots.ladder.touch.sub(function()
+room.hotspots.ladder.events.touch.sub(function()
     player.say("That won't fit in my pants")
 end)
 

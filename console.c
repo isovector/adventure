@@ -47,11 +47,19 @@ void push_queue(const char *cprompt, const char *value) {
     if (node->prompt)
         free(node->prompt);
 
-    node->prompt = strdup(cprompt ? cprompt : prompt);
-    node->value = value ? strdup(value) : NULL;
+    node->prompt = strdup2(cprompt ? cprompt : prompt);
+    node->value = value ? strdup2(value) : NULL;
 }
 
-LUA_WRAPVOID(push_queue, 2, string, string)
+int script_push_queue(lua_State *L) {
+    if (lua_gettop(L) != 2 || !lua_isstring(L, 1) || !lua_isstring(L, 2)) {
+        lua_pushstring(L, "push_queue expects (string, string)");
+        lua_error(L);
+    }
+
+    push_queue(lua_tostring(L, 1), lua_tostring(L, 2));
+    return 0;
+}
 
 void init_console(int n) {
     RQNODE *head = alloc_rqnode();
@@ -72,13 +80,14 @@ void init_console(int n) {
 
 void open_console() {
     int i;
+	RQNODE *node;
     
     gui_fg_color = makecol(0, 0, 0);
     gui_mg_color = makecol(128, 128, 128);
     gui_bg_color = makecol(230, 220, 210);
 
     rectfill(screen, 0, 0, CONSOLE_WIDTH, CONSOLE_HEIGHT, gui_bg_color);
-    RQNODE *node = rollqueue.head;
+    node = rollqueue.head;
     for (i = 0; i < rollqueue.count; i++) {
         if (node->value)
             textprintf_ex(screen, font, CONSOLE_MARGIN, CONSOLE_MARGIN + i * 8, gui_fg_color, -1, "%s%s", node->prompt, node->value);

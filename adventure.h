@@ -1,6 +1,10 @@
 #ifndef ADVENTURE_ADVENTURE_H
 #define ADVENTURE_ADVENTURE_H
 
+#ifdef	WIN32
+#define ALLEGRO_USE_CONSOLE
+#endif
+
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -46,6 +50,6 @@ extern int in_console;
 
 void init_console(int);
 void open_console();
-char *strdup(const char*);
+char *strdup2(const char*);
 
 #endif

@@ -49,7 +49,7 @@ void update() {
 
 // draws the foreground of a hot image
 void draw_foreground(int level) {
-    int col, y, x;
+    int y, x;
     for (y = 0; y < SCREEN_HEIGHT; y++)
     for (x = 0; x < SCREEN_WIDTH; x++)
         if ((getpixel(room_hot, x, y) & 255) == level)
@@ -58,8 +58,6 @@ void draw_foreground(int level) {
 
 // draws the game
 void frame() {
-    char cbuffer[10];
-
     acquire_bitmap(buffer);
 
     lua_getglobal(script, "engine");
@@ -108,8 +106,7 @@ int main(int argc, char* argv[]) {
     
     enabled_paths[255] = 1;
 
-    // set script state
-    init_script();
+	init_script();
     lua_setconstant(script, "screen_width", number, SCREEN_WIDTH);
     lua_setconstant(script, "screen_height", number, SCREEN_HEIGHT);
     lua_setconstant(script, "framerate", number, 60);

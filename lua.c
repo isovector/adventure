@@ -2,7 +2,7 @@
 
 lua_State *script;
 
-char *strdup(const char *str) {
+char *strdup2(const char *str) {
     int n = strlen(str) + 1;
     char *dup = malloc(n);
     if (dup)
@@ -19,8 +19,8 @@ int script_register_hotspot(lua_State *L) {
     }
     
     hotspot = malloc(sizeof(HOTSPOT));
-    hotspot->internal_name = strdup(lua_tostring(L, 2));
-    hotspot->display_name = strdup(lua_tostring(L, 3));
+    hotspot->internal_name = strdup2(lua_tostring(L, 2));
+    hotspot->display_name = strdup2(lua_tostring(L, 3));
     hotspot->cursor = 5;
     hotspot->exit = NULL;
     
@@ -52,7 +52,7 @@ int script_register_door(lua_State *L) {
     
     hotspot->cursor = lua_tonumber(L, 4);
     hotspot->exit = malloc(sizeof(EXIT));
-    hotspot->exit->room = strdup(lua_tostring(L, 2));
+    hotspot->exit->room = strdup2(lua_tostring(L, 2));
     hotspot->exit->door = lua_tonumber(L, 3);
     
     return 0;
@@ -93,6 +93,8 @@ int script_panic(lua_State *L) {
     lua_getinfo(L, "nS", &debug);
     
     printf("LUA ERROR: %s\nat %s\n", lua_tostring(L, 1), debug.name);
+
+	return 0;
 }
 
 int script_which_hotspot(lua_State *L) {
@@ -164,5 +166,7 @@ void init_script() {
     register_path();
     register_drawing();
     
-    luaL_dofile(script, "scripts/init.lua");
+    if (luaL_dofile(script, "scripts/init.lua") != 0) {
+		printf("%s\n", lua_tostring(script, -1));
+	}
 }

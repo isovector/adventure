@@ -11,6 +11,8 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
         speed = 150,
         color = 0xFFFFFF,
         
+        walkcount = 0,
+        
         goal = nil,
         goals = { },
         inventory = { },
@@ -78,9 +80,15 @@ function actors.prototype(actor)
                     else
                         actor.flipped = false
                     end
+                    
+                    actor.walkcount = actor.walkcount + 1
 
                     actor.pos.x = actor.pos.x + dir.x * speed
                     actor.pos.y = actor.pos.y + dir.y * speed
+                    
+                    if actor.walkcount % 30 == 0 and actor.goals then
+                        actor.compress_goals()
+                    end
                 else
                     actor.pos = actor.goal
                     actor.goal = nil
@@ -96,11 +104,9 @@ function actors.prototype(actor)
 
                     if not actor.goal then
                         actor.events.goal()
-
-                        if actor == player then
-                            --signal_goal()
-                        end
                     end
+                    
+                    actor.compress_goals()
                 end
             elseif type(actor.goal) == "function" then
                 if actor.aplay then
@@ -118,18 +124,37 @@ function actors.prototype(actor)
         end
     end)
     
+    function actor.compress_goals()
+        local i = 0
+        local found = false
+        
+        for _, pos in ipairs(actor.goals) do
+            if type(pos) == "function" then break end
+
+            if actor.pos and pos and is_pathable(actor.pos, pos) then
+                found = true
+                actor.goal = pos
+            end
+        end
+    end
+    
     function actor.walk(to, y)
         if y then 
             to = vec(to, y)
         else
-            to = vec(to.x, to.y)-- get a new vector
+            to = vec(to)-- get a new vector
         end
+        
+        if is_pathable(actor.pos, to) then
+            actor.goal = to
+            actor.goals = nil
+        else
+            actor.goal = get_waypoint(get_closest_waypoint(actor.pos))
+            actor.goals = pathfind(get_closest_waypoint(actor.pos), get_closest_waypoint(to))
 
-        actor.goal = get_waypoint(get_closest_waypoint(actor.pos))
-        actor.goals = unwrap_path(do_pathfinding(get_closest_waypoint(actor.pos), get_closest_waypoint(to)))
-
-        if actor.goals then
-            table.insert(actor.goals, to)
+            if actor.goals then
+                table.insert(actor.goals, to)
+            end
         end
     end    
     

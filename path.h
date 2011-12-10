@@ -18,6 +18,7 @@ int get_waypoint(lua_State*);
 int get_closest_waypoint(lua_State*);
 int is_walkable(int, int);
 int closest_waypoint(int, int);
+void extract_vector(lua_State*, int, int*, int*);
 void lua_vector(lua_State*, int, int);
 void register_path();
 

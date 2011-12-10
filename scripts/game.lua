@@ -117,55 +117,6 @@ function zorder_sort(a, b)
     return ay + ah < by + bh
 end
 
--- this should be implemented in C
-function distance(from, to)
-    return 1
-end
-
-function do_pathfinding(from, to)
-    local function add_path(old, new, cost)
-        return { cost = cost, location = new, previous = old }
-    end
-
-    local closed = { }
-    local open = { { 0, add_path(nil, from, 0) } }
-
-    while open do
-        local continue = true
-        repeat
-            local path = pqueue.dequeue(open)
-
-            if not path then return nil end
-
-            if table.contains(closed, path.location) then continue = true; break end
-            if to == path.location then return path end
-            table.insert(closed, path.location)
-
-            for key, val in ipairs(get_neighbors(path.location)) do
-                local dist = distance(path.location, get_waypoint(val))
-                pqueue.enqueue(open, -(path.cost + dist), add_path(path, val, path.cost + dist))
-            end
-        until true
-        if not continue then break end
-    end
-end
-
-function walk(actor, to, y)
-    actor.walk(to, y)
-end
-
-function unwrap_path(path)
-    if not path then return nil end
-
-    if path.previous then
-        local wind = unwrap_path(path.previous)
-        table.insert(wind, get_waypoint(path.location));
-        return wind
-    else
-        return { get_waypoint(path.location) }
-    end
-end
-
 function give_item(actor, item)
     actor.inventory[item] = items[item]
 end

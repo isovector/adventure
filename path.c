@@ -14,6 +14,20 @@ void lua_vector(lua_State *L, int x, int y) {
     lua_call(L, 2, 1);
 }
 
+void extract_vector(lua_State *L, int pos, int *x, int *y) {
+    lua_pushvalue(L, pos);
+    
+    lua_pushstring(L, "x");
+    lua_gettable(L, -2);
+    *x = (int)lua_tonumber(L, -1);
+    lua_pop(L, 1);
+    
+    lua_pushstring(L, "y");
+    lua_gettable(L, -2);
+    *y = (int)lua_tonumber(L, -1);
+    lua_pop(L, 2);
+}
+
 void connect_waypoints(int a, int b) {
     waypoint_connections[a] |= 1 << b;
     waypoint_connections[b] |= 1 << a;
@@ -85,7 +99,7 @@ void build_waypoints() {
     }
 }
 
-int get_neighbors(lua_State *L) {
+int script_get_neighbors(lua_State *L) {
     int i, j = 1, connection;
     
     if (lua_gettop(L) != 1 || !lua_isnumber(L, 1)) {
@@ -106,7 +120,7 @@ int get_neighbors(lua_State *L) {
     return 1;
 }
 
-int get_waypoint(lua_State *L) {
+int script_get_waypoint(lua_State *L) {
     POINT defaultspot, *waypoint;
     
     if (lua_gettop(L) != 1 || !lua_isnumber(L, 1)) {
@@ -147,7 +161,7 @@ int script_get_walkspot(lua_State *L) {
     return 1;
 }
 
-int get_closest_waypoint(lua_State *L) {
+int script_get_closest_waypoint(lua_State *L) {
     int x, y;
     
     if (lua_gettop(L) != 1 || !lua_istable(L, 1)) {
@@ -155,16 +169,9 @@ int get_closest_waypoint(lua_State *L) {
         lua_error(L);
     }
     
-    lua_pushstring(L, "x");
-    lua_gettable(L, -2);
-    x = (int)lua_tonumber(L, -1);
-    lua_pop(L, 1);
-    lua_pushstring(L, "y");
-    lua_gettable(L, -2);
-    y = (int)lua_tonumber(L, -1);
-    lua_pop(L, 2);
-    
+    extract_vector(L, -1, &x, &y);
     lua_pushnumber(L, closest_waypoint(x, y));
+    
     return 1;
 }
 
@@ -201,22 +208,29 @@ int script_is_walkable(lua_State *L) {
     
     bmp = *(BITMAP**)lua_touserdata(L, 1);
     
-    lua_pushstring(L, "x");
-    lua_gettable(L, -2);
-    x = lua_tonumber(L, -1);
-    lua_pop(L, 1);
-    
-    lua_pushstring(L, "y");
-    lua_gettable(L, -2);
-    y = lua_tonumber(L, -1);
-    lua_pop(L, 1);
-    
+    extract_vector(L, -1, &x, &y);
     pixel = getpixel(bmp, x, y);
     
     if (pixel == 255)
         lua_pushnumber(L, 255);
     else
         lua_pushnumber(L, (pixel & (255 << 8)) >> 8);
+    
+    return 1;
+}
+
+int script_is_pathable(lua_State *L) {
+    int x1, x2, y1, y2;
+    
+    if (lua_gettop(L) != 2 || !lua_istable(L, 1) || !lua_istable(L, 2)) {
+        lua_pushstring(L, "is_pathable expects (vector, vector)");
+        lua_error(L);
+    }
+    
+    extract_vector(L, 1, &x1, &y1);
+    extract_vector(L, 2, &x2, &y2);
+    
+    lua_pushboolean(L, is_pathable(x1, y1, x2, y2));
     
     return 1;
 }
@@ -239,10 +253,11 @@ int closest_waypoint(int x, int y) {
 }
 
 void register_path() {
-    lua_register(script, "get_neighbors", &get_neighbors);
-    lua_register(script, "get_waypoint", &get_waypoint);
+    lua_register(script, "get_neighbors", &script_get_neighbors);
+    lua_register(script, "get_waypoint", &script_get_waypoint);
     lua_register(script, "get_walkspot", &script_get_walkspot);
-    lua_register(script, "get_closest_waypoint", &get_closest_waypoint);
+    lua_register(script, "get_closest_waypoint", &script_get_closest_waypoint);
     lua_register(script, "enable_path", &script_enable_path);
     lua_register(script, "is_walkable", &script_is_walkable);
+    lua_register(script, "is_pathable", &script_is_pathable);
 }

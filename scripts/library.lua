@@ -48,6 +48,20 @@ function table.contains(tab, value)
     return false
 end
 
+function table.min(tab)
+    local min = nil
+    local pos = 0
+    
+    for key, val in pairs(tab) do
+        if not min or min > val then
+            min = val
+            pos = key
+        end
+    end
+    
+    return pos
+end
+
 function table.car(tab)
     if type(tab) ~= "table" then return tab end
     if not tab then return nil end

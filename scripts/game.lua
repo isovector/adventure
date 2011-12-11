@@ -21,7 +21,18 @@ events.game.tick.sub(engine.update)
 events.game.tick.sub(clock.tick)
 events.game.tick.sub(tasks.update)
 events.game.tick.sub(conversation.pump_words)
-events.game.tick.sub(function () table.sort(room.scene, zorder_sort) end)
+events.game.tick.sub(function() table.sort(room.scene, zorder_sort) end)
+
+events.game.tick.sub(function()
+    for _, hotspot in pairs(room.hotspots) do
+        for _, actor in pairs(hotspot.owned_actors) do
+            if not hotspot.contains(actor.pos) then
+                hotspot.owned_actors[actor] = nil
+                hotspot.events.release(actor)
+            end
+        end
+    end
+end)
 
 function get_size(actor)
     if actor.aplay then

@@ -1,4 +1,9 @@
-tasks = {current_tasks = {}, locks = {}, to_free = {}}
+tasks = {
+    current_tasks = { }, 
+    locks = { }, 
+    to_free = { }
+}
+
 ticks = 0
 
 function wait(ticks)

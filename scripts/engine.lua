@@ -116,7 +116,7 @@ function engine.callback(callback_type, object, method)
         item_type = method
         method = "item"
     end
-
+    
     if callback_type == "hotspot" then
         if room.hotspots[object] and room.hotspots[object].events[method] then
             tasks.begin(function()
@@ -157,18 +157,18 @@ function register_foreground(level, baseline)
 end
 
 function append_dispatch(actor, callback_type, object, method, flipped)
-    if not actor or not actor.goals then return end
+    if not actor then return end
     
-    table.insert(actor.goals, function()
+    actor.queue(function()
         actor.flipped = flipped
         engine.callback(callback_type, object, method)
     end)
 end
 
 function append_switch(actor, room, door)
-    if not actor.goals then return end
-
-    table.insert(actor.goals, function()
+    if not actor then return end
+    
+    actor.queue(function()
         -- TODO(sandy): do something about doors
         rooms[room].switch()
     end)

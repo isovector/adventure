@@ -7,12 +7,14 @@ function items.create(id, name, bmpfile)
         image = bitmap(bmpfile),
 
         events = {
-            touch = event.create(),
-            talk = event.create(),
-            look = event.create(),
             item = event.create()
         }
     }
+    
+    -- create events for all the verbs
+    for id, verb in pairs(engine.verbs) do
+        item.events[id] = event.create()
+    end
     
     items[id] = item
     return item

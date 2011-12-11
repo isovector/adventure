@@ -20,9 +20,6 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
         events = {
             goal = event.create(),
             
-            touch = event.create(),
-            talk = event.create(),
-            look = event.create(),
             item = event.create(),
             
             obtain = event.create(),
@@ -36,6 +33,11 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
             exit = event.create()
         }
     }
+    
+    -- create events for all the verbs
+    for id, verb in pairs(engine.verbs) do
+        actor.events[id] = event.create()
+    end
     
     -- HACK(sandy): this really should create an aplay given xyframes
     if not xframes then
@@ -81,11 +83,16 @@ function actors.prototype(actor)
                         actor.flipped = false
                     end
                     
-                    actor.walkcount = actor.walkcount + 1
+                    local hotspot = room.get_hotspot(actor.pos)
+                    if hotspot and not hotspot.owned_actors[actor] then
+                        hotspot.owned_actors[actor] = actor
+                        hotspot.events.press(actor)
+                    end
 
                     actor.pos.x = actor.pos.x + dir.x * speed
                     actor.pos.y = actor.pos.y + dir.y * speed
                     
+                    actor.walkcount = actor.walkcount + 1
                     if actor.walkcount % 30 == 0 and actor.goals then
                         actor.compress_goals()
                     end
@@ -128,6 +135,8 @@ function actors.prototype(actor)
         local i = 0
         local found = false
         
+        if not actor.goals then return end
+        
         for _, pos in ipairs(actor.goals) do
             if type(pos) == "function" then break end
 
@@ -135,6 +144,29 @@ function actors.prototype(actor)
                 found = true
                 actor.goal = pos
             end
+        end
+    end
+    
+    function actor.obtain_item(item)
+        if items[item] then
+            actor.inventory[item] = items[item]
+            actor.events.obtain(actor, item)
+        end
+    end
+    
+    function actor.lose_item(item)
+        actor.inventory[item] = nil
+        actor.events.lose(actor, item)
+    end
+    
+    function actor.give(recip, item)
+        if actor.inventory[item] then
+            actor.walk(make_walkspot(recip))
+            
+            actor.queue(function()
+                actor.lose_item(item)
+                recip.obtain_item(item)
+            end)
         end
     end
     
@@ -149,14 +181,26 @@ function actors.prototype(actor)
             actor.goal = to
             actor.goals = nil
         else
-            actor.goal = get_waypoint(get_closest_waypoint(actor.pos))
             actor.goals = pathfind(get_closest_waypoint(actor.pos), get_closest_waypoint(to))
 
             if actor.goals then
+                actor.goal = get_waypoint(get_closest_waypoint(actor.pos))
                 table.insert(actor.goals, to)
             end
         end
-    end    
+    end
+    
+    function actor.queue(func, ...)
+        if not actor.goals then
+            actor.goals = { }
+        end
+        
+        local args = { ... }
+
+        table.insert(actor.goals, function()
+            func(args)
+        end)
+    end
     
     function actor.say_async(message)
         tasks.begin(function() actor.say(message) end)

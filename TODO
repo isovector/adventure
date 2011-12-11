@@ -3,8 +3,6 @@ ACTORS
 - wire up entering/exiting events on rooms                      [2]
 - rewrite the update loop to allow for walk/idle events         [3]
   - and clean it up too
-- wire up entering/exiting events for hotspots                  [5]
-- wire up obtain/lose item events                               [5]
 
 REFACTORING
 - refactor dialogue's gamestate to a new subsystem              [5]
@@ -17,9 +15,6 @@ PROTOTYPES
 
 PATHING
 - improve object walkspot creation                              [6]
-- make walking paths more natural                               [6]
-  - probably will require a rewrite of the pathing system
-  - clean up the priority queue implementation at the same time
 
 ANIMATION
 - reimplement pixel perfect detection                           [6]

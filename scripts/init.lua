@@ -34,11 +34,3 @@ load_module("scripts/dialogue.lua")
 load_module("scripts/filesystem.lua")
 load_module("scripts/drawing.lua")
 load_module("scripts/game.lua")
-
--- load the game
-load_module("game/dialogue/dialogue.lua")
-load_dir("game/actors")
-load_dir("game/items")
-load_dir("game/rooms", function(filename)
-    rooms[filename].events.init()
-end)

@@ -52,8 +52,6 @@ function rooms.prototype(room)
     end
     
     function room.place(actor, pos)
-        -- make THIS better too!
-        -- ideally check character positions rather than the scene
         table.insert(room.scene, actor)
         
         if pos then
@@ -78,13 +76,28 @@ function rooms.prototype(room)
             name = name,
             cursor = 5,
             
+            clickable = false,
+            
+            door = {
+                is_door = false,
+                exit_room = nil,
+                exit_door = nil
+            },
+            
             owned_actors = { },
         
             events = {
+                -- default verb for item usage
                 item = event.create(),
             
-                press = event.create(),
-                release = event.create()
+                -- when an actor stands here
+                weigh = event.create(),
+                
+                -- when an actor stops standing here
+                unweigh = event.create(),
+                
+                -- on a mouse press
+                click = event.create()
             },
             
             contains = function(pos)
@@ -102,12 +115,28 @@ function rooms.prototype(room)
     
     -- fix this to be more like room.hotspot
     function room.door(shade, id, name, dest, door, direction)
-        register_hotspot(shade, id, name)
-        register_door(id, dest, door, direction)
+        room.hotspot(shade, id, name)
+        
+        local hotspot = room.hotspots[id]
+        hotspot.cursor = direction
+        hotspot.clickable = true
+        
+        hotspot.door = {
+            is_door = true,
+            exit_room = dest,
+            exit_door = door
+        }
+        
+        hotspot.events.click.sub(function()
+            player.use_door(id)
+        end)
     end
     
     function room.foreground(shade, baseline)
-        register_foreground(shade, baseline)
+        table.insert(room.scene, { 
+            baseline = baseline, 
+            level = level 
+        })
     end
     
     function room.is_walkable(pos, y)

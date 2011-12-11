@@ -28,21 +28,11 @@ events.game.tick.sub(function()
         for _, actor in pairs(hotspot.owned_actors) do
             if not hotspot.contains(actor.pos) then
                 hotspot.owned_actors[actor] = nil
-                hotspot.events.release(actor)
+                hotspot.events.unweigh(actor)
             end
         end
     end
 end)
-
-function get_size(actor)
-    if actor.aplay then
-        return actor.aplay.set.width, actor.aplay.set.height
-    elseif actor.sprite then
-        return actor.sprite.size.x, actor.sprite.size.y
-    else
-        return 0, 0
-    end
-end
 
 function make_walkspot(actor)
     if type(actor) == "string" then
@@ -59,8 +49,10 @@ function make_walkspot(actor)
 
     local x = actor.pos.x
     local y = actor.pos.y
-    local sx, sy = get_size(actor)
-    local ox, oy = get_origin(actor)
+    local sx = actor.size.x
+    local sy = actor.size.y
+    local ox = actor.origin.x
+    local oy = actor.origin.y
     local flip = 1
     
     if actor.flipped then flip = -1 end
@@ -81,26 +73,6 @@ function make_walkspot(actor)
     end
     
     return vec(x, y)
-end
-
-function get_origin(actor)
-    if not actor then return 0, 0 end
-
-    if type(actor) == "string" then
-        actor = table.find(room.scene, function(key, val)
-            return val.id == actor
-        end)
-    end
-    
-    if actor.aplay then
-        return actor.aplay.set.xorigin, actor.aplay.set.yorigin
-    end
-    
-    if actor.height then
-        return 0, actor.height
-    end
-    
-    return 0, 0
 end
 
 function zorder_sort(a, b)
@@ -126,12 +98,4 @@ function zorder_sort(a, b)
     if not bh then bh = 0 end
     
     return ay + ah < by + bh
-end
-
-function give_item(actor, item)
-    actor.inventory[item] = items[item]
-end
-
-function remove_item(actor, item)
-    actor.inventory[item] = nil
 end

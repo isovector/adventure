@@ -33,6 +33,8 @@ room.hotspot(85, "rear", "Back Alley");
 room.hotspot(102, "ladder", "Ladder");
 room.hotspot(119, "rope", "Rope");
 
+room.door(17, "door", "Pub Entrance", "outside", 68, 8)
+
 
 actors.bouncer.events.talk.sub(function()
     open_topic(room.dialogue.bouncer)

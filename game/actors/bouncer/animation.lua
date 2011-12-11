@@ -14,3 +14,17 @@ animations.bouncer.anims.stand = {
     }
 }
 
+animations.bouncer.anims.walk = {
+    {
+        duration = 1,
+        frame = 0
+    },
+    {
+        duration = 1,
+        frame = 1
+    },
+    {
+        duration = 1,
+        frame = 2
+    }
+}

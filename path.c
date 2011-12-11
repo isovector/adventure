@@ -243,7 +243,7 @@ int closest_waypoint(int x, int y) {
         tx = waypoints[i]->x - x;
         ty = waypoints[i]->y - y;
         dif = sqrt(tx * tx + ty * ty);
-        if (dif < dist) {
+        if (dif < dist && is_pathable(x, y, waypoints[i]->x, waypoints[i]->y)) {
             dist = dif;
             winner = i;
         }

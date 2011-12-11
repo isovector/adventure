@@ -153,7 +153,7 @@ function engine.callback(callback_type, object, method)
 end
 
 function register_foreground(level, baseline)
-    table.insert(room.scene, { baseline = baseline, level = level })
+    room.register_foreground(level, baseline)
 end
 
 function append_dispatch(actor, callback_type, object, method, flipped)

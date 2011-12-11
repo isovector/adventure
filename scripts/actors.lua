@@ -5,11 +5,12 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
         id = id,
         name = name,
         
-        pos = vec(0, 0),
+        pos = vec(0),
         ignore_ui = false,
         flipped = false,
         speed = 150,
         color = 0xFFFFFF,
+        follow = false,
         
         walkcount = 0,
         
@@ -86,7 +87,7 @@ function actors.prototype(actor)
                     local hotspot = room.get_hotspot(actor.pos)
                     if hotspot and not hotspot.owned_actors[actor] then
                         hotspot.owned_actors[actor] = actor
-                        hotspot.events.press(actor)
+                        hotspot.events.weigh(actor)
                     end
 
                     actor.pos.x = actor.pos.x + dir.x * speed
@@ -168,6 +169,25 @@ function actors.prototype(actor)
                 recip.obtain_item(item)
             end)
         end
+    end
+    
+    function actor.use_door(door)
+        door = room.hotspots[door]
+    
+        actor.walk(get_walkspot(door.shade))
+        actor.queue(function()
+            actor.events.exit(actor, room)
+            
+            table.remove(room.scene, table.contains(room.scene, actor))
+            rooms[door.door.exit_room].place(actor)
+            actor.pos = vec(500)
+            
+            actor.events.enter(actor, rooms[door.door.exit_room])
+            
+            if actor.follow then
+                room[door.door.exit_room].switch()
+            end
+        end)
     end
     
     function actor.walk(to, y)

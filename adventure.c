@@ -2,7 +2,6 @@
 
 BITMAP *room_art = NULL, *room_hot = NULL;
 
-HOTSPOT *hotspots[256];
 float life = 0;
 
 int last_key[KEY_MAX];

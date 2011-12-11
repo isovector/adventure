@@ -10,54 +10,6 @@ char *strdup2(const char *str) {
     return dup;
 }
 
-int script_register_hotspot(lua_State *L) {
-    HOTSPOT *hotspot;
-    
-    if (lua_gettop(L) != 3 || !lua_isnumber(L, 1) || !lua_isstring(L, 2)|| !lua_isstring(L, 3)  || lua_tonumber(L, 1) != (int)lua_tonumber(L, 1)) {
-        lua_pushstring(L, "register_hotspot expects (int, string, string)");
-        lua_error(L);
-    }
-    
-    hotspot = malloc(sizeof(HOTSPOT));
-    hotspot->internal_name = strdup2(lua_tostring(L, 2));
-    hotspot->display_name = strdup2(lua_tostring(L, 3));
-    hotspot->cursor = 5;
-    hotspot->exit = NULL;
-    
-    hotspots[(int)lua_tonumber(L, 1)] = hotspot;
-    
-    return 0;
-}
-
-int script_register_door(lua_State *L) {
-    HOTSPOT *hotspot;
-    int i;
-    
-    if (lua_gettop(L) != 4 || !lua_isstring(L, 1) || !lua_isstring(L, 2)|| !lua_isnumber(L, 3)  || !lua_isnumber(L, 4)) {
-        lua_pushstring(L, "register_door expects (string, string, int, int)");
-        lua_error(L);
-    }
-    
-    hotspot = NULL;
-    for (i = 0; i < 256; i++)
-        if (hotspots[i] && strcmp(hotspots[i]->internal_name, lua_tostring(L, 1)) == 0) {
-            hotspot = hotspots[i];
-            break;
-        }
-        
-    if (!hotspot) {
-        lua_pushstring(L, "Could not find a registered hotspot to transform into a door. Are you missing a call to register_hotspot?");
-        lua_error(L);
-    }
-    
-    hotspot->cursor = lua_tonumber(L, 4);
-    hotspot->exit = malloc(sizeof(EXIT));
-    hotspot->exit->room = strdup2(lua_tostring(L, 2));
-    hotspot->exit->door = lua_tonumber(L, 3);
-    
-    return 0;
-}
-
 int script_load_room(lua_State *L) {
     int i;
     
@@ -68,15 +20,6 @@ int script_load_room(lua_State *L) {
 
     room_art = *(BITMAP**)lua_touserdata(L, 1);
     room_hot = *(BITMAP**)lua_touserdata(L, 2);
-    
-    for (i = 0; i < 256; i++)
-        if (hotspots[i] != NULL) {
-            if (hotspots[i]->exit)
-                free(hotspots[i]->exit);
-            
-            free(hotspots[i]);
-            hotspots[i] = NULL;
-        }
 
     build_walkspots();        
     build_waypoints();
@@ -158,9 +101,6 @@ void init_script() {
     lua_setregister(script, "render_inv");
     
     lua_register(script, "set_room_data", &script_load_room);
-    lua_register(script, "register_hotspot", &script_register_hotspot);
-    lua_register(script, "register_door", &script_register_door);
-    
     lua_register(script, "which_hotspot", &script_which_hotspot);
     
     register_path();

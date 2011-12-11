@@ -42,7 +42,6 @@ typedef struct tagHOTSPOT {
 
 extern BITMAP *buffer;
 extern BITMAP *room_art, *room_hot;
-extern HOTSPOT *hotspots[256];
 extern POINT *waypoints[MAX_WAYPOINTS];
 extern int waypoint_count;
 extern unsigned int waypoint_connections[MAX_WAYPOINTS];

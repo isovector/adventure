@@ -113,12 +113,20 @@ function engine.game_state()
                 engine.hovertext = hotspot.name
                 
                 if mouse.is_click("left") then
-                    if item then
-                        player.walk(hotspot.spot)
-                        engine.callback(item.type, item.object, item.method)
-                        engine.item = nil
-                    else -- something about doors?
-                        engine.set_action("hotspot", hotspot.id, hotspot.name, get_walkspot(hotspot.shade))
+                    if hotspot.clickable then
+                        if engine.item then
+                            engine.item = nil
+                        else
+                            hotspot.events.click()
+                        end
+                    else
+                        if item then
+                            player.walk(hotspot.spot)
+                            engine.callback(item.type, item.object, item.method)
+                            engine.item = nil
+                        else -- something about doors?
+                            engine.set_action("hotspot", hotspot.id, hotspot.name, get_walkspot(hotspot.shade))
+                        end
                     end
                 end
             end
@@ -126,13 +134,14 @@ function engine.game_state()
     end
     
     if not found and mouse.is_click("left") then
-        if room.is_walkable(mouse.pos) then
+        if engine.item then
+            engine.item = nil
+        elseif room.is_walkable(mouse.pos) then
             player.walk(mouse.pos)
         end
         
         engine.action = nil
     end
-    
     
     if mouse.buttons.left and engine.action and not engine.action.active then
         if engine.life >= engine.action.activates_at then

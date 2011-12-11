@@ -1,8 +1,11 @@
-ACTORS
-- add a flag to automatically follow an actor through rooms     [2]
-- wire up entering/exiting events on rooms                      [2]
-- rewrite the update loop to allow for walk/idle events         [3]
-  - and clean it up too
+C HOST
+- uncouple build_walkspots from load_room                       [1]
+  - export to lua instead
+  > fix exit_door positions
+  > give hotspots a builtin spot property
+
+PATHING
+- improve object walkspot creation                              [3]
 
 REFACTORING
 - refactor dialogue's gamestate to a new subsystem              [5]
@@ -10,17 +13,15 @@ REFACTORING
 REIMPLEMENT
 - viewports                                                     [5]
 
-PROTOTYPES
-- write a real subsystem to handle prototyping                  [5]
-
-PATHING
-- improve object walkspot creation                              [6]
-
 ANIMATION
 - reimplement pixel perfect detection                           [6]
 - rewrite the animation scripting system                        [8]
 - build helper classes to design animations                     [9]
   - and perhaps an external utility
+
+ACTORS
+- rewrite the update loop to allow for walk/idle events         [6]
+  - and clean it up too
 
 DIALOGUE
 - add support for narration                                     [7]

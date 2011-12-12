@@ -22,6 +22,18 @@ function pqueue.dequeue(tab)
     return max
 end
 
+function table.keys(tab)
+    local keys = { }
+    
+    for key in pairs(tab) do
+        table.insert(keys, key)
+    end
+    
+    table.sort(keys)
+    
+    return keys
+end
+
 function table.find(tab, predicate)
     for key, val in ipairs(tab) do
         if predicate(key, val) then

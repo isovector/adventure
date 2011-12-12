@@ -90,6 +90,25 @@ int script_draw_line(lua_State *L) {
     return 0;
 }
 
+int script_blit_rotate(lua_State *L) {
+    int cx, cy, x, y, angle;
+    BITMAP *bmp;
+    
+    if (lua_gettop(L) != 4 || !lua_isuserdata(L, 1) || !lua_istable(L, 2) || !lua_istable(L, 3) || !lua_isnumber(L, 4)) {
+        lua_pushstring(L, "drawing.blit_rotate expects (bitmap, vector, vector, int)");
+        lua_error(L);
+    }
+    
+    bmp = *(BITMAP**)lua_touserdata(L, 1);
+    
+    extract_vector(L, 2, &x, &y);
+    extract_vector(L, 3, &cx, &cy);
+    
+    pivot_sprite(buffer, bmp, x, y, cx, cy, itofix(lua_tonumber(L, 4)));
+    
+    return 0;
+}
+
 int script_get_bitmap(lua_State *L) {
     BITMAP** userdata;
     
@@ -145,6 +164,7 @@ void register_drawing() {
     lua_regtable(script, "drawing", "raw_text", script_draw_text);
     lua_regtable(script, "drawing", "raw_text_center", script_draw_text_center);
     lua_regtable(script, "drawing", "raw_blit", script_draw_blit);
+    lua_regtable(script, "drawing", "blit_rotate", script_blit_rotate);
     
     lua_register(script, "bitmap", &script_get_bitmap);
 }

@@ -14,14 +14,13 @@ int script_load_room(lua_State *L) {
     int i;
     
     if (lua_gettop(L) != 2 || !lua_isuserdata(L, 1) || !lua_isuserdata(L, 2)) {
-        lua_pushstring(L, "__load_room expects (BITMAP*, BITMAP*)");
+        lua_pushstring(L, "__load_room expects (bitmap, bitmap)");
         lua_error(L);
     }
 
     room_art = *(BITMAP**)lua_touserdata(L, 1);
     room_hot = *(BITMAP**)lua_touserdata(L, 2);
 
-    build_walkspots();        
     build_waypoints();
     
     lua_setconstant(L, "room_width", number, room_art->w);

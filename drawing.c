@@ -44,7 +44,7 @@ int script_draw_blit(lua_State *L) {
     if (lua_gettop(L) != 8 || !lua_isuserdata(L, 1) || !lua_isnumber(L, 2)
         || !lua_isnumber(L, 3) || !lua_isboolean(L, 4) || !lua_isnumber(L, 5)
         || !lua_isnumber(L, 6) || !lua_isnumber(L, 7) || !lua_isnumber(L, 8)) {
-        lua_pushstring(L, "drawing.blit expects (BITMAP*, int, int, boolean, int, int, int, int)");
+        lua_pushstring(L, "drawing.blit expects (bitmap, int, int, boolean, int, int, int, int)");
         lua_error(L);
     }
     
@@ -61,24 +61,33 @@ int script_draw_blit(lua_State *L) {
     return 0;
 }
 
-int script_get_image_size(lua_State *L) {
-    BITMAP *bmp;
+int script_draw_circle(lua_State *L) {
+    int x, y, radius, color;
     
-    if (lua_gettop(L) != 1 || !lua_isuserdata(L, 1)) {
-        lua_pushstring(L, "get_image_size expects (BITMAP*)");
+    if (lua_gettop(L) != 3 || !lua_istable(L, 1) || !lua_isnumber(L, 2) || !lua_isnumber(L, 2)) {
+        lua_pushstring(L, "drawing.circle expects (vector, int, int)");
         lua_error(L);
     }
     
-    bmp = *(BITMAP**)lua_touserdata(L, 1);
-    if (bmp) {
-        lua_pushnumber(L, bmp->w);
-        lua_pushnumber(L, bmp->h);
-    } else {
-        lua_pushnumber(L, 0);
-        lua_pushnumber(L, 0);
+    extract_vector(L, 1, &x, &y);
+    circle(buffer, x, y, lua_tonumber(L, 2), lua_tonumber(L, 3));
+    
+    return 0;
+}
+
+int script_draw_line(lua_State *L) {
+    int x1, y1, x2, y2, color;
+    
+    if (lua_gettop(L) != 3 || !lua_istable(L, 1) || !lua_istable(L, 2) || !lua_isnumber(L, 3)) {
+        lua_pushstring(L, "drawing.line expects (vector, vector, int)");
+        lua_error(L);
     }
     
-    return 2;
+    extract_vector(L, 1, &x1, &y1);
+    extract_vector(L, 2, &x2, &y2);
+    line(buffer, x1, y1, x2, y2, lua_tonumber(L, 3));
+    
+    return 0;
 }
 
 int script_get_bitmap(lua_State *L) {
@@ -131,6 +140,8 @@ void register_drawing() {
     lua_pop(script, 1);
     
     lua_regtable(script, "drawing", "clear", script_draw_clear);
+    lua_regtable(script, "drawing", "circle", script_draw_circle);
+    lua_regtable(script, "drawing", "line", script_draw_line);
     lua_regtable(script, "drawing", "raw_text", script_draw_text);
     lua_regtable(script, "drawing", "raw_text_center", script_draw_text_center);
     lua_regtable(script, "drawing", "raw_blit", script_draw_blit);

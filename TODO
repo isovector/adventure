@@ -1,23 +1,21 @@
 C HOST
-- uncouple build_walkspots from load_room                       [1]
-  - export to lua instead
-  > fix exit_door positions
-  > give hotspots a builtin spot property
+- make is_walkable not use global state                         [1]
 
 PATHING
 - improve object walkspot creation                              [3]
+
+ANIMATION
+% rewrite the animation scripting system                        [4]
+  - use skeletal animation instead of frames
+- reimplement pixel perfect detection                           [6]
+- build helper classes to design animations                     [9]
+  - and perhaps an external utility
 
 REFACTORING
 - refactor dialogue's gamestate to a new subsystem              [5]
 
 REIMPLEMENT
 - viewports                                                     [5]
-
-ANIMATION
-- reimplement pixel perfect detection                           [6]
-- rewrite the animation scripting system                        [8]
-- build helper classes to design animations                     [9]
-  - and perhaps an external utility
 
 ACTORS
 - rewrite the update loop to allow for walk/idle events         [6]

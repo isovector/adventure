@@ -174,18 +174,24 @@ function actors.prototype(actor)
     function actor.use_door(door)
         door = room.hotspots[door]
     
-        actor.walk(get_walkspot(door.shade))
+        actor.walk(door.spot)
         actor.queue(function()
+            local newroom = rooms[door.door.exit_room]
+            local newdoor = newroom.hotspots[door.door.exit_door]
+        
             actor.events.exit(actor, room)
             
             table.remove(room.scene, table.contains(room.scene, actor))
-            rooms[door.door.exit_room].place(actor)
-            actor.pos = vec(500)
+            newroom.place(actor)
             
-            actor.events.enter(actor, rooms[door.door.exit_room])
+            if newdoor and newdoor.spot then
+                actor.pos = vec(newdoor.spot)
+            end
+            
+            actor.events.enter(actor, newroom)
             
             if actor.follow then
-                room[door.door.exit_room].switch()
+                newroom.switch()
             end
         end)
     end

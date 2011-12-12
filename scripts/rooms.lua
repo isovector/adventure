@@ -22,6 +22,8 @@ function rooms.create(id)
     
     room.artwork = bitmap(roompath .. "art.pcx")
     room.hotmap = bitmap(roompath .. "hot.pcx")
+    
+    room.walkspots = get_walkspots(room.hotmap)
 
     for i = 1, 254 do
         table.insert(room.enabled_paths, false)
@@ -75,6 +77,7 @@ function rooms.prototype(room)
             id = id,
             name = name,
             cursor = 5,
+            spot = vec(0),
             
             clickable = false,
             
@@ -110,10 +113,13 @@ function rooms.prototype(room)
             room.hotspots[id].events[vid] = event.create()
         end
         
+        if room.walkspots[shade] then
+            room.hotspots[id].spot = room.walkspots[shade]
+        end
+        
         room.hotspots_by_shade[shade] = room.hotspots[id]
     end
     
-    -- fix this to be more like room.hotspot
     function room.door(shade, id, name, dest, door, direction)
         room.hotspot(shade, id, name)
         
@@ -139,6 +145,7 @@ function rooms.prototype(room)
         })
     end
     
+    --TODO(sandy): fix this
     function room.is_walkable(pos, y)
         if y then
             pos = vec(pos, y)

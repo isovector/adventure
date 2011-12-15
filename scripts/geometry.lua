@@ -86,9 +86,13 @@ function rotate(v, rot)
     return vec(cos * v.x - sin * v.y, sin * v.x + cos * v.y)
 end
 
-function interp()
+function interp(errorval)
+    if errorval == nil then
+        errorval = 0
+    end
+
     local terpo = { 
-        error_value = 0,
+        error_value = errorval,
         round = true
     }
     
@@ -96,13 +100,13 @@ function interp()
         __index = function(tab, index)
             local keys = { }
             
-            table.sort(tab)
-            
             for key in pairs(tab) do
                 if key ~= "error_value" and key ~= "round" then
                     table.insert(keys, key)
                 end
             end
+            
+            table.sort(keys)
         
             for i=0, table.getn(keys) do
                 local here = keys[i]

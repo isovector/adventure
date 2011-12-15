@@ -1,5 +1,6 @@
 function engine.update()
     local elapsed = 1 / framerate
+    
     engine.life = engine.life + elapsed
 
     if table.getn(conversation.options) ~= 0 then

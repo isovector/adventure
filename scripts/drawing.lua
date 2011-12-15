@@ -45,3 +45,18 @@ function drawing.blit(bmp, pos, flipped, src, size)
 
     drawing.raw_blit(bmp, pos.x, pos.y, flipped, src.x, src.y, size.x, size.y)
 end
+
+function drawing.skeleton(skel, orig)
+    if not orig then
+        orig = vec(0)
+    end
+
+    local tab = rig.get_bone_table(root)
+    local keys = table.keys(tab)
+    
+    for _, key in ipairs(keys) do
+        for _, bone in pairs(tab[key]) do
+            drawing.blit_rotate(bone.image, orig + bone.get_position(), bone.image_offset, bone.get_rotation())
+        end
+    end
+end

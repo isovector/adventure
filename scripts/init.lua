@@ -17,7 +17,7 @@ end
 load_module("scripts/environment.lua")
 load_module("scripts/library.lua")
 load_module("scripts/geometry.lua")
-load_module("scripts/skeleton.lua")
+load_module("scripts/rig.lua")
 load_module("scripts/path.lua")
 load_module("scripts/debug.lua")
 load_module("scripts/repl.lua")

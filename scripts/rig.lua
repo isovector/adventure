@@ -54,12 +54,16 @@ function rig.skeleton(bmp, origin, off, rotation, root)
         return skel.parent.get_rotation() + skel.default.rotation + skel.rotation
     end
     
-    function skel.get_position()
+    function skel.get_position(scale)
+        if not scale then
+            scale = 1
+        end
+    
         if not skel.parent then
-            return skel.default.pos + skel.pos
+            return (skel.default.pos + skel.pos) * scale
         end
         
-        return skel.parent.get_position() + rotate(skel.default.pos + skel.pos, skel.parent.get_rotation())
+        return skel.parent.get_position(scale) + rotate((skel.default.pos + skel.pos) * scale, skel.parent.get_rotation())
     end
 
     return skel
@@ -82,7 +86,7 @@ function rig.keyframe(time, ...)
     }
 end
 
-function rig.splice(...)
+function rig.splice(name, ...)
     local args = { ... }
     local anim = {
         duration = 0
@@ -107,6 +111,9 @@ function rig.splice(...)
             end
         end
     end
+    
+    --TODO(sandy): this feels yucky
+    animation.cache[name] = anim
     
     return anim
 end

@@ -94,7 +94,7 @@ int script_blit_rotate(lua_State *L) {
     int cx, cy, x, y, angle;
     BITMAP *bmp;
     
-    if (lua_gettop(L) != 4 || !lua_isuserdata(L, 1) || !lua_istable(L, 2) || !lua_istable(L, 3) || !lua_isnumber(L, 4)) {
+    if (lua_gettop(L) != 5 || !lua_isuserdata(L, 1) || !lua_istable(L, 2) || !lua_istable(L, 3) || !lua_isnumber(L, 4) || !lua_isnumber(L, 5)) {
         lua_pushstring(L, "drawing.blit_rotate expects (bitmap, vector, vector, int)");
         lua_error(L);
     }
@@ -104,7 +104,7 @@ int script_blit_rotate(lua_State *L) {
     extract_vector(L, 2, &x, &y);
     extract_vector(L, 3, &cx, &cy);
     
-    pivot_sprite(buffer, bmp, x, y, cx, cy, itofix(lua_tonumber(L, 4)));
+    pivot_scaled_sprite(buffer, bmp, x, y, cx, cy, itofix(lua_tonumber(L, 4)), ftofix(lua_tonumber(L, 5)));
     
     return 0;
 }

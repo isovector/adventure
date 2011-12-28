@@ -51,6 +51,10 @@ engine = {
     verbs = { }
 }
 
+events.game = {
+    tick = event.create()
+}
+
 function engine.add_verb(name, use, offset, size)
     engine.verbs[name] = {
         use = use,

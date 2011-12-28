@@ -1,7 +1,3 @@
-events.game = {
-    tick = event.create()
-}
-
 events.game.tick.sub(function(state)
     local elapsed = 1 / framerate
     

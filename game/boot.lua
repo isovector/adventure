@@ -1,3 +1,43 @@
+load_script("scripts/library.lua")
+load_script("scripts/geometry.lua")
+load_script("scripts/rig.lua")
+load_script("scripts/tasks.lua")
+load_script("scripts/drawing.lua")
+load_script("scripts/filesystem.lua")
+
+load_script("scripts/dialogue.lua")
+load_script("scripts/repl.lua")
+
+load_script("scripts/engine.lua")
+load_script("scripts/engine.logic.lua")
+load_script("scripts/engine.drawing.lua")
+load_script("scripts/animation.lua")
+
+load_script("scripts/actors.lua")
+load_script("scripts/rooms.lua")
+load_script("scripts/items.lua")
+
+load_script("scripts/path.lua")
+load_script("scripts/clock.lua")
+load_script("scripts/game.lua")
+
+-- initialize verbs
+
+engine.add_verb("talk", "Talk to %s", vec(0), vec(48))
+engine.add_verb("look", "Look at %s", vec(48, 0), vec(48))
+engine.add_verb("touch", "Touch %s", vec(96, 0), vec(48))
+
+-- load content
+
+load_script("game/dialogue/dialogue.lua")
+load_dir("actors")
+load_dir("items")
+load_dir("rooms", function(filename)
+    rooms[filename].events.init()
+end)
+
+-- setup game
+
 rooms["outside"].switch()
 enable_path(17)
 player = actors.gomez

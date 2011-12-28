@@ -104,8 +104,20 @@ void init_script() {
     
     register_path();
     register_drawing();
+
+    if (luaL_dofile(script, "scripts/environment.lua") != 0) {
+		printf("%s\n", lua_tostring(script, -1));
+	}
+}
+
+void boot_module() {
+    char* initcode = "module = dofile(\"module.lua\")\n"
+                     "dofile(module .. \"/boot.lua\")\n"
+                     "readonly.locks[\"module\"] = module";
     
-    if (luaL_dofile(script, "scripts/init.lua") != 0) {
+    
+    
+    if (luaL_dostring(script, initcode) != 0) {
 		printf("%s\n", lua_tostring(script, -1));
 	}
 }

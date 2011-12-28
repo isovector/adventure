@@ -1,5 +1,3 @@
-dofile("game/actors/richard/rig.lua")
-
 engine.events.draw.sub(function()
     if room and room.artwork then
         drawing.blit(room.artwork, vec(0))
@@ -17,8 +15,6 @@ engine.events.draw.sub(function()
         drawing.text(vec(32, 32), color.make(255, 200, 0), "Room failed to load")
         drawing.text(vec(32, 46), color.make(255, 200, 0), "This is generally indicative of a big lua problem")
     end
-    
-    drawing.skeleton(root, engine.mouse.pos, 0.5)
     
     if engine.state == "inventory" then
         drawing.blit(engine.resources.inventory, vec(270, 210))

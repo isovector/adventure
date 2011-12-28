@@ -107,17 +107,11 @@ int main(int argc, char* argv[]) {
 
 	init_script();
     
-    if (luaL_dofile(script, "game/init.lua") != 0) {
-        printf("%s\n", lua_tostring(script, -1));
-    }
-    
     lua_setconstant(script, "screen_width", number, SCREEN_WIDTH);
     lua_setconstant(script, "screen_height", number, SCREEN_HEIGHT);
     lua_setconstant(script, "framerate", number, 60);
     
-        if (luaL_dofile(script, "game/boot.lua") != 0) {
-        printf("%s\n", lua_tostring(script, -1));
-    }
+    boot_module();
     
     init_console(32);
     install_int_ex(&ticker, BPS_TO_TIMER(FRAMERATE));

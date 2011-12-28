@@ -13,11 +13,11 @@ tmp_anims.sign.anims.stand = {
 
 local room = rooms.create("outside")
 
-load_module("game/rooms/outside/dialogue.lua")
+load_module("rooms/outside/dialogue.lua")
 
 room.place(actors.gomez)
---room.place(actors.bouncer)
---actors.bouncer.flipped = true
+room.place(actors.bouncer)
+actors.bouncer.flipped = true
 
 --local cup = actors.temp("cup", "Milkshape Cup", "game/rooms/outside/objects/cup.pcx")
 

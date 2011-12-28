@@ -6,6 +6,7 @@
 extern lua_State *script;
 
 void init_script();
+void boot_module();
 void update_mouse();
 
 #define lua_getregister(L, s)  lua_getfield(L, LUA_REGISTRYINDEX, s)

@@ -8,6 +8,7 @@ extern lua_State *script;
 void init_script();
 void boot_module();
 void update_mouse();
+void init_keys();
 
 #define lua_getregister(L, s)  lua_getfield(L, LUA_REGISTRYINDEX, s)
 #define lua_setregister(L, s)  lua_setfield(L, LUA_REGISTRYINDEX, s)
@@ -21,6 +22,10 @@ void update_mouse();
     lua_push##type(L, val); \
     lua_settable(L, -3); \
     lua_pop(L, 2);
+    
+#define lua_setkey(key) lua_pushstring(script, #key); \
+                        lua_pushnumber(script, KEY_##key); \
+                        lua_settable(script, -3);
 
 #ifndef DRAW_SPRITE_NORMAL
 #define DRAW_SPRITE_NORMAL 0

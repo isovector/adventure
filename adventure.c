@@ -38,7 +38,10 @@ void update() {
     life += 1 / (float)FRAMERATE;
 
     if (key[KEY_ESC] && !last_key[KEY_ESC]) quit = 1;
-    if (key[KEY_F10]) open_console();
+    if (key[KEY_F10]) { 
+        clear_keybuf();
+        open_console();
+    }
 
     update_game();
 
@@ -106,6 +109,7 @@ int main(int argc, char* argv[]) {
     enabled_paths[255] = 1;
 
 	init_script();
+    init_keys();
     
     lua_setconstant(script, "screen_width", number, SCREEN_WIDTH);
     lua_setconstant(script, "screen_height", number, SCREEN_HEIGHT);

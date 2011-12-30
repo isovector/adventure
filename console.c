@@ -98,6 +98,7 @@ void open_console() {
     
     set_dialog_color(consolediag, gui_fg_color, gui_mg_color);
     in_console = 1;
+    
     do_dialog(consolediag, 0);
     in_console = 0;
 
@@ -118,7 +119,7 @@ void open_console() {
         push_queue(NULL, 0);
     
     lua_pop(script, 2);
+    
     input[0] = '\0';
-
     open_console();
 }

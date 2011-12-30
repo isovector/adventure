@@ -89,6 +89,16 @@ void update_mouse() {
     lua_pop(script, 3);
 }
 
+int script_get_key(lua_State *L) {
+    if (lua_gettop(L) != 1 || !lua_isstring(L, 1)) {
+        lua_pushstring(L, "get_key expects (vec)");
+        lua_error(L);
+    }
+    
+    lua_pushboolean(L, key[(int)lua_tonumber(L, 1)]);
+    return 1;
+}
+
 void init_script() {
     script = lua_open();
     luaL_openlibs(script);
@@ -101,6 +111,7 @@ void init_script() {
     
     lua_register(script, "set_room_data", &script_load_room);
     lua_register(script, "which_hotspot", &script_which_hotspot);
+    lua_register(script, "get_key", &script_get_key);
     
     register_path();
     register_drawing();
@@ -108,6 +119,49 @@ void init_script() {
     if (luaL_dofile(script, "scripts/environment.lua") != 0) {
 		printf("%s\n", lua_tostring(script, -1));
 	}
+}
+
+void init_keys() {
+    lua_getglobal(script, "engine");
+    lua_pushstring(script, "keys");
+    lua_gettable(script, -2);
+    
+    lua_pushstring(script, "_names");
+    
+    lua_newtable(script);
+    lua_setkey(A);
+    lua_setkey(B);
+    lua_setkey(C);
+    lua_setkey(D);
+    lua_setkey(E);
+    lua_setkey(F);
+    lua_setkey(G);
+    lua_setkey(H);
+    lua_setkey(I);
+    lua_setkey(J);
+    lua_setkey(K);
+    lua_setkey(L);
+    lua_setkey(M);
+    lua_setkey(N);
+    lua_setkey(O);
+    lua_setkey(P);
+    lua_setkey(Q);
+    lua_setkey(R);
+    lua_setkey(S);
+    lua_setkey(T);
+    lua_setkey(U);
+    lua_setkey(V);
+    lua_setkey(W);
+    lua_setkey(X);
+    lua_setkey(Y);
+    lua_setkey(Z);
+    lua_setkey(LEFT);
+    lua_setkey(RIGHT);
+    lua_setkey(UP);
+    lua_setkey(DOWN);
+    
+    lua_settable(script, -3);
+    lua_pop(script, 1);
 }
 
 void boot_module() {

@@ -27,6 +27,9 @@ engine = {
         }
     },
     
+    keys = {
+    },
+    
     cursors = {
         offsets = {
             vec(16, 16),
@@ -38,7 +41,8 @@ engine = {
             vec(29, 16),
             vec(3, 5),
             vec(16, 3),
-            vec(29, 5)
+            vec(29, 5),
+            vec(16, 16)
         }
     },
     
@@ -54,6 +58,18 @@ engine = {
 events.game = {
     tick = event.create()
 }
+
+setmetatable(engine.keys, {
+    __index = function(t, k)
+        k = k:upper()
+    
+        if not engine.keys._names[k] then
+            return false
+        end
+    
+        return get_key(engine.keys._names[k])
+    end
+})
 
 function engine.add_verb(name, use, offset, size)
     engine.verbs[name] = {
@@ -97,6 +113,28 @@ function engine.mouse.pump()
         if type(mouse.buttons["last_" .. button]) ~= "nil"  then
             mouse.buttons["last_" .. button] = mouse.buttons[button]
         end
+    end
+end
+
+function engine.keys.is_press(key)
+    key = key:upper()
+
+    return engine.keys[key] 
+        and not engine.keys["last_" .. key]
+end
+
+function engine.keys.is_release(key)
+    key = key:upper()
+
+    return not engine.keys[key] 
+        and engine.keys["last_" .. key]
+end
+
+function engine.keys.pump()
+    local keys = engine.keys
+
+    for key in pairs(keys._names) do
+        keys["last_" .. key] = keys[key]
     end
 end
 

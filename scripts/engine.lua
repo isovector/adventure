@@ -59,6 +59,10 @@ events.game = {
     tick = event.create()
 }
 
+events.console = {
+    input = event.create()
+}
+
 setmetatable(engine.keys, {
     __index = function(t, k)
         k = k:upper()

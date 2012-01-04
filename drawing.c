@@ -75,6 +75,29 @@ int script_draw_circle(lua_State *L) {
     return 0;
 }
 
+int script_draw_rect(lua_State *L) {
+    int x, y, w, h;
+    
+    if (lua_gettop(L) != 2 || !lua_istable(L, 1) || !lua_isnumber(L, 2)) {
+        lua_pushstring(L, "drawing.rect expects (rect, number)");
+        lua_error(L);
+    }
+    
+    lua_pushstring(L, "pos");
+    lua_gettable(L, 1);
+    extract_vector(L, -1, &x, &y);
+    lua_pop(L, 1);
+    
+    lua_pushstring(L, "size");
+    lua_gettable(L, 1);
+    extract_vector(L, -1, &w, &h);
+    lua_pop(L, 1);
+    
+    rect(buffer, x, y, x + w, y + h, lua_tonumber(L, 2));
+    
+    return 0;
+}
+
 int script_draw_line(lua_State *L) {
     int x1, y1, x2, y2, color;
     
@@ -161,6 +184,7 @@ void register_drawing() {
     lua_regtable(script, "drawing", "clear", script_draw_clear);
     lua_regtable(script, "drawing", "circle", script_draw_circle);
     lua_regtable(script, "drawing", "line", script_draw_line);
+    lua_regtable(script, "drawing", "rect", script_draw_rect);
     lua_regtable(script, "drawing", "raw_text", script_draw_text);
     lua_regtable(script, "drawing", "raw_text_center", script_draw_text_center);
     lua_regtable(script, "drawing", "raw_blit", script_draw_blit);

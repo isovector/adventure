@@ -61,24 +61,7 @@ int script_push_queue(lua_State *L) {
     return 0;
 }
 
-void init_console(int n) {
-    RQNODE *head = alloc_rqnode();
-    int i;
-    
-    rollqueue.count = n;
-    rollqueue.head = head;
-
-    for (i = 1; i < n; i++) {
-        head->next = alloc_rqnode();
-        head = head->next;
-    }
-    
-    lua_register(script, "console_line", &script_push_queue);
-
-    rollqueue.tail = head;
-}
-
-void open_console() {
+void open_console(int repeat) {
     int i;
 	RQNODE *node;
     
@@ -105,15 +88,18 @@ void open_console() {
     if (strlen(input) == 0)
         return;
 
-    push_queue(prompt, input);    
-   
-    lua_getglobal(script, "repl");
-    lua_pushstring(script, "line");
+    push_queue(prompt, input);
+    
+    lua_getglobal(script, "events");
+    lua_pushstring(script, "console");
+    lua_gettable(script, -2);
+    lua_pushstring(script, "input");
     lua_gettable(script, -2);
     lua_pushstring(script, input);
     lua_call(script, 1, 1);
     
-    prompt[1] = lua_toboolean(script, -1) ? '>' : ' ';
+    // this is broken! fix it somehow :)
+    //prompt[1] = lua_toboolean(script, -1) ? '>' : ' ';
     
     if (!lua_toboolean(script, -1))
         push_queue(NULL, 0);
@@ -121,5 +107,41 @@ void open_console() {
     lua_pop(script, 2);
     
     input[0] = '\0';
-    open_console();
+    
+    if (repeat)
+        open_console(repeat);
+}
+
+int script_open_console(lua_State *L) {
+    if (lua_gettop(L) > 0 && !lua_isboolean(L, 1)) {
+        lua_pushstring(L, "open_console expects ([boolean])");
+        lua_error(L);
+    }
+    
+    clear_keybuf();
+    
+    if (lua_gettop(L) == 1)
+        open_console(lua_toboolean(L, 1));
+    else
+        open_console(1);
+    
+    return 0;
+}
+
+void init_console(int n) {
+    RQNODE *head = alloc_rqnode();
+    int i;
+    
+    rollqueue.count = n;
+    rollqueue.head = head;
+
+    for (i = 1; i < n; i++) {
+        head->next = alloc_rqnode();
+        head = head->next;
+    }
+    
+    lua_register(script, "console_line", &script_push_queue);
+    lua_register(script, "open_console", &script_open_console);
+
+    rollqueue.tail = head;
 }

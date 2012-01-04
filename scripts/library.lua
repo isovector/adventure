@@ -60,6 +60,20 @@ function table.contains(tab, value)
     return false
 end
 
+function table.max(tab)
+    local max = nil
+    local pos = 0
+    
+    for key, val in pairs(tab) do
+        if not max or max < val then
+            max = val
+            pos = key
+        end
+    end
+    
+    return pos
+end
+
 function table.min(tab)
     local min = nil
     local pos = 0

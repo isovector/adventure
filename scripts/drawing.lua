@@ -1,5 +1,6 @@
 color = { 
-    black = 0,
+    black = 0x000000,
+    red =   0xFF0000,
     white = 0xFFFFFF,
     transparent = -1
 }

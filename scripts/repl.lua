@@ -74,3 +74,5 @@ function repl.dump(tab)
     
     console_line("", "}")
 end
+
+events.console.input.sub(repl.line)

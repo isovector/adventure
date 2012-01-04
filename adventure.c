@@ -40,7 +40,7 @@ void update() {
     if (key[KEY_ESC] && !last_key[KEY_ESC]) quit = 1;
     if (key[KEY_F10]) { 
         clear_keybuf();
-        open_console();
+        open_console(1);
     }
 
     update_game();

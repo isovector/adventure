@@ -48,7 +48,7 @@ extern unsigned int waypoint_connections[MAX_WAYPOINTS];
 extern int in_console;
 
 void init_console(int);
-void open_console();
+void open_console(int);
 char *strdup2(const char*);
 
 #endif

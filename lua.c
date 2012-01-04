@@ -155,6 +155,7 @@ void init_keys() {
     lua_setkey(X);
     lua_setkey(Y);
     lua_setkey(Z);
+    lua_setkey(SPACE);
     lua_setkey(LEFT);
     lua_setkey(RIGHT);
     lua_setkey(UP);

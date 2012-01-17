@@ -1,8 +1,4 @@
-C HOST
-- make is_walkable not use global state                         [1]
-
 PATHING
-- improve object walkspot creation                              [3]
 - add an actor event on collision                               [2]
 
 ANIMATION

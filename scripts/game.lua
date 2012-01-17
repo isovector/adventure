@@ -57,7 +57,7 @@ function make_walkspot(actor)
     y = y - oy + sy
     
     
-    for dist = sx / 2, sx * 5, sx / 2 do
+    for dist = sx * 1.5, sx * 5, sx / 2 do
         for degree = 0, math.pi, math.pi / 12 do
             local ax = math.cos(degree) * dist * flip
             local ay = math.sin(degree) * dist

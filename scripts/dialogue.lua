@@ -102,7 +102,7 @@ function conversation.say(message, pos, color, duration)
     end
 
     if not duration then
-        duration = #message * 0.075
+        duration = math.max(#message * 0.075, 1.1)
     end
 
     msg = {

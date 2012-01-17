@@ -1,1 +1,1 @@
-return "utils/choreo"
+return "game"

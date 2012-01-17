@@ -48,6 +48,11 @@ function rooms.prototype(room)
         
         _G["room"] = room
         set_room_data(room.artwork, room.hotmap)
+        
+        for path, enabled in ipairs(room.enabled_paths) do
+            enable_path(path, enabled)
+        end
+        rebuild_waypoints()
 
         room.events.load()
         events.room.switch()
@@ -160,6 +165,8 @@ function rooms.prototype(room)
             val = true
         end
         
-        --room[key] = val
+        room.enabled_paths[key] = val
+        enable_path(key, val)
+        rebuild_waypoints()
     end
 end

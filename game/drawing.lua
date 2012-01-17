@@ -37,7 +37,7 @@ engine.events.draw.sub(function()
     drawing.blit(engine.resources.cursors, engine.mouse.pos - engine.cursors.offsets[engine.mouse.cursor + 1], false, vec(32 * engine.mouse.cursor, 0), vec(32))
     
     for _, msg in ipairs(conversation.words) do
-        drawing.text_center(msg.pos, msg.color, msg.message)
+        drawing.text_center(msg.pos, msg.color, color.black, " %s ", msg.message)
     end
 
     local i = 0

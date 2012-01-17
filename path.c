@@ -148,6 +148,16 @@ int script_enable_path(lua_State *L) {
     b = lua_gettop(L) == 2 ? lua_toboolean(L, 2) : 1;
     
     enabled_paths[n] = b;
+        
+    return 0;
+}
+
+int script_rebuild_waypoints(lua_State *L) {
+    if (lua_gettop(L) != 0) {
+        lua_pushstring(L, "rebuild_waypoints expects ()");
+        lua_error(L);
+    }
+
     build_waypoints();
     
     return 0;
@@ -241,6 +251,7 @@ void register_path() {
     lua_register(script, "get_walkspots", &script_get_walkspots);
     lua_register(script, "get_closest_waypoint", &script_get_closest_waypoint);
     lua_register(script, "enable_path", &script_enable_path);
+    lua_register(script, "rebuild_waypoints", &script_rebuild_waypoints);
     lua_register(script, "is_walkable", &script_is_walkable);
     lua_register(script, "is_pathable", &script_is_pathable);
 }

@@ -9,8 +9,8 @@ load_script("scripts/dialogue.lua")
 load_script("scripts/repl.lua")
 
 load_script("scripts/engine.lua")
-load_script("scripts/engine.logic.lua")
-load_script("scripts/engine.drawing.lua")
+load_script("game/logic.lua")
+load_script("game/drawing.lua")
 load_script("scripts/animation.lua")
 
 load_script("scripts/actors.lua")

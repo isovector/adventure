@@ -6,6 +6,8 @@ load_script("scripts/filesystem.lua")
 
 load_script("game/actors/richard/rig.lua")
 
+tonumber("5")
+
 index = 1
 
 last_msg = ""

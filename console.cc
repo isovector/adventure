@@ -5,7 +5,7 @@
 #define CONSOLE_MARGIN 12
 
 typedef struct tagRQNODE {
-    char *prompt, *value;
+    string prompt, value;
     struct tagRQNODE *next;
 } RQNODE;
 
@@ -25,11 +25,11 @@ DIALOG consolediag[] = {
 };
 
 RQNODE *alloc_rqnode() {
-    RQNODE *node = (RQNODE*)malloc(sizeof(RQNODE));
+    RQNODE *node = new RQNODE;
     
     node->next = NULL;
-    node->prompt = NULL;
-    node->value = NULL;
+    node->prompt = "";
+    node->value = "";
 
     return node;
 }
@@ -42,13 +42,8 @@ void push_queue(const char *cprompt, const char *value) {
     rollqueue.tail = node;
     node->next = NULL;
     
-    if (node->value)
-        free(node->value);
-    if (node->prompt)
-        free(node->prompt);
-
-    node->prompt = strdup2(cprompt ? cprompt : prompt);
-    node->value = value ? strdup2(value) : NULL;
+    node->prompt = cprompt ? cprompt : prompt;
+    node->value = value;
 }
 
 int script_push_queue(lua_State *L) {
@@ -74,8 +69,12 @@ void open_console(int repeat) {
     rectfill(screen, 0, 0, CONSOLE_WIDTH, CONSOLE_HEIGHT, gui_bg_color);
     node = rollqueue.head;
     for (i = 0; i < rollqueue.count; i++) {
-        if (node->value)
-            textprintf_ex(screen, font, CONSOLE_MARGIN, CONSOLE_MARGIN + i * 8, gui_fg_color, -1, "%s%s", node->prompt, node->value);
+        if (node->value.size() > 0) {
+            stringstream sstr;
+            sstr << node->prompt << node->value;
+            
+            textprintf_ex(screen, font, CONSOLE_MARGIN, CONSOLE_MARGIN + i * 8, gui_fg_color, -1, "%s", sstr.str().c_str());
+        }
         node = node->next;
     }
 

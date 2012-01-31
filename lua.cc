@@ -2,14 +2,6 @@
 
 lua_State *script;
 
-char *strdup2(const char *str) {
-    int n = strlen(str) + 1;
-    char *dup = malloc(n);
-    if (dup)
-        strcpy(dup, str);
-    return dup;
-}
-
 int script_load_room(lua_State *L) {
     int i;
     
@@ -166,13 +158,11 @@ void init_keys() {
 }
 
 void boot_module() {
-    char* initcode = "module = dofile(\"module.lua\")\n"
-                     "dofile(module .. \"/boot.lua\")\n"
-                     "readonly.locks[\"module\"] = module";
+    string initcode = "module = dofile(\"module.lua\")\n"
+                      "dofile(module .. \"/boot.lua\")\n"
+                      "readonly.locks[\"module\"] = module";
     
-    
-    
-    if (luaL_dostring(script, initcode) != 0) {
+    if (luaL_dostring(script, initcode.c_str()) != 0) {
 		printf("%s\n", lua_tostring(script, -1));
 	}
 }

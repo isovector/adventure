@@ -1,1 +1,1 @@
-return "utils/navmesh"
+return "game"

@@ -114,7 +114,8 @@ int script_draw_line(lua_State *L) {
 }
 
 int script_draw_polygon(lua_State *L) {
-    int i, n, x, y, *vertices, color;
+    int i, n, x, y, color;
+    int vertices[1024];
     
     if (lua_gettop(L) != 2 || !lua_istable(L, 1) || !lua_isnumber(L, 2)) {
         lua_pushstring(L, "drawing.polygon expects (vector[], int)");
@@ -130,7 +131,6 @@ int script_draw_polygon(lua_State *L) {
     lua_pop(L, 2);
     
     lua_pushvalue(L, 1);
-    vertices = (int*)malloc(n * 2 * sizeof(int));
     
     for (i = 1; i <= n; i++) {
         lua_pushnumber(L, i);
@@ -143,7 +143,6 @@ int script_draw_polygon(lua_State *L) {
     }
     
     polygon(buffer, n, vertices, lua_tonumber(L, 2));
-    free(vertices);
     
     return 0;
 }

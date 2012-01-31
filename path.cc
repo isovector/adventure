@@ -58,7 +58,7 @@ void build_waypoints() {
     int i, x, y, a, b;
 
     for (i = 0; i < waypoint_count; i++) {
-        free(waypoints[i]);
+        delete waypoints[i];
         waypoint_connections[i] = 0;
     }
     
@@ -67,7 +67,7 @@ void build_waypoints() {
     for (y = 0; y < SCREEN_HEIGHT; y++)
     for (x = 0; x < SCREEN_WIDTH; x++)
         if (getpixel(room_hot, x, y) == 255) {
-            waypoints[waypoint_count] = malloc(sizeof(POINT));
+            waypoints[waypoint_count] = new POINT;
             waypoints[waypoint_count]->x = x;
             waypoints[waypoint_count++]->y = y;
         }

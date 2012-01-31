@@ -5,16 +5,24 @@
 #define ALLEGRO_USE_CONSOLE
 #endif
 
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+
 #include <assert.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <allegro.h>
 #include <math.h>
+
+extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
-#include <string.h>
+}
+
 #include <semaphore.h>
+
+using namespace std;
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720

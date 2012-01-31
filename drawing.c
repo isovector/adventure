@@ -113,6 +113,41 @@ int script_draw_line(lua_State *L) {
     return 0;
 }
 
+int script_draw_polygon(lua_State *L) {
+    int i, n, x, y, *vertices, color;
+    
+    if (lua_gettop(L) != 2 || !lua_istable(L, 1) || !lua_isnumber(L, 2)) {
+        lua_pushstring(L, "drawing.polygon expects (vector[], int)");
+        lua_error(L);
+    }
+    
+    lua_getglobal(L, "table");
+    lua_pushstring(L, "getn");
+    lua_gettable(L, -2);
+    lua_pushvalue(L, 1);
+    lua_call(L, 1, 1);
+    n = lua_tonumber(L, -1);
+    lua_pop(L, 2);
+    
+    lua_pushvalue(L, 1);
+    vertices = (int*)malloc(n * 2 * sizeof(int));
+    
+    for (i = 1; i <= n; i++) {
+        lua_pushnumber(L, i);
+        lua_gettable(L, -2);
+        extract_vector(L, -1, &x, &y);
+        lua_pop(L, 1);
+        
+        vertices[(i - 1) * 2] = x;
+        vertices[(i - 1) * 2 + 1] = y;
+    }
+    
+    polygon(buffer, n, vertices, lua_tonumber(L, 2));
+    free(vertices);
+    
+    return 0;
+}
+
 int script_blit_rotate(lua_State *L) {
     int cx, cy, x, y, angle;
     BITMAP *bmp;
@@ -185,6 +220,7 @@ void register_drawing() {
     lua_regtable(script, "drawing", "circle", script_draw_circle);
     lua_regtable(script, "drawing", "line", script_draw_line);
     lua_regtable(script, "drawing", "rect", script_draw_rect);
+    lua_regtable(script, "drawing", "polygon", script_draw_polygon);
     lua_regtable(script, "drawing", "raw_text", script_draw_text);
     lua_regtable(script, "drawing", "raw_text_center", script_draw_text_center);
     lua_regtable(script, "drawing", "raw_blit", script_draw_blit);

@@ -65,6 +65,8 @@ void open_console(int repeat) {
     int i;
 	RQNODE *node;
     
+    //drawing_mode(DRAW_MODE_SOLID, NULL, 0, 0);
+    
     gui_fg_color = makecol(0, 0, 0);
     gui_mg_color = makecol(128, 128, 128);
     gui_bg_color = makecol(230, 220, 210);

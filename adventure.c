@@ -102,6 +102,9 @@ int main(int argc, char* argv[]) {
 
     set_color_depth(32);
     set_gfx_mode(GFX_AUTODETECT_WINDOWED, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
+    
+    set_alpha_blender();
+    drawing_mode(DRAW_MODE_TRANS, NULL, 0, 0);
 
     // load resources
     buffer = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);

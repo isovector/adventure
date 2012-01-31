@@ -22,6 +22,16 @@ function pqueue.dequeue(tab)
     return max
 end
 
+function table.map(tab, map)
+    local result = { }
+    
+    for key, val in pairs(tab) do
+        result[key] = map(val)
+    end
+    
+    return result
+end
+
 function table.keys(tab)
     local keys = { }
     

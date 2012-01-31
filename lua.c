@@ -91,7 +91,7 @@ void update_mouse() {
 
 int script_get_key(lua_State *L) {
     if (lua_gettop(L) != 1 || !lua_isstring(L, 1)) {
-        lua_pushstring(L, "get_key expects (vec)");
+        lua_pushstring(L, "get_key expects (string)");
         lua_error(L);
     }
     

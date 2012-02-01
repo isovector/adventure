@@ -31,6 +31,7 @@ end
 
 load_script("scripts/event.lua")
 load_script("scripts/debug.lua")
+load_script("scripts/serialize.lua")
 
 load_script("scripts/library.lua")
 load_script("scripts/geometry.lua")

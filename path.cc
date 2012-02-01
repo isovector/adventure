@@ -1,4 +1,6 @@
 #include "adventure.h"
+#include "libs/poly2tri/poly2tri.h"
+using namespace p2t;
 
 POINT *waypoints[MAX_WAYPOINTS];
 unsigned int waypoint_connections[MAX_WAYPOINTS] = {0};
@@ -245,6 +247,68 @@ int script_get_walkspots(lua_State *L) {
     return 1;
 }
 
+int script_get_navmesh(lua_State *L) {
+    vector<Point*> vertices;
+    vector<Triangle*> triangles;
+    vector<Point*>::iterator it;
+    Triangle *t;
+    Point *p;
+    CDT* cdt;
+    int x, y, n, i, j;
+    
+    if (lua_gettop(L) != 1 || !lua_istable(L, 1)) {
+        lua_pushstring(L, "get_navmesh expects (vector[])");
+        lua_error(L);
+    }
+    
+    lua_getglobal(L, "table");
+    lua_pushstring(L, "getn");
+    lua_gettable(L, -2);
+    lua_pushvalue(L, 1);
+    lua_call(L, 1, 1);
+    n = lua_tonumber(L, -1);
+    lua_pop(L, 2);
+    
+    lua_pushvalue(L, 1);
+    
+    for (i = 1; i <= n; i++) {
+        lua_pushnumber(L, i);
+        lua_gettable(L, -2);
+        extract_vector(L, -1, &x, &y);
+        lua_pop(L, 1);
+        
+        vertices.push_back(new Point(x, y));
+    }
+    
+    cdt = new CDT(vertices);
+    cdt->Triangulate();
+    triangles = cdt->GetTriangles();
+    
+    lua_newtable(L);
+    for (i = 0; i < triangles.size(); i++) {
+        lua_pushnumber(L, i + 1);
+        lua_newtable(L);
+        
+        t = triangles[i];
+        for (j = 0; j < 3; j++) {
+            p = t->GetPoint(j);
+            
+            lua_pushnumber(L, j + 1);
+            lua_vector(L, p->x, p->y);
+            lua_settable(L, -3);
+        }
+        
+        lua_settable(L, -3);
+    }
+    
+    delete cdt;
+    for (it = vertices.begin(); it != vertices.end(); it++) {
+        delete (*it);
+    }
+    
+    return 1;
+}
+
 void register_path() {
     lua_register(script, "get_neighbors", &script_get_neighbors);
     lua_register(script, "get_waypoint", &script_get_waypoint);
@@ -254,4 +318,5 @@ void register_path() {
     lua_register(script, "rebuild_waypoints", &script_rebuild_waypoints);
     lua_register(script, "is_walkable", &script_is_walkable);
     lua_register(script, "is_pathable", &script_is_pathable);
+    lua_register(script, "get_navmesh", &script_get_navmesh);
 }

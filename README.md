@@ -21,7 +21,7 @@ Next clone the repository
 
 Now you can attempt to build 
 
-> $ gcc `` `allegro-config --libs` `` -lm -llua -std=c99 -o adventure *.c
+> $ make
 
 With luck, the host has been compiled and can be run as
 

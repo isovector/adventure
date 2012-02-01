@@ -1,4 +1,3 @@
-load_script("scripts/debug.lua")
 load_script("scripts/rig.lua")
 load_script("scripts/tasks.lua")
 load_script("scripts/drawing.lua")

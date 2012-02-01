@@ -1,4 +1,6 @@
 PATHING
+- rewrite the pathfinder as a navmesh				[1]
+  - with funnelling
 - add an actor event on collision                               [2]
 
 ANIMATION

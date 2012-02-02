@@ -28,7 +28,6 @@ geometry = {
                 elseif key == "y" then
                     return tab.y
                 end
-                
             end
     }
 }

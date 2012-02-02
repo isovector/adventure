@@ -65,7 +65,7 @@ events.console = {
 
 setmetatable(engine.keys, {
     __index = function(t, k)
-        k = k:upper()
+        k = tostring(k):upper()
     
         if not engine.keys._names[k] then
             return false
@@ -121,14 +121,14 @@ function engine.mouse.pump()
 end
 
 function engine.keys.is_press(key)
-    key = key:upper()
+    key = tostring(key):upper()
 
     return engine.keys[key] 
         and not engine.keys["last_" .. key]
 end
 
 function engine.keys.is_release(key)
-    key = key:upper()
+    key = tostring(key):upper()
 
     return not engine.keys[key] 
         and engine.keys["last_" .. key]

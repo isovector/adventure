@@ -121,6 +121,18 @@ void init_keys() {
     lua_pushstring(script, "_names");
     
     lua_newtable(script);
+    
+    lua_setkey(1);
+    lua_setkey(2);
+    lua_setkey(3);
+    lua_setkey(4);
+    lua_setkey(5);
+    lua_setkey(6);
+    lua_setkey(7);
+    lua_setkey(8);
+    lua_setkey(9);
+    lua_setkey(0);
+    
     lua_setkey(A);
     lua_setkey(B);
     lua_setkey(C);
@@ -147,7 +159,9 @@ void init_keys() {
     lua_setkey(X);
     lua_setkey(Y);
     lua_setkey(Z);
+    
     lua_setkey(SPACE);
+    
     lua_setkey(LEFT);
     lua_setkey(RIGHT);
     lua_setkey(UP);

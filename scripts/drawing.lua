@@ -30,6 +30,22 @@ function drawing.text_center(pos, col, background, format, ...)
 
     drawing.raw_text_center(pos.x, pos.y, col, background, string.format(format, ...))
 end
+
+function drawing.get_mode()
+    return drawing.mode or "solid"
+end
+
+function drawing.set_mode(mode)
+    drawing.mode = mode
+
+    if mode == "solid" then
+        drawing.raw_set_mode(0)
+    elseif mode == "xor" then
+        drawing.raw_set_mode(1)
+    elseif mode == "trans" then
+        drawing.raw_set_mode(5)
+    end
+end
     
 function drawing.blit(bmp, pos, flipped, src, size)
     if type(flipped) == "nil" then

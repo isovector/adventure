@@ -5,10 +5,10 @@ lua_State *script;
 int script_load_room(lua_State *L) {
     int i;
     
-    if (lua_gettop(L) != 2 || !lua_isuserdata(L, 1) || !lua_isuserdata(L, 2)) {
-        lua_pushstring(L, "__load_room expects (bitmap, bitmap)");
-        lua_error(L);
-    }
+    CALL_ARGS(2)
+    CALL_TYPE(userdata)
+    CALL_TYPE(userdata)
+    CALL_ERROR("set_room_data expects (bitmap, bitmap)")
 
     room_art = *(BITMAP**)lua_touserdata(L, 1);
     room_hot = *(BITMAP**)lua_touserdata(L, 2);
@@ -34,19 +34,11 @@ int script_panic(lua_State *L) {
 int script_which_hotspot(lua_State *L) {
     int x, y;
     
-    if (lua_gettop(L) != 1 || !lua_istable(L, 1)) {
-        lua_pushstring(L, "which_hotspot expects (vec)");
-        lua_error(L);
-    }
+    CALL_ARGS(1)
+    CALL_TYPE(table)
+    CALL_ERROR("which_hotspot expects (vector)")
     
-    lua_pushstring(L, "x");
-    lua_gettable(L, -2);
-    x = lua_tonumber(L, -1);
-    lua_pop(L, 1);
-    
-    lua_pushstring(L, "y");
-    lua_gettable(L, -2);
-    y = lua_tonumber(L, -1);
+    extract_vector(L, 1, &x, &y);
     
     lua_pushnumber(L, (getpixel(room_hot, x, y) & (255 << 16)) >> 16);
     return 1;
@@ -82,11 +74,11 @@ void update_mouse() {
 }
 
 int script_get_key(lua_State *L) {
-    if (lua_gettop(L) != 1 || !lua_isstring(L, 1)) {
-        lua_pushstring(L, "get_key expects (string)");
-        lua_error(L);
-    }
+    CALL_ARGS(1)
+    CALL_TYPE(string)
+    CALL_ERROR("get_key expects (string)")
     
+    // this seems REALLY fishy to me
     lua_pushboolean(L, key[(int)lua_tonumber(L, 1)]);
     return 1;
 }

@@ -106,10 +106,9 @@ int script_get_neighbors(lua_State *L) {
 int script_get_waypoint(lua_State *L) {
     POINT defaultspot, *waypoint;
     
-    if (lua_gettop(L) != 1 || !lua_isnumber(L, 1)) {
-        lua_pushstring(L, "get_waypoint expects (int)");
-        lua_error(L);
-    }
+    CALL_ARGS(1)
+    CALL_TYPE(number)
+    CALL_ERROR("get_waypoint expects (int)")
     
     defaultspot.x = 0;
     defaultspot.y = 0;
@@ -126,11 +125,10 @@ int script_get_waypoint(lua_State *L) {
 int script_get_closest_waypoint(lua_State *L) {
     int x, y;
     
-    if (lua_gettop(L) != 1 || !lua_istable(L, 1)) {
-        lua_pushstring(L, "get_closest_waypoint expects (table)");
-        lua_error(L);
-    }
-    
+    CALL_ARGS(1)
+    CALL_TYPE(table)
+    CALL_ERROR("get_closest_waypoint expects (table)")
+        
     extract_vector(L, -1, &x, &y);
     lua_pushnumber(L, closest_waypoint(x, y));
     
@@ -140,6 +138,7 @@ int script_get_closest_waypoint(lua_State *L) {
 int script_enable_path(lua_State *L) {
     int n, b;
     
+    // TODO(sandy): we need a way to have optional args
     if ((lua_gettop(L) == 1 && !lua_isnumber(L, 1)) ||
         (lua_gettop(L) >= 2 && (!lua_isnumber(L, 1) || !lua_isboolean(L, 2)))) {
         lua_pushstring(L, "enable_path expects (int, [bool])");
@@ -155,11 +154,9 @@ int script_enable_path(lua_State *L) {
 }
 
 int script_rebuild_waypoints(lua_State *L) {
-    if (lua_gettop(L) != 0) {
-        lua_pushstring(L, "rebuild_waypoints expects ()");
-        lua_error(L);
-    }
-
+    CALL_ARGS(0)
+    CALL_ERROR("rebuild_waypoints expects ()")
+    
     build_waypoints();
     
     return 0;
@@ -173,10 +170,10 @@ int script_is_walkable(lua_State *L) {
     BITMAP *bmp;
     int x, y, pixel;
     
-    if (lua_gettop(L) != 2 || !lua_isuserdata(L, 1) || !lua_istable(L, 2)) {
-        lua_pushstring(L, "is_walkable expects (bitmap, vector)");
-        lua_error(L);
-    }
+    CALL_ARGS(2)
+    CALL_TYPE(userdata)
+    CALL_TYPE(table)
+    CALL_ERROR("is_walkable expects (bitmap, vector)")
     
     bmp = *(BITMAP**)lua_touserdata(L, 1);
     
@@ -194,10 +191,10 @@ int script_is_walkable(lua_State *L) {
 int script_is_pathable(lua_State *L) {
     int x1, x2, y1, y2;
     
-    if (lua_gettop(L) != 2 || !lua_istable(L, 1) || !lua_istable(L, 2)) {
-        lua_pushstring(L, "is_pathable expects (vector, vector)");
-        lua_error(L);
-    }
+    CALL_ARGS(2)
+    CALL_TYPE(table)
+    CALL_TYPE(table)
+    CALL_ERROR("is_pathable expects (vector, vector)")
     
     extract_vector(L, 1, &x1, &y1);
     extract_vector(L, 2, &x2, &y2);
@@ -228,11 +225,10 @@ int script_get_walkspots(lua_State *L) {
     int color = 0, x, y;
     BITMAP *bmp;
     
-    if (lua_gettop(L) != 1 || !lua_isuserdata(L, 1)) {
-        lua_pushstring(L, "get_walkspots expects (bitmap)");
-        lua_error(L);
-    }
-
+    CALL_ARGS(1)
+    CALL_TYPE(userdata)
+    CALL_ERROR("get walkspots expects (bitmap)")
+    
     bmp = *(BITMAP**)lua_touserdata(L, 1);
     lua_newtable(L);
     
@@ -256,10 +252,9 @@ int script_get_navmesh(lua_State *L) {
     CDT* cdt;
     int x, y, n, i, j;
     
-    if (lua_gettop(L) != 1 || !lua_istable(L, 1)) {
-        lua_pushstring(L, "get_navmesh expects (vector[])");
-        lua_error(L);
-    }
+    CALL_ARGS(1)
+    CALL_TYPE(table)
+    CALL_ERROR("get_navmesh expects (vector[])")
     
     lua_getglobal(L, "table");
     lua_pushstring(L, "getn");

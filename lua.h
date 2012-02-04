@@ -26,6 +26,15 @@ void init_keys();
 #define lua_setkey(key) lua_pushstring(script, #key); \
                         lua_pushnumber(script, KEY_##key); \
                         lua_settable(script, -3);
+                        
+#define CALL_ARGS(n)    { \
+                            int _argi = 0; \
+                            if (lua_gettop(L) != n
+#define CALL_TYPE(type) || !lua_is##type(L, ++_argi)
+#define CALL_ERROR(msg) ) { \
+                            lua_pushstring(L, msg); lua_error(L); \
+                          } \
+                        }
 
 #ifndef DRAW_SPRITE_NORMAL
 #define DRAW_SPRITE_NORMAL 0

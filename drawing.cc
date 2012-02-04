@@ -2,31 +2,38 @@
 
 BITMAP *buffer;
 
-int script_draw_clear(lua_State *L) {
-    BITMAP *bmp = buffer;
+BITMAP *get_target(lua_State *L, int size) {
+    BITMAP *target = buffer;
     
-    if ((lua_gettop(L) != 1 || !lua_isnumber(L, 1)) &&
-        (lua_gettop(L) != 2 || !lua_isuserdata(L, 1) || !lua_isnumber(L, 2))) {
-        lua_pushstring(L, "drawing.clear expects (int) or (bitmap, int)");
-        lua_error(L);
-    }
-    
-    if (lua_gettop(L) == 2) {
-        bmp = *(BITMAP**)lua_touserdata(L, 1);
+    if (lua_gettop(L) == size + 1 && lua_isuserdata(L, 1)) {
+        target = *(BITMAP**)lua_touserdata(L, 1);
         lua_remove(L, 1);
     }
     
-    clear_to_color(bmp, lua_tonumber(L, -1));
+    return target;
+}
+
+int script_draw_clear(lua_State *L) {
+    BITMAP *bmp = get_target(L, 1);
     
+    CALL_ARGS(1)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.clear expects (int)")
+    
+    clear_to_color(bmp, lua_tonumber(L, -1));
     return 0;
 }
 
 int script_draw_text(lua_State *L) {
-    if (lua_gettop(L) != 5 || !lua_isnumber(L, 1) || !lua_isnumber(L, 2)
-        || !lua_isnumber(L, 3) || !lua_isnumber(L, 4) || !lua_isstring(L, 5)) {
-        lua_pushstring(L, "drawing.text expects (int, int, int, int, string)");
-        lua_error(L);
-    }
+    BITMAP *bmp = get_target(L, 5);
+    
+    CALL_ARGS(5)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_TYPE(string)
+    CALL_ERROR("drawing.text expects (int, int, int, int, string)")
     
     textout_ex(buffer, font, lua_tostring(L, 5), lua_tonumber(L, 1), lua_tonumber(L, 2), lua_tonumber(L, 3), lua_tonumber(L, 4));
 
@@ -34,11 +41,15 @@ int script_draw_text(lua_State *L) {
 }
 
 int script_draw_text_center(lua_State *L) {
-    if (lua_gettop(L) != 5 || !lua_isnumber(L, 1) || !lua_isnumber(L, 2)
-        || !lua_isnumber(L, 3) || !lua_isnumber(L, 4) || !lua_isstring(L, 5)) {
-        lua_pushstring(L, "drawing.text expects (int, int, int, int, string)");
-        lua_error(L);
-    }
+    BITMAP *bmp = get_target(L, 5);
+    
+    CALL_ARGS(5)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_TYPE(string)
+    CALL_ERROR("drawing.text_center expects (int, int, int, int, string)")
     
     textout_centre_ex(buffer, font, lua_tostring(L, 5), lua_tonumber(L, 1), lua_tonumber(L, 2), lua_tonumber(L, 3), lua_tonumber(L, 4));
 
@@ -47,14 +58,19 @@ int script_draw_text_center(lua_State *L) {
 
 int script_draw_blit(lua_State *L) {
     int w, h;
-    BITMAP *tmp, *bmp;
+    BITMAP *tmp;
+    BITMAP *bmp = get_target(L, 8);
     
-    if (lua_gettop(L) != 8 || !lua_isuserdata(L, 1) || !lua_isnumber(L, 2)
-        || !lua_isnumber(L, 3) || !lua_isboolean(L, 4) || !lua_isnumber(L, 5)
-        || !lua_isnumber(L, 6) || !lua_isnumber(L, 7) || !lua_isnumber(L, 8)) {
-        lua_pushstring(L, "drawing.blit expects (bitmap, int, int, boolean, int, int, int, int)");
-        lua_error(L);
-    }
+    CALL_ARGS(8)
+    CALL_TYPE(userdata)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_TYPE(boolean)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.text expects (bitmap, int, int, bool, int, int, int, int)")
     
     w = lua_tonumber(L, 7), h = lua_tonumber(L, 8);
     
@@ -71,11 +87,13 @@ int script_draw_blit(lua_State *L) {
 
 int script_draw_circle(lua_State *L) {
     int x, y, radius, color;
+    BITMAP *bmp = get_target(L, 3);
     
-    if (lua_gettop(L) != 3 || !lua_istable(L, 1) || !lua_isnumber(L, 2) || !lua_isnumber(L, 2)) {
-        lua_pushstring(L, "drawing.circle expects (vector, int, int)");
-        lua_error(L);
-    }
+    CALL_ARGS(3)
+    CALL_TYPE(table)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.circle expects (vector, int, int)")
     
     extract_vector(L, 1, &x, &y);
     circle(buffer, x, y, lua_tonumber(L, 2), lua_tonumber(L, 3));
@@ -85,12 +103,13 @@ int script_draw_circle(lua_State *L) {
 
 int script_draw_rect(lua_State *L) {
     int x, y, w, h;
+    BITMAP *bmp = get_target(L, 2);
     
-    if (lua_gettop(L) != 2 || !lua_istable(L, 1) || !lua_isnumber(L, 2)) {
-        lua_pushstring(L, "drawing.rect expects (rect, number)");
-        lua_error(L);
-    }
-    
+    CALL_ARGS(2)
+    CALL_TYPE(table)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.rect expects (rect, int)")
+        
     lua_pushstring(L, "pos");
     lua_gettable(L, 1);
     extract_vector(L, -1, &x, &y);
@@ -108,11 +127,13 @@ int script_draw_rect(lua_State *L) {
 
 int script_draw_line(lua_State *L) {
     int x1, y1, x2, y2, color;
+    BITMAP *bmp = get_target(L, 3);
     
-    if (lua_gettop(L) != 3 || !lua_istable(L, 1) || !lua_istable(L, 2) || !lua_isnumber(L, 3)) {
-        lua_pushstring(L, "drawing.line expects (vector, vector, int)");
-        lua_error(L);
-    }
+    CALL_ARGS(3)
+    CALL_TYPE(table)
+    CALL_TYPE(table)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.line expects (vector, vector, int)")
     
     extract_vector(L, 1, &x1, &y1);
     extract_vector(L, 2, &x2, &y2);
@@ -121,21 +142,30 @@ int script_draw_line(lua_State *L) {
     return 0;
 }
 
+int script_draw_point(lua_State *L) {
+    int x, y;
+    BITMAP *bmp = get_target(L, 2);
+    
+    CALL_ARGS(2)
+    CALL_TYPE(table)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.point expects (vector, int)")
+    
+    extract_vector(L, 1, &x, &y);
+    putpixel(bmp, x, y, lua_tonumber(L, 2));
+    
+    return 0;
+}
+
 int script_draw_polygon(lua_State *L) {
     int i, n, x, y, color;
     int vertices[1024];
-    BITMAP *bmp = buffer;
+    BITMAP *bmp = get_target(L, 2);
     
-    if ((lua_gettop(L) != 2 || !lua_istable(L, 1) || !lua_isnumber(L, 2)) &&
-        (lua_gettop(L) != 3 || !lua_isuserdata(L, 1) || !lua_istable(L, 2) || !lua_isnumber(L, 3))) {
-        lua_pushstring(L, "drawing.polygon expects (vector[], int) or (bitmap, vector[], int)");
-        lua_error(L);
-    }
-    
-    if (lua_gettop(L) == 3) {
-        bmp = *(BITMAP**)lua_touserdata(L, 1);
-        lua_remove(L, 1);
-    }
+    CALL_ARGS(2)
+    CALL_TYPE(table)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.polygon expects (vector[], int)")
     
     lua_getglobal(L, "table");
     lua_pushstring(L, "getn");
@@ -164,13 +194,16 @@ int script_draw_polygon(lua_State *L) {
 
 int script_blit_rotate(lua_State *L) {
     int cx, cy, x, y, angle;
-    BITMAP *bmp;
+    BITMAP *bmp = get_target(L, 5);
     
-    if (lua_gettop(L) != 5 || !lua_isuserdata(L, 1) || !lua_istable(L, 2) || !lua_istable(L, 3) || !lua_isnumber(L, 4) || !lua_isnumber(L, 5)) {
-        lua_pushstring(L, "drawing.blit_rotate expects (bitmap, vector, vector, int)");
-        lua_error(L);
-    }
-    
+    CALL_ARGS(5)
+    CALL_TYPE(userdata)
+    CALL_TYPE(table)
+    CALL_TYPE(table)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.blit_rotate expects (bitmap, vector, vector, int, int)")
+        
     bmp = *(BITMAP**)lua_touserdata(L, 1);
     
     extract_vector(L, 2, &x, &y);
@@ -184,10 +217,9 @@ int script_blit_rotate(lua_State *L) {
 int script_get_bitmap(lua_State *L) {
     BITMAP** userdata;
     
-    if (lua_gettop(L) != 1 || !lua_isstring(L, 1)) {
-        lua_pushstring(L, "bitmap expects (string)");
-        lua_error(L);
-    }
+    CALL_ARGS(1)
+    CALL_TYPE(string)
+    CALL_ERROR("bitmap expects (string)")      
     
     userdata = (BITMAP**)lua_newuserdata(L, sizeof(BITMAP*));
     *userdata = load_bitmap(lua_tostring(L, 1), NULL);
@@ -204,10 +236,11 @@ int script_get_bitmap(lua_State *L) {
 int script_create_bitmap(lua_State *L) {
     BITMAP** userdata;
     
-    if (lua_gettop(L) != 3 || !lua_isnumber(L, 1) || !lua_isnumber(L, 2) || !lua_isnumber(L, 3)) {
-        lua_pushstring(L, "create_bitmap expects (int, int int)");
-        lua_error(L);
-    }
+    CALL_ARGS(3)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.create_bitmap expects (int, int, int)")    
     
     userdata = (BITMAP**)lua_newuserdata(L, sizeof(BITMAP*));
     *userdata = create_bitmap(lua_tonumber(L, 1), lua_tonumber(L, 2));
@@ -242,12 +275,9 @@ int script_bitmap_size(lua_State *L) {
 }
 
 int script_draw_set_mode(lua_State *L) {
-    BITMAP *bmp;
-    
-    if (lua_gettop(L) != 1 || !lua_isnumber(L, 1)) {
-        lua_pushstring(L, "drawing.raw_set_mode expects (int)");
-        lua_error(L);
-    }
+    CALL_ARGS(1)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.set_mode expects (int)")
 
     drawing_mode(lua_tonumber(L, 1), NULL, 0, 0);
     
@@ -267,6 +297,7 @@ void register_drawing() {
     lua_regtable(script, "drawing", "clear", script_draw_clear);
     lua_regtable(script, "drawing", "circle", script_draw_circle);
     lua_regtable(script, "drawing", "line", script_draw_line);
+    lua_regtable(script, "drawing", "point", script_draw_point);
     lua_regtable(script, "drawing", "rect", script_draw_rect);
     lua_regtable(script, "drawing", "polygon", script_draw_polygon);
     lua_regtable(script, "drawing", "raw_text", script_draw_text);

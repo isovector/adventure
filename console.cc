@@ -47,10 +47,10 @@ void push_queue(const char *cprompt, const char *value) {
 }
 
 int script_push_queue(lua_State *L) {
-    if (lua_gettop(L) != 2 || !lua_isstring(L, 1) || !lua_isstring(L, 2)) {
-        lua_pushstring(L, "push_queue expects (string, string)");
-        lua_error(L);
-    }
+    CALL_ARGS(2)
+    CALL_TYPE(string)
+    CALL_TYPE(string)
+    CALL_ERROR("push_queue expects (string, string)")
 
     push_queue(lua_tostring(L, 1), lua_tostring(L, 2));
     return 0;

@@ -73,6 +73,10 @@ function rebuild()
     drawing.set_mode("xor")
     drawing.polygon(hot, navigation, 0x00FF00)
     drawing.set_mode(mode)
+    
+    for _, waypoint in ipairs(waypoints) do
+        drawing.point(hot, waypoint, 0x0000FF)
+    end
 end
 
 function next_hotspot()
@@ -97,6 +101,10 @@ local logic = function()
     if engine.keys.is_press("space") then
         rebuild()
         next_hotspot()
+    end
+    
+    if engine.keys.is_press("w") then
+        vertices = waypoints
     end
     
     if engine.keys.is_press("c") then

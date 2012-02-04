@@ -6,6 +6,7 @@ load_script("scripts/repl.lua")
 
 navigation = { }
 hotspots = { }
+waypoints = { }
 curhotspot = 0
 
 colors = {  0xFF0000,

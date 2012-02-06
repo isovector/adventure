@@ -138,3 +138,8 @@ function interp(errorval)
     
     return terpo
 end
+
+function in_ellipse(origin, size, point)
+    local d = point - origin
+    return (d.x * d.x) / (size.x * size.x) + (d.y * d.y) / (size.y * size.y) <= 1
+end

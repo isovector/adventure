@@ -1,2 +1,2 @@
---return "game"
-return "utils/navmesh"
+return "game"
+--return "utils/navmesh"

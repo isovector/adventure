@@ -6,6 +6,14 @@ engine.events.draw.sub(function()
             if actor.aplay then
                 local set = actor.aplay.set
                 drawing.blit(set.image, actor.pos - actor.origin, actor.flipped, vec(animation.get_frame(set, actor.aplay.frame)), actor.size)
+                
+                local c = 0xFFFF00
+                
+                if in_ellipse(actor.pos, actor.pathsize, engine.mouse.pos) then
+                    c = 0xFF0000
+                end
+                
+                drawing.ellipse(actor.pos, actor.pathsize, c)
             elseif actor.sprite then
                 drawing.blit(actor.sprite, actor.pos, actor.flipped)
             end

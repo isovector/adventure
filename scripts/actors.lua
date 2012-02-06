@@ -18,6 +18,10 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
         goals = { },
         inventory = { },
         
+        size = vec(0),
+        origin = vec(0),
+        pathsize = vec(0),
+        
         events = {
             goal = event.create(),
             
@@ -44,12 +48,13 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
     if not xframes then
         actor.sprite = bitmap(bmpfile)
         actor.size = actor.sprite.size
-        actor.origin = vec(0)
     else
         actor.aplay = bmpfile
         actor.size = vec(actor.aplay.set.width, actor.aplay.set.height)
         actor.origin = vec(actor.aplay.set.xorigin, actor.aplay.set.yorigin)
     end
+    
+    actor.pathsize = vec(actor.size.x / 2, actor.size.y / 6)
     
     return actor
 end

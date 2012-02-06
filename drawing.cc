@@ -14,18 +14,18 @@ BITMAP *get_target(lua_State *L, int size) {
 }
 
 int script_draw_clear(lua_State *L) {
-    BITMAP *bmp = get_target(L, 1);
+    BITMAP *target = get_target(L, 1);
     
     CALL_ARGS(1)
     CALL_TYPE(number)
     CALL_ERROR("drawing.clear expects (int)")
     
-    clear_to_color(bmp, lua_tonumber(L, -1));
+    clear_to_color(target, lua_tonumber(L, -1));
     return 0;
 }
 
 int script_draw_text(lua_State *L) {
-    BITMAP *bmp = get_target(L, 5);
+    BITMAP *target = get_target(L, 5);
     
     CALL_ARGS(5)
     CALL_TYPE(number)
@@ -35,13 +35,13 @@ int script_draw_text(lua_State *L) {
     CALL_TYPE(string)
     CALL_ERROR("drawing.text expects (int, int, int, int, string)")
     
-    textout_ex(buffer, font, lua_tostring(L, 5), lua_tonumber(L, 1), lua_tonumber(L, 2), lua_tonumber(L, 3), lua_tonumber(L, 4));
+    textout_ex(target, font, lua_tostring(L, 5), lua_tonumber(L, 1), lua_tonumber(L, 2), lua_tonumber(L, 3), lua_tonumber(L, 4));
 
     return 0;
 }
 
 int script_draw_text_center(lua_State *L) {
-    BITMAP *bmp = get_target(L, 5);
+    BITMAP *target = get_target(L, 5);
     
     CALL_ARGS(5)
     CALL_TYPE(number)
@@ -58,8 +58,8 @@ int script_draw_text_center(lua_State *L) {
 
 int script_draw_blit(lua_State *L) {
     int w, h;
-    BITMAP *tmp;
-    BITMAP *bmp = get_target(L, 8);
+    BITMAP *tmp, *bmp;
+    BITMAP *target = get_target(L, 8);
     
     CALL_ARGS(8)
     CALL_TYPE(userdata)
@@ -78,7 +78,7 @@ int script_draw_blit(lua_State *L) {
     bmp = *(BITMAP**)lua_touserdata(L, 1);
 
     blit(bmp, tmp, lua_tonumber(L, 5), lua_tonumber(L, 6), 0, 0, w, h);
-    draw_sprite_ex(buffer, tmp, lua_tonumber(L, 2), lua_tonumber(L, 3), DRAW_SPRITE_NORMAL, lua_toboolean(L, 4));
+    draw_sprite_ex(target, tmp, lua_tonumber(L, 2), lua_tonumber(L, 3), DRAW_SPRITE_NORMAL, lua_toboolean(L, 4));
     
     destroy_bitmap(tmp);
     
@@ -87,7 +87,7 @@ int script_draw_blit(lua_State *L) {
 
 int script_draw_circle(lua_State *L) {
     int x, y, radius, color;
-    BITMAP *bmp = get_target(L, 3);
+    BITMAP *target = get_target(L, 3);
     
     CALL_ARGS(3)
     CALL_TYPE(table)
@@ -96,14 +96,31 @@ int script_draw_circle(lua_State *L) {
     CALL_ERROR("drawing.circle expects (vector, int, int)")
     
     extract_vector(L, 1, &x, &y);
-    circle(buffer, x, y, lua_tonumber(L, 2), lua_tonumber(L, 3));
+    circle(target, x, y, lua_tonumber(L, 2), lua_tonumber(L, 3));
+    
+    return 0;
+}
+
+int script_draw_ellipse(lua_State *L) {
+    int x, y, rx, ry, color;
+    BITMAP *target = get_target(L, 3);
+    
+    CALL_ARGS(3)
+    CALL_TYPE(table)
+    CALL_TYPE(table)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.ellipse expects (vector, vector, int)")
+    
+    extract_vector(L, 1, &x, &y);
+    extract_vector(L, 2, &rx, &ry);
+    ellipse(target, x, y, rx, ry, lua_tonumber(L, 3));
     
     return 0;
 }
 
 int script_draw_rect(lua_State *L) {
     int x, y, w, h;
-    BITMAP *bmp = get_target(L, 2);
+    BITMAP *target = get_target(L, 2);
     
     CALL_ARGS(2)
     CALL_TYPE(table)
@@ -120,14 +137,14 @@ int script_draw_rect(lua_State *L) {
     extract_vector(L, -1, &w, &h);
     lua_pop(L, 1);
     
-    rect(buffer, x, y, x + w, y + h, lua_tonumber(L, 2));
+    rect(target, x, y, x + w, y + h, lua_tonumber(L, 2));
     
     return 0;
 }
 
 int script_draw_line(lua_State *L) {
     int x1, y1, x2, y2, color;
-    BITMAP *bmp = get_target(L, 3);
+    BITMAP *target = get_target(L, 3);
     
     CALL_ARGS(3)
     CALL_TYPE(table)
@@ -137,14 +154,14 @@ int script_draw_line(lua_State *L) {
     
     extract_vector(L, 1, &x1, &y1);
     extract_vector(L, 2, &x2, &y2);
-    line(buffer, x1, y1, x2, y2, lua_tonumber(L, 3));
+    line(target, x1, y1, x2, y2, lua_tonumber(L, 3));
     
     return 0;
 }
 
 int script_draw_point(lua_State *L) {
     int x, y;
-    BITMAP *bmp = get_target(L, 2);
+    BITMAP *target = get_target(L, 2);
     
     CALL_ARGS(2)
     CALL_TYPE(table)
@@ -152,7 +169,7 @@ int script_draw_point(lua_State *L) {
     CALL_ERROR("drawing.point expects (vector, int)")
     
     extract_vector(L, 1, &x, &y);
-    putpixel(bmp, x, y, lua_tonumber(L, 2));
+    putpixel(target, x, y, lua_tonumber(L, 2));
     
     return 0;
 }
@@ -160,7 +177,7 @@ int script_draw_point(lua_State *L) {
 int script_draw_polygon(lua_State *L) {
     int i, n, x, y, color;
     int vertices[1024];
-    BITMAP *bmp = get_target(L, 2);
+    BITMAP *target = get_target(L, 2);
     
     CALL_ARGS(2)
     CALL_TYPE(table)
@@ -187,14 +204,14 @@ int script_draw_polygon(lua_State *L) {
         vertices[(i - 1) * 2 + 1] = y;
     }
     
-    polygon(bmp, n, vertices, lua_tonumber(L, 2));
+    polygon(target, n, vertices, lua_tonumber(L, 2));
     
     return 0;
 }
 
 int script_blit_rotate(lua_State *L) {
     int cx, cy, x, y, angle;
-    BITMAP *bmp = get_target(L, 5);
+    BITMAP *target = get_target(L, 5);
     
     CALL_ARGS(5)
     CALL_TYPE(userdata)
@@ -204,12 +221,12 @@ int script_blit_rotate(lua_State *L) {
     CALL_TYPE(number)
     CALL_ERROR("drawing.blit_rotate expects (bitmap, vector, vector, int, int)")
         
-    bmp = *(BITMAP**)lua_touserdata(L, 1);
+    target = *(BITMAP**)lua_touserdata(L, 1);
     
     extract_vector(L, 2, &x, &y);
     extract_vector(L, 3, &cx, &cy);
     
-    pivot_scaled_sprite(buffer, bmp, x, y, cx, cy, itofix(lua_tonumber(L, 4)), ftofix(lua_tonumber(L, 5)));
+    pivot_scaled_sprite(target, target, x, y, cx, cy, itofix(lua_tonumber(L, 4)), ftofix(lua_tonumber(L, 5)));
     
     return 0;
 }
@@ -256,18 +273,18 @@ int script_create_bitmap(lua_State *L) {
 }
 
 int script_bitmap_size(lua_State *L) {
-    BITMAP *bmp;
+    BITMAP *target;
     
     if (strcmp(lua_tostring(L, 2), "size") != 0) {
         lua_pushstring(L, "bitmap contains only the `size` member");
         lua_error(L);
     }
     
-    bmp = *(BITMAP**)lua_touserdata(L, 1);
+    target = *(BITMAP**)lua_touserdata(L, 1);
     
     lua_getglobal(L, "vec");
-    lua_pushnumber(L, bmp->w);
-    lua_pushnumber(L, bmp->h);
+    lua_pushnumber(L, target->w);
+    lua_pushnumber(L, target->h);
     
     lua_call(L, 2, 1);
     
@@ -296,6 +313,7 @@ void register_drawing() {
     
     lua_regtable(script, "drawing", "clear", script_draw_clear);
     lua_regtable(script, "drawing", "circle", script_draw_circle);
+    lua_regtable(script, "drawing", "ellipse", script_draw_ellipse);
     lua_regtable(script, "drawing", "line", script_draw_line);
     lua_regtable(script, "drawing", "point", script_draw_point);
     lua_regtable(script, "drawing", "rect", script_draw_rect);

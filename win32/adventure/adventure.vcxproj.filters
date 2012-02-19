@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\libs">
+      <UniqueIdentifier>{0525eeb9-5e27-4e59-b3ce-a7da24e5f51b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\libs\poly2tri">
+      <UniqueIdentifier>{62e168be-0116-4e8e-8ed0-222e93381ff9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -33,21 +39,57 @@
     <ClInclude Include="..\..\path.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\libs\poly2tri\poly2tri.h">
+      <Filter>Source Files\libs\poly2tri</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\poly2tri\common\shapes.h">
+      <Filter>Source Files\libs\poly2tri</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\poly2tri\common\utils.h">
+      <Filter>Source Files\libs\poly2tri</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\poly2tri\sweep\advancing_front.h">
+      <Filter>Source Files\libs\poly2tri</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\poly2tri\sweep\cdt.h">
+      <Filter>Source Files\libs\poly2tri</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\poly2tri\sweep\sweep.h">
+      <Filter>Source Files\libs\poly2tri</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libs\poly2tri\sweep\sweep_context.h">
+      <Filter>Source Files\libs\poly2tri</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\adventure.c">
+    <ClCompile Include="..\..\libs\poly2tri\common\shapes.cc">
+      <Filter>Source Files\libs\poly2tri</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\poly2tri\sweep\advancing_front.cc">
+      <Filter>Source Files\libs\poly2tri</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\poly2tri\sweep\cdt.cc">
+      <Filter>Source Files\libs\poly2tri</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\poly2tri\sweep\sweep.cc">
+      <Filter>Source Files\libs\poly2tri</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libs\poly2tri\sweep\sweep_context.cc">
+      <Filter>Source Files\libs\poly2tri</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\adventure.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\console.c">
+    <ClCompile Include="..\..\console.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\drawing.c">
+    <ClCompile Include="..\..\drawing.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lua.c">
+    <ClCompile Include="..\..\lua.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\path.c">
+    <ClCompile Include="..\..\path.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

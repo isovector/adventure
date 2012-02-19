@@ -54,7 +54,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CompileAs>CompileAsC</CompileAs>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -83,17 +83,29 @@
   <ItemGroup>
     <ClInclude Include="..\..\adventure.h" />
     <ClInclude Include="..\..\drawing.h" />
+    <ClInclude Include="..\..\libs\poly2tri\common\shapes.h" />
+    <ClInclude Include="..\..\libs\poly2tri\common\utils.h" />
+    <ClInclude Include="..\..\libs\poly2tri\poly2tri.h" />
+    <ClInclude Include="..\..\libs\poly2tri\sweep\advancing_front.h" />
+    <ClInclude Include="..\..\libs\poly2tri\sweep\cdt.h" />
+    <ClInclude Include="..\..\libs\poly2tri\sweep\sweep.h" />
+    <ClInclude Include="..\..\libs\poly2tri\sweep\sweep_context.h" />
     <ClInclude Include="..\..\lua.h" />
     <ClInclude Include="..\..\path.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\adventure.c" />
-    <ClCompile Include="..\..\console.c" />
-    <ClCompile Include="..\..\drawing.c" />
-    <ClCompile Include="..\..\lua.c" />
-    <ClCompile Include="..\..\path.c" />
+    <ClCompile Include="..\..\adventure.cc" />
+    <ClCompile Include="..\..\console.cc" />
+    <ClCompile Include="..\..\drawing.cc" />
+    <ClCompile Include="..\..\libs\poly2tri\common\shapes.cc" />
+    <ClCompile Include="..\..\libs\poly2tri\sweep\advancing_front.cc" />
+    <ClCompile Include="..\..\libs\poly2tri\sweep\cdt.cc" />
+    <ClCompile Include="..\..\libs\poly2tri\sweep\sweep.cc" />
+    <ClCompile Include="..\..\libs\poly2tri\sweep\sweep_context.cc" />
+    <ClCompile Include="..\..\lua.cc" />
+    <ClCompile Include="..\..\path.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

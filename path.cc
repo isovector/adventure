@@ -211,7 +211,7 @@ int closest_waypoint(int x, int y) {
     for (i = 0; i < waypoint_count; i++) {
         tx = waypoints[i]->x - x;
         ty = waypoints[i]->y - y;
-        dif = sqrt(tx * tx + ty * ty);
+        dif = /*sqrt(*/tx * tx + ty * ty/*)*/;
         if (dif < dist && is_pathable(x, y, waypoints[i]->x, waypoints[i]->y)) {
             dist = dif;
             winner = i;

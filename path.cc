@@ -66,6 +66,7 @@ void build_waypoints() {
     
     waypoint_count = 0;
     
+    SDL_LockSurface(room_hot);
     for (y = 0; y < SCREEN_HEIGHT; y++)
     for (x = 0; x < SCREEN_WIDTH; x++)
         if (getpixel(room_hot, x, y) == 255) {
@@ -73,6 +74,7 @@ void build_waypoints() {
             waypoints[waypoint_count]->x = x;
             waypoints[waypoint_count++]->y = y;
         }
+    SDL_UnlockSurface(room_hot);
     
     for (a = 0; a < waypoint_count; a++)
     for (b = a + 1; b < waypoint_count; b++) {
@@ -167,7 +169,7 @@ int is_walkable(int x, int y) {
 }
 
 int script_is_walkable(lua_State *L) {
-    BITMAP *bmp;
+    SDL_Surface *bmp;
     int x, y, pixel;
     
     CALL_ARGS(2)
@@ -175,10 +177,12 @@ int script_is_walkable(lua_State *L) {
     CALL_TYPE(table)
     CALL_ERROR("is_walkable expects (bitmap, vector)")
     
-    bmp = *(BITMAP**)lua_touserdata(L, 1);
+    bmp = *(SDL_Surface**)lua_touserdata(L, 1);
     
     extract_vector(L, -1, &x, &y);
+    SDL_LockSurface(bmp);
     pixel = getpixel(bmp, x, y);
+    SDL_UnlockSurface(bmp);
     
     if (pixel == 255)
         lua_pushnumber(L, 255);
@@ -223,15 +227,16 @@ int closest_waypoint(int x, int y) {
 
 int script_get_walkspots(lua_State *L) {
     int color = 0, x, y;
-    BITMAP *bmp;
+    SDL_Surface *bmp;
     
     CALL_ARGS(1)
     CALL_TYPE(userdata)
     CALL_ERROR("get walkspots expects (bitmap)")
     
-    bmp = *(BITMAP**)lua_touserdata(L, 1);
+    bmp = *(SDL_Surface**)lua_touserdata(L, 1);
     lua_newtable(L);
     
+    SDL_LockSurface(bmp);
     for (y = 0; y < SCREEN_HEIGHT; y++)
     for (x = 0; x < SCREEN_WIDTH; x++)
         if ((color = getpixel(bmp, x, y)) && color < 255) {
@@ -239,6 +244,7 @@ int script_get_walkspots(lua_State *L) {
             lua_vector(L, x, y);
             lua_settable(L, -3);
         }
+    SDL_UnlockSurface(bmp);
         
     return 1;
 }

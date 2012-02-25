@@ -1,16 +1,9 @@
 #include "adventure.h"
 
-BITMAP *room_art = NULL, *room_hot = NULL;
+SDL_Surface *room_art = NULL, *room_hot = NULL;
 
-float life = 0;
-
-int last_key[KEY_MAX];
 int quit = 0;
-int fps = 0;
 int in_console = 0;
-
-volatile int ticks = 0;
-sem_t semaphore_rest;
 
 
 // updates the regular game state
@@ -35,33 +28,49 @@ void update_game() {
 void update() {
     int i;
     
-    life += 1 / (float)FRAMERATE;
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_KEYDOWN: {
+                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    quit = true;
+                } else if (event.key.keysym.sym == SDLK_F10) {
+                    //open_console(1);
+                }
+            } break;
 
-    if (key[KEY_ESC] && !last_key[KEY_ESC]) quit = 1;
-    if (key[KEY_F10]) { 
-        clear_keybuf();
-        open_console(1);
-    }
+            case SDL_KEYUP: {
+                // nothing yet!
+            } break;
+            
+            case SDL_QUIT: {
+                quit = true;
+            } break;
+
+            default: {
+            } break;
+        }
+      }
 
     update_game();
-
-    for (i = 0; i < KEY_MAX; i++)
-        last_key[i] = key[i];
 }
 
 // draws the foreground of a hot image
 void draw_foreground(int level) {
     int y, x;
+    
+    SDL_LockSurface(screen);
+
     for (y = 0; y < SCREEN_HEIGHT; y++)
     for (x = 0; x < SCREEN_WIDTH; x++)
         if ((getpixel(room_hot, x, y) & 255) == level)
-            putpixel(buffer, x, y, getpixel(room_art, x, y));
+            putpixel(screen, x, y, getpixel(room_art, x, y));
+        
+    SDL_UnlockSurface(screen);
 }
 
 // draws the game
 void frame() {
-    acquire_bitmap(buffer);
-
     lua_getglobal(script, "engine");
     lua_pushstring(script, "events");
     lua_gettable(script, -2);
@@ -72,41 +81,31 @@ void frame() {
     lua_call(script, 0, 0);
     lua_pop(script, 2);
     
-    release_bitmap(buffer);
-    blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SDL_Flip(screen);
 }
 
-// interrupt for the sempahore ticker
-void ticker() {
-    if (!in_console) {
-        sem_post(&semaphore_rest);
-        ticks++;
+bool lock_fps(int framerate) {
+    static float lastTime = 0.0f;
+    float currentTime = SDL_GetTicks() * 0.001f;
+
+    if ((currentTime - lastTime) > (1.0f / framerate)) {
+        lastTime = currentTime;
+        return true;
     }
+
+    return false;
 }
-END_OF_FUNCTION(ticker);
+
 
 int main(int argc, char* argv[]) {
-    int frames_done = 0;
-    float old_time = 0;
-    int old_ticks = 0;
+    SDL_Init(SDL_INIT_EVERYTHING);
+    TTF_Init();
+
+    screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_DOUBLEBUF | SDL_HWSURFACE);
+    SDL_ShowCursor(false);
+    SDL_WM_SetCaption("Adventure // Corpus Damaged", NULL);
     
-    sem_init(&semaphore_rest, 0, 1);
-
-    allegro_init();
-    install_keyboard();
-    install_mouse();
-    install_timer();
-
-    LOCK_VARIABLE(ticks);
-    LOCK_FUNCTION(ticker);
-
-    set_color_depth(32);
-    set_gfx_mode(GFX_AUTODETECT_WINDOWED, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0);
-    
-    set_alpha_blender();
-
-    // load resources
-    buffer = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
+    font = TTF_OpenFont("resources/FreeMono.ttf", 18);
     
     enabled_paths[255] = 1;
 
@@ -119,39 +118,29 @@ int main(int argc, char* argv[]) {
     
     boot_module();
     
+    lua_getglobal(script, "engine");
+    lua_pushstring(script, "fps");
+    lua_pushnumber(script, 60);
+    lua_settable(script, -3);
+    lua_pop(script, 1);
+    
     init_console(32);
-    install_int_ex(&ticker, BPS_TO_TIMER(FRAMERATE));
 
     while (!quit) {
-        sem_wait(&semaphore_rest);
-
-        if (life - old_time >= 1) {
-            fps = frames_done;
-            frames_done = 0;
-            old_time = life;
-            
-            lua_getglobal(script, "engine");
+        if(lock_fps(FRAMERATE)) {
+            /*lua_getglobal(script, "engine");
             lua_pushstring(script, "fps");
             lua_pushnumber(script, fps);
             lua_settable(script, -3);
-            lua_pop(script, 1);
-        }
-
-        while (ticks > 0) {
-            old_ticks = ticks;
+            lua_pop(script, 1);*/
+            
             update();
-            ticks--;
-
-            if (old_ticks <= ticks) break;
+            frame();
+            SDL_Delay(1);
         }
-
-        frame();
-        frames_done++;
     }
-
-    remove_int(ticker);
-    sem_destroy(&semaphore_rest);
-
+    
+    SDL_Quit();
+    TTF_Quit();
     return 0;
 }
-END_OF_MAIN();

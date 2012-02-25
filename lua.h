@@ -24,7 +24,7 @@ void init_keys();
     lua_pop(L, 2);
     
 #define lua_setkey(key) lua_pushstring(script, #key); \
-                        lua_pushnumber(script, KEY_##key); \
+                        lua_pushnumber(script, SDLK_##key); \
                         lua_settable(script, -3);
                         
 #define CALL_ARGS(n)    { \

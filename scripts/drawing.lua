@@ -2,7 +2,7 @@ color = {
     black = 0x000000,
     red =   0xFF0000,
     white = 0xFFFFFF,
-    transparent = -1
+    transparent = 0x000000
 }
 
 function color.make(r, g, b)

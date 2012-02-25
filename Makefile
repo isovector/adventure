@@ -9,7 +9,7 @@ vpath %.h libs/poly2tri/sweep
 objects = $(addprefix $(OBJDIR)/, adventure.o console.o drawing.o lua.o path.o shapes.o advancing_front.o cdt.o sweep.o sweep_context.o)
 
 all : objdir $(objects) $(poly2tri)
-	g++ -o adventure `allegro-config --libs` -lpthread -lm -llua $(objects) $(poly2tri)
+	g++ -o adventure -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lpthread -lm -llua $(objects) $(poly2tri)
 
 objdir : $(OBJDIR)
 

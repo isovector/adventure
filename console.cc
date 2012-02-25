@@ -18,11 +18,11 @@ struct tagROLLQUEUE {
 char input[1024] = "";
 char prompt[] = ">  ";
 
-DIALOG consolediag[] = {
+/*DIALOG consolediag[] = {
     { d_edit_proc,  CONSOLE_MARGIN + 20, CONSOLE_HEIGHT - CONSOLE_MARGIN - 8, CONSOLE_WIDTH - CONSOLE_MARGIN * 2, 8, 0, 0, 0, D_EXIT, 1024, 0, (void*) input, NULL, NULL },
     { d_yield_proc, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL },
     { NULL,         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL }
-};
+};*/
 
 RQNODE *alloc_rqnode() {
     RQNODE *node = new RQNODE;
@@ -61,7 +61,7 @@ void open_console(int repeat) {
 	RQNODE *node;
     
     //drawing_mode(DRAW_MODE_SOLID, NULL, 0, 0);
-    
+/*    
     gui_fg_color = makecol(0, 0, 0);
     gui_mg_color = makecol(128, 128, 128);
     gui_bg_color = makecol(230, 220, 210);
@@ -110,7 +110,7 @@ void open_console(int repeat) {
     input[0] = '\0';
     
     if (repeat)
-        open_console(repeat);
+        open_console(repeat);*/
 }
 
 int script_open_console(lua_State *L) {
@@ -119,7 +119,7 @@ int script_open_console(lua_State *L) {
         lua_error(L);
     }
     
-    clear_keybuf();
+    //clear_keybuf();
     
     if (lua_gettop(L) == 1)
         open_console(lua_toboolean(L, 1));

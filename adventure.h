@@ -11,7 +11,11 @@
 #include <vector>
 
 #include <assert.h>
-#include <allegro.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_rotozoom.h>
+#include <SDL/SDL_gfxPrimitives.h>
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 #include <math.h>
 
 extern "C" {
@@ -48,8 +52,8 @@ typedef struct tagHOTSPOT {
 #include "drawing.h"
 #include "lua.h"
 
-extern BITMAP *buffer;
-extern BITMAP *room_art, *room_hot;
+extern SDL_Surface *screen;
+extern SDL_Surface *room_art, *room_hot;
 extern POINT *waypoints[MAX_WAYPOINTS];
 extern int waypoint_count;
 extern unsigned int waypoint_connections[MAX_WAYPOINTS];

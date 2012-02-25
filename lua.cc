@@ -10,8 +10,8 @@ int script_load_room(lua_State *L) {
     CALL_TYPE(userdata)
     CALL_ERROR("set_room_data expects (bitmap, bitmap)")
 
-    room_art = *(BITMAP**)lua_touserdata(L, 1);
-    room_hot = *(BITMAP**)lua_touserdata(L, 2);
+    room_art = *(SDL_Surface**)lua_touserdata(L, 1);
+    room_hot = *(SDL_Surface**)lua_touserdata(L, 2);
 
     build_waypoints();
     
@@ -45,6 +45,10 @@ int script_which_hotspot(lua_State *L) {
 }
 
 void update_mouse() {
+    int mouse_x, mouse_y;
+    int mouse_b = SDL_GetMouseState(&mouse_x, &mouse_y);
+    
+    
     lua_getglobal(script, "engine");
     lua_pushstring(script, "mouse");
     lua_gettable(script, -2);
@@ -62,13 +66,13 @@ void update_mouse() {
     lua_pushstring(script, "buttons");
     lua_gettable(script, -2);
     lua_pushstring(script, "left");
-    lua_pushboolean(script, mouse_b & 1);
+    lua_pushboolean(script, mouse_b & SDL_BUTTON(1));
     lua_settable(script, -3);
     lua_pushstring(script, "right");
-    lua_pushboolean(script, mouse_b & 2);
+    lua_pushboolean(script, mouse_b & SDL_BUTTON(3));
     lua_settable(script, -3);
     lua_pushstring(script, "middle");
-    lua_pushboolean(script, mouse_b & 4);
+    lua_pushboolean(script, mouse_b & SDL_BUTTON(2));
     lua_settable(script, -3);
     lua_pop(script, 3);
 }
@@ -79,7 +83,7 @@ int script_get_key(lua_State *L) {
     CALL_ERROR("get_key expects (string)")
     
     // this seems REALLY fishy to me
-    lua_pushboolean(L, key[(int)lua_tonumber(L, 1)]);
+    //lua_pushboolean(L, key[(int)lua_tonumber(L, 1)]);
     return 1;
 }
 
@@ -125,32 +129,32 @@ void init_keys() {
     lua_setkey(9);
     lua_setkey(0);
     
-    lua_setkey(A);
-    lua_setkey(B);
-    lua_setkey(C);
-    lua_setkey(D);
-    lua_setkey(E);
-    lua_setkey(F);
-    lua_setkey(G);
-    lua_setkey(H);
-    lua_setkey(I);
-    lua_setkey(J);
-    lua_setkey(K);
-    lua_setkey(L);
-    lua_setkey(M);
-    lua_setkey(N);
-    lua_setkey(O);
-    lua_setkey(P);
-    lua_setkey(Q);
-    lua_setkey(R);
-    lua_setkey(S);
-    lua_setkey(T);
-    lua_setkey(U);
-    lua_setkey(V);
-    lua_setkey(W);
-    lua_setkey(X);
-    lua_setkey(Y);
-    lua_setkey(Z);
+    lua_setkey(a);
+    lua_setkey(b);
+    lua_setkey(c);
+    lua_setkey(d);
+    lua_setkey(e);
+    lua_setkey(f);
+    lua_setkey(g);
+    lua_setkey(h);
+    lua_setkey(i);
+    lua_setkey(j);
+    lua_setkey(k);
+    lua_setkey(l);
+    lua_setkey(m);
+    lua_setkey(n);
+    lua_setkey(o);
+    lua_setkey(p);
+    lua_setkey(q);
+    lua_setkey(r);
+    lua_setkey(s);
+    lua_setkey(t);
+    lua_setkey(u);
+    lua_setkey(v);
+    lua_setkey(w);
+    lua_setkey(x);
+    lua_setkey(y);
+    lua_setkey(z);
     
     lua_setkey(SPACE);
     

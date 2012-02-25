@@ -1,31 +1,56 @@
 #include "adventure.h"
 
-BITMAP *buffer;
+SDL_Surface *screen;
+TTF_Font *font;
 
-BITMAP *get_target(lua_State *L, int size) {
-    BITMAP *target = buffer;
+int getpixel(SDL_Surface *surface, int x, int y) {
+    int bpp = surface->format->BytesPerPixel;
+    return *((int*)surface->pixels + y * surface->pitch / bpp + x);
+}
+
+void putpixel(SDL_Surface *surface, int x, int y, int color) {
+    int bpp = surface->format->BytesPerPixel;
+    *((int*)surface->pixels + y * surface->pitch / bpp + x) = color;
+}
+
+
+SDL_Surface *get_target(lua_State *L, int size) {
+    SDL_Surface *target = screen;
     
     if (lua_gettop(L) == size + 1 && lua_isuserdata(L, 1)) {
-        target = *(BITMAP**)lua_touserdata(L, 1);
+        target = *(SDL_Surface**)lua_touserdata(L, 1);
         lua_remove(L, 1);
     }
     
     return target;
 }
 
+SDL_Color translate_color(int int_color) {
+    SDL_Color color = { 
+        (int_color & 0xff0000) >> 16, 
+        (int_color & 0x00ff00) >> 8,
+        (int_color & 0x0000ff) >> 0
+    };
+    
+    return color;
+}
+
 int script_draw_clear(lua_State *L) {
-    BITMAP *target = get_target(L, 1);
+    SDL_Surface *target = get_target(L, 1);
     
     CALL_ARGS(1)
     CALL_TYPE(number)
     CALL_ERROR("drawing.clear expects (int)")
     
-    clear_to_color(target, lua_tonumber(L, -1));
+    SDL_FillRect(target, NULL, lua_tonumber(L, -1));
+    
     return 0;
 }
 
 int script_draw_text(lua_State *L) {
-    BITMAP *target = get_target(L, 5);
+    static const int OUTLINE_SIZE = 2;
+    
+    SDL_Surface *target = get_target(L, 5), *text;
     
     CALL_ARGS(5)
     CALL_TYPE(number)
@@ -35,13 +60,32 @@ int script_draw_text(lua_State *L) {
     CALL_TYPE(string)
     CALL_ERROR("drawing.text expects (int, int, int, int, string)")
     
-    textout_ex(target, font, lua_tostring(L, 5), lua_tonumber(L, 1), lua_tonumber(L, 2), lua_tonumber(L, 3), lua_tonumber(L, 4));
-
+    SDL_Rect dest;
+    dest.x = lua_tonumber(L, 1);
+    dest.y = lua_tonumber(L, 2);
+    
+    TTF_SetFontOutline(font, OUTLINE_SIZE);
+    text = TTF_RenderText_Solid(font, lua_tostring(L, 5), translate_color((int)lua_tonumber(L, 4)));
+    
+    SDL_BlitSurface(text, NULL, target, &dest);
+    SDL_FreeSurface(text);
+    
+    dest.x += OUTLINE_SIZE;
+    dest.y += OUTLINE_SIZE;
+    
+    TTF_SetFontOutline(font, 0);
+    text = TTF_RenderText_Solid(font, lua_tostring(L, 5), translate_color((int)lua_tonumber(L, 3)));
+    
+    SDL_BlitSurface(text, NULL, target, &dest);
+    SDL_FreeSurface(text);
+    
     return 0;
 }
 
 int script_draw_text_center(lua_State *L) {
-    BITMAP *target = get_target(L, 5);
+    static const int OUTLINE_SIZE = 2;
+    
+    SDL_Surface *target = get_target(L, 5), *text;
     
     CALL_ARGS(5)
     CALL_TYPE(number)
@@ -49,17 +93,33 @@ int script_draw_text_center(lua_State *L) {
     CALL_TYPE(number)
     CALL_TYPE(number)
     CALL_TYPE(string)
-    CALL_ERROR("drawing.text_center expects (int, int, int, int, string)")
+    CALL_ERROR("drawing.text expects (int, int, int, int, string)")
     
-    textout_centre_ex(buffer, font, lua_tostring(L, 5), lua_tonumber(L, 1), lua_tonumber(L, 2), lua_tonumber(L, 3), lua_tonumber(L, 4));
-
+    TTF_SetFontOutline(font, OUTLINE_SIZE);
+    text = TTF_RenderText_Solid(font, lua_tostring(L, 5), translate_color((int)lua_tonumber(L, 4)));
+    
+    SDL_Rect dest;
+    dest.x = lua_tonumber(L, 1) - text->w / 2;
+    dest.y = lua_tonumber(L, 2);
+    
+    SDL_BlitSurface(text, NULL, target, &dest);
+    SDL_FreeSurface(text);
+    
+    dest.x += OUTLINE_SIZE;
+    dest.y += OUTLINE_SIZE;
+    
+    TTF_SetFontOutline(font, 0);
+    text = TTF_RenderText_Solid(font, lua_tostring(L, 5), translate_color((int)lua_tonumber(L, 3)));
+    
+    SDL_BlitSurface(text, NULL, target, &dest);
+    SDL_FreeSurface(text);
+    
     return 0;
 }
 
 int script_draw_blit(lua_State *L) {
-    int w, h;
-    BITMAP *tmp, *bmp;
-    BITMAP *target = get_target(L, 8);
+    SDL_Surface *bmp;
+    SDL_Surface *target = get_target(L, 8);
     
     CALL_ARGS(8)
     CALL_TYPE(userdata)
@@ -72,22 +132,34 @@ int script_draw_blit(lua_State *L) {
     CALL_TYPE(number)
     CALL_ERROR("drawing.text expects (bitmap, int, int, bool, int, int, int, int)")
     
-    w = lua_tonumber(L, 7), h = lua_tonumber(L, 8);
-    
-    tmp = create_bitmap(w, h);
-    bmp = *(BITMAP**)lua_touserdata(L, 1);
+    bmp = *(SDL_Surface**)lua_touserdata(L, 1);
 
-    blit(bmp, tmp, lua_tonumber(L, 5), lua_tonumber(L, 6), 0, 0, w, h);
-    draw_sprite_ex(target, tmp, lua_tonumber(L, 2), lua_tonumber(L, 3), DRAW_SPRITE_NORMAL, lua_toboolean(L, 4));
+    SDL_Rect src, dest;
+    src.x = lua_tonumber(L, 5);
+    src.y = lua_tonumber(L, 6);
+    src.w = lua_tonumber(L, 7);
+    src.h = lua_tonumber(L, 8);
+     
+    dest.x = lua_tonumber(L, 2);
+    dest.y = lua_tonumber(L, 3);
     
-    destroy_bitmap(tmp);
+    // we might not want to do this at drawtime
+    if (lua_toboolean(L, 4)) {
+        bmp = rotozoomSurfaceXY(bmp, 0, -1, 1, SMOOTHING_OFF);
+    }
+    
+    SDL_BlitSurface(bmp, &src, target, &dest);
+    
+    if (lua_toboolean(L, 4)) {
+        SDL_FreeSurface(bmp);
+    }
     
     return 0;
 }
 
 int script_draw_circle(lua_State *L) {
     int x, y, radius, color;
-    BITMAP *target = get_target(L, 3);
+    SDL_Surface *target = get_target(L, 3);
     
     CALL_ARGS(3)
     CALL_TYPE(table)
@@ -96,14 +168,14 @@ int script_draw_circle(lua_State *L) {
     CALL_ERROR("drawing.circle expects (vector, int, int)")
     
     extract_vector(L, 1, &x, &y);
-    circle(target, x, y, lua_tonumber(L, 2), lua_tonumber(L, 3));
+    circleColor(target, x, y, lua_tonumber(L, 2), lua_tonumber(L, 3));
     
     return 0;
 }
 
 int script_draw_ellipse(lua_State *L) {
     int x, y, rx, ry, color;
-    BITMAP *target = get_target(L, 3);
+    SDL_Surface *target = get_target(L, 3);
     
     CALL_ARGS(3)
     CALL_TYPE(table)
@@ -113,14 +185,14 @@ int script_draw_ellipse(lua_State *L) {
     
     extract_vector(L, 1, &x, &y);
     extract_vector(L, 2, &rx, &ry);
-    ellipse(target, x, y, rx, ry, lua_tonumber(L, 3));
+    ellipseColor(target, x, y, rx, ry, lua_tonumber(L, 3));
     
     return 0;
 }
 
 int script_draw_rect(lua_State *L) {
     int x, y, w, h;
-    BITMAP *target = get_target(L, 2);
+    SDL_Surface *target = get_target(L, 2);
     
     CALL_ARGS(2)
     CALL_TYPE(table)
@@ -137,14 +209,14 @@ int script_draw_rect(lua_State *L) {
     extract_vector(L, -1, &w, &h);
     lua_pop(L, 1);
     
-    rect(target, x, y, x + w, y + h, lua_tonumber(L, 2));
+    rectangleColor(target, x, y, x + w, y + h, lua_tonumber(L, 2));
     
     return 0;
 }
 
 int script_draw_line(lua_State *L) {
     int x1, y1, x2, y2, color;
-    BITMAP *target = get_target(L, 3);
+    SDL_Surface *target = get_target(L, 3);
     
     CALL_ARGS(3)
     CALL_TYPE(table)
@@ -154,14 +226,14 @@ int script_draw_line(lua_State *L) {
     
     extract_vector(L, 1, &x1, &y1);
     extract_vector(L, 2, &x2, &y2);
-    line(target, x1, y1, x2, y2, lua_tonumber(L, 3));
+    lineColor(target, x1, y1, x2, y2, lua_tonumber(L, 3));
     
     return 0;
 }
 
 int script_draw_point(lua_State *L) {
     int x, y;
-    BITMAP *target = get_target(L, 2);
+    SDL_Surface *target = get_target(L, 2);
     
     CALL_ARGS(2)
     CALL_TYPE(table)
@@ -169,7 +241,10 @@ int script_draw_point(lua_State *L) {
     CALL_ERROR("drawing.point expects (vector, int)")
     
     extract_vector(L, 1, &x, &y);
+    
+    SDL_LockSurface(target);
     putpixel(target, x, y, lua_tonumber(L, 2));
+    SDL_UnlockSurface(target);
     
     return 0;
 }
@@ -177,7 +252,7 @@ int script_draw_point(lua_State *L) {
 int script_draw_polygon(lua_State *L) {
     int i, n, x, y, color;
     int vertices[1024];
-    BITMAP *target = get_target(L, 2);
+    SDL_Surface *target = get_target(L, 2);
     
     CALL_ARGS(2)
     CALL_TYPE(table)
@@ -204,14 +279,14 @@ int script_draw_polygon(lua_State *L) {
         vertices[(i - 1) * 2 + 1] = y;
     }
     
-    polygon(target, n, vertices, lua_tonumber(L, 2));
+    //polygon(target, n, vertices, lua_tonumber(L, 2));
     
     return 0;
 }
 
 int script_blit_rotate(lua_State *L) {
     int cx, cy, x, y, angle;
-    BITMAP *target = get_target(L, 5);
+    SDL_Surface *target = get_target(L, 5);
     
     CALL_ARGS(5)
     CALL_TYPE(userdata)
@@ -221,29 +296,34 @@ int script_blit_rotate(lua_State *L) {
     CALL_TYPE(number)
     CALL_ERROR("drawing.blit_rotate expects (bitmap, vector, vector, int, int)")
         
-    target = *(BITMAP**)lua_touserdata(L, 1);
+    target = *(SDL_Surface**)lua_touserdata(L, 1);
     
     extract_vector(L, 2, &x, &y);
     extract_vector(L, 3, &cx, &cy);
     
-    pivot_scaled_sprite(target, target, x, y, cx, cy, itofix(lua_tonumber(L, 4)), ftofix(lua_tonumber(L, 5)));
+    //pivot_scaled_sprite(target, target, x, y, cx, cy, itofix(lua_tonumber(L, 4)), ftofix(lua_tonumber(L, 5)));
     
     return 0;
 }
 
 int script_get_bitmap(lua_State *L) {
-    BITMAP** userdata;
+    SDL_Surface** userdata, *temp;
     
     CALL_ARGS(1)
     CALL_TYPE(string)
     CALL_ERROR("bitmap expects (string)")      
-    
-    userdata = (BITMAP**)lua_newuserdata(L, sizeof(BITMAP*));
-    *userdata = load_bitmap(lua_tostring(L, 1), NULL);
-    
-    if (!*userdata)
+
+    temp = IMG_Load(lua_tostring(L, 1));
+    if (!temp) {
         printf("failed to load bitmap %s\n", lua_tostring(L, 1));
+        return 0;
+    }
+     
+    userdata = (SDL_Surface**)lua_newuserdata(L, sizeof(SDL_Surface*));
+    *userdata = SDL_DisplayFormat(temp);
+    SDL_FreeSurface(temp);
     
+    SDL_SetColorKey(*userdata, SDL_SRCCOLORKEY, SDL_MapRGB((*userdata)->format, 255, 0, 255));
     luaL_newmetatable(script, "adventure.bitmap");
     lua_setmetatable(script, -2);
     
@@ -251,7 +331,8 @@ int script_get_bitmap(lua_State *L) {
 }
 
 int script_create_bitmap(lua_State *L) {
-    BITMAP** userdata;
+    SDL_Surface** userdata;
+    uint rmask, gmask, bmask, amask;
     
     CALL_ARGS(3)
     CALL_TYPE(number)
@@ -259,13 +340,28 @@ int script_create_bitmap(lua_State *L) {
     CALL_TYPE(number)
     CALL_ERROR("drawing.create_bitmap expects (int, int, int)")    
     
-    userdata = (BITMAP**)lua_newuserdata(L, sizeof(BITMAP*));
-    *userdata = create_bitmap(lua_tonumber(L, 1), lua_tonumber(L, 2));
+    /* SDL interprets each pixel as a 32-bit number, so our masks must depend
+       on the endianness (byte order) of the machine */
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    rmask = 0xff000000;
+    gmask = 0x00ff0000;
+    bmask = 0x0000ff00;
+    amask = 0x000000ff;
+#else
+    rmask = 0x000000ff;
+    gmask = 0x0000ff00;
+    bmask = 0x00ff0000;
+    amask = 0xff000000;
+#endif
+    
+    userdata = (SDL_Surface**)lua_newuserdata(L, sizeof(SDL_Surface*));
+    *userdata = SDL_CreateRGBSurface(SDL_SWSURFACE, lua_tonumber(L, 1), lua_tonumber(L, 2), 32, rmask, gmask, bmask, amask);
     
     if (!*userdata)
         printf("failed to create bitmap\n");
 
-    clear_to_color(*userdata, lua_tonumber(L, 3));
+    SDL_FillRect(*userdata, NULL, lua_tonumber(L, 2));
+    
     luaL_newmetatable(script, "adventure.bitmap");
     lua_setmetatable(script, -2);
     
@@ -273,14 +369,14 @@ int script_create_bitmap(lua_State *L) {
 }
 
 int script_bitmap_size(lua_State *L) {
-    BITMAP *target;
+    SDL_Surface *target;
     
     if (strcmp(lua_tostring(L, 2), "size") != 0) {
         lua_pushstring(L, "bitmap contains only the `size` member");
         lua_error(L);
     }
     
-    target = *(BITMAP**)lua_touserdata(L, 1);
+    target = *(SDL_Surface**)lua_touserdata(L, 1);
     
     lua_getglobal(L, "vec");
     lua_pushnumber(L, target->w);
@@ -296,7 +392,7 @@ int script_draw_set_mode(lua_State *L) {
     CALL_TYPE(number)
     CALL_ERROR("drawing.set_mode expects (int)")
 
-    drawing_mode(lua_tonumber(L, 1), NULL, 0, 0);
+    //drawing_mode(lua_tonumber(L, 1), NULL, 0, 0);
     
     return 0;
 }

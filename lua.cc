@@ -1,23 +1,20 @@
 #include "adventure.h"
 
 lua_State *script;
-std::map<int, std::string> key_mappings;
 
 int script_load_room(lua_State *L) {
     int i;
     
-    CALL_ARGS(2)
-    CALL_TYPE(userdata)
-    CALL_TYPE(userdata)
-    CALL_ERROR("set_room_data expects (bitmap, bitmap)")
+    CALL_ARGS(1)
+        CALL_TYPE(userdata)
+    CALL_ERROR("set_room_data expects (bitmap)")
 
-    room_art = *(SDL_Surface**)lua_touserdata(L, 1);
-    room_hot = *(SDL_Surface**)lua_touserdata(L, 2);
+    room_hot = *(SDL_Surface**)lua_touserdata(L, 1);
 
     build_waypoints();
     
-    lua_setconstant(L, "room_width", number, room_art->w);
-    lua_setconstant(L, "room_height", number, room_art->h);
+    lua_setconstant(L, "room_width", number, room_hot->w);
+    lua_setconstant(L, "room_height", number, room_hot->h);
         
     return 0;
 }
@@ -105,92 +102,17 @@ void init_script() {
     register_path();
     register_drawing();
 
-    if (luaL_dofile(script, "scripts/environment.lua") != 0) {
+    if (luaL_dofile(script, "scripts/environment.lua") != 0)
 		printf("%s\n", lua_tostring(script, -1));
-	}
 }
 
-void init_keys() {
-    lua_getglobal(script, "engine");
-    lua_pushstring(script, "keys");
-    lua_gettable(script, -2);
-    
-    lua_setkey(1);
-    lua_setkey(2);
-    lua_setkey(3);
-    lua_setkey(4);
-    lua_setkey(5);
-    lua_setkey(6);
-    lua_setkey(7);
-    lua_setkey(8);
-    lua_setkey(9);
-    lua_setkey(0);
-    
-    lua_setkey(a);
-    lua_setkey(b);
-    lua_setkey(c);
-    lua_setkey(d);
-    lua_setkey(e);
-    lua_setkey(f);
-    lua_setkey(g);
-    lua_setkey(h);
-    lua_setkey(i);
-    lua_setkey(j);
-    lua_setkey(k);
-    lua_setkey(l);
-    lua_setkey(m);
-    lua_setkey(n);
-    lua_setkey(o);
-    lua_setkey(p);
-    lua_setkey(q);
-    lua_setkey(r);
-    lua_setkey(s);
-    lua_setkey(t);
-    lua_setkey(u);
-    lua_setkey(v);
-    lua_setkey(w);
-    lua_setkey(x);
-    lua_setkey(y);
-    lua_setkey(z);
-    
-    lua_setkey(SPACE);
-    
-    lua_setkey(LEFT);
-    lua_setkey(RIGHT);
-    lua_setkey(UP);
-    lua_setkey(DOWN);
 
-    lua_pop(script, 2);
-}
-
-void update_key_state(int key, bool down) {
-    lua_getglobal(script, "engine");
-    lua_pushstring(script, "keys");
-    lua_gettable(script, -2);
-    
-    lua_pushstring(script, key_mappings[key].c_str());
-    lua_pushboolean(script, down);
-    lua_settable(script, -3);
-    
-    if (down)
-        lua_pushstring(script, "pressed");
-    else
-        lua_pushstring(script, "released");
-    lua_gettable(script, -2);
-    
-    lua_pushstring(script, key_mappings[key].c_str());
-    lua_pushboolean(script, true);
-    lua_settable(script, -3);
-    
-    lua_pop(script, 3);
-}
 
 void boot_module() {
     string initcode = "module = dofile(\"module.lua\")\n"
                       "dofile(module .. \"/boot.lua\")\n"
                       "readonly.locks[\"module\"] = module";
     
-    if (luaL_dostring(script, initcode.c_str()) != 0) {
+    if (luaL_dostring(script, initcode.c_str()) != 0)
 		printf("%s\n", lua_tostring(script, -1));
-	}
 }

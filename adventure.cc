@@ -1,6 +1,6 @@
 #include "adventure.h"
 
-SDL_Surface *room_art = NULL, *room_hot = NULL;
+SDL_Surface *room_hot = NULL;
 
 int quit = 0;
 int in_console = 0;
@@ -55,20 +55,6 @@ void update() {
       }
 
     update_game();
-}
-
-// draws the foreground of a hot image
-void draw_foreground(int level) {
-    int y, x;
-    
-    SDL_LockSurface(screen);
-
-    for (y = 0; y < SCREEN_HEIGHT; y++)
-    for (x = 0; x < SCREEN_WIDTH; x++)
-        if ((getpixel(room_hot, x, y) & 255) == level)
-            putpixel(screen, x, y, getpixel(room_art, x, y));
-        
-    SDL_UnlockSurface(screen);
 }
 
 // draws the game

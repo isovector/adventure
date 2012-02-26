@@ -5,11 +5,9 @@
 
 extern lua_State *script;
 
-void update_key_state(int key, bool down);
 void init_script();
 void boot_module();
 void update_mouse();
-void init_keys();
 
 #define lua_getregister(L, s)  lua_getfield(L, LUA_REGISTRYINDEX, s)
 #define lua_setregister(L, s)  lua_setfield(L, LUA_REGISTRYINDEX, s)
@@ -23,15 +21,6 @@ void init_keys();
     lua_push##type(L, val); \
     lua_settable(L, -3); \
     lua_pop(L, 2);
-
-#define lua_setkey(key) { \
-                            std::string data = #key; \
-                            std::transform(data.begin(), data.end(), data.begin(), ::tolower); \
-                            key_mappings[SDLK_##key] = data; \
-                            lua_pushstring(script, data.c_str()); \
-                            lua_pushboolean(script, false); \
-                            lua_settable(script, -3); \
-                        }
 
 #define CALL_ARGS(n)    { \
                             int _argi = 0; \

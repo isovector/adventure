@@ -111,11 +111,11 @@ function engine.mouse.pump()
 end
 
 function engine.keys.is_press(key)
-    return engine.keys.pressed[key]
+    return engine.keys.pressed[tostring(key)]
 end
 
 function engine.keys.is_release(key)
-    return engine.keys.released[key]
+    return engine.keys.released[tostring(key)]
 end
 
 function engine.keys.pump()

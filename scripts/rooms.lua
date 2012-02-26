@@ -47,7 +47,7 @@ function rooms.prototype(room)
         events.room.unload(room) -- make this cancelable?
         
         _G["room"] = room
-        set_room_data(room.artwork, room.hotmap)
+        set_room_data(room.hotmap)
         
         for path, enabled in ipairs(room.enabled_paths) do
             enable_path(path, enabled)

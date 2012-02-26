@@ -38,24 +38,12 @@ typedef struct tagPOINT {
     int x, y;
 } POINT;
 
-typedef struct tagEXIT {
-    const char *room;
-    int door;
-} EXIT;
-
-typedef struct tagHOTSPOT {
-    const char *internal_name;
-    const char *display_name;
-    int cursor;
-    EXIT *exit;
-} HOTSPOT;
-
 #include "path.h"
 #include "drawing.h"
+#include "input.h"
 #include "lua.h"
 
-extern SDL_Surface *screen;
-extern SDL_Surface *room_art, *room_hot;
+extern SDL_Surface *screen, *room_hot;
 extern POINT *waypoints[MAX_WAYPOINTS];
 extern int waypoint_count;
 extern unsigned int waypoint_connections[MAX_WAYPOINTS];
@@ -63,6 +51,5 @@ extern int in_console;
 
 void init_console(int);
 void open_console(int);
-char *strdup2(const char*);
 
 #endif

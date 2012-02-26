@@ -360,7 +360,7 @@ int script_create_bitmap(lua_State *L) {
     if (!*userdata)
         printf("failed to create bitmap\n");
 
-    SDL_FillRect(*userdata, NULL, lua_tonumber(L, 2));
+    SDL_FillRect(*userdata, NULL, lua_tonumber(L, 3));
     
     luaL_newmetatable(script, "adventure.bitmap");
     lua_setmetatable(script, -2);

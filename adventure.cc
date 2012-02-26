@@ -36,11 +36,13 @@ void update() {
                     quit = true;
                 } else if (event.key.keysym.sym == SDLK_F10) {
                     //open_console(1);
+                } else {
+                    update_key_state(event.key.keysym.sym, true);
                 }
             } break;
 
             case SDL_KEYUP: {
-                // nothing yet!
+                update_key_state(event.key.keysym.sym, false);
             } break;
             
             case SDL_QUIT: {

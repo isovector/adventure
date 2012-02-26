@@ -3,7 +3,10 @@ Running on Linux
 
 Make sure you install the prerequisites before attempting to compile on linux:
 
-* allegro4 4.4.2
+* sdl 1.2
+* sdl_gfx 2.0
+* sdl_image 1.2
+* sdl_ttf 2.0
 * lua 5.1.4
 * luarocks
 

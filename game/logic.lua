@@ -16,6 +16,7 @@ function engine.update()
     end
     
     engine.mouse.pump()
+    engine.keys.pump()
 end
 
 function engine.dialogue_state()

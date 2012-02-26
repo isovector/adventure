@@ -5,6 +5,7 @@
 
 extern lua_State *script;
 
+void update_key_state(int key, bool down);
 void init_script();
 void boot_module();
 void update_mouse();
@@ -22,15 +23,22 @@ void init_keys();
     lua_push##type(L, val); \
     lua_settable(L, -3); \
     lua_pop(L, 2);
-    
-#define lua_setkey(key) lua_pushstring(script, #key); \
-                        lua_pushnumber(script, SDLK_##key); \
-                        lua_settable(script, -3);
-                        
+
+#define lua_setkey(key) { \
+                            std::string data = #key; \
+                            std::transform(data.begin(), data.end(), data.begin(), ::tolower); \
+                            key_mappings[SDLK_##key] = data; \
+                            lua_pushstring(script, data.c_str()); \
+                            lua_pushboolean(script, false); \
+                            lua_settable(script, -3); \
+                        }
+
 #define CALL_ARGS(n)    { \
                             int _argi = 0; \
                             if (lua_gettop(L) != n
+                            
 #define CALL_TYPE(type) || !lua_is##type(L, ++_argi)
+
 #define CALL_ERROR(msg) ) { \
                             lua_pushstring(L, msg); lua_error(L); \
                           } \

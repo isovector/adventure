@@ -28,6 +28,8 @@ engine = {
     },
     
     keys = {
+        pressed = { },
+        released = { }
     },
     
     cursors = {
@@ -62,18 +64,6 @@ events.game = {
 events.console = {
     input = event.create()
 }
-
-setmetatable(engine.keys, {
-    __index = function(t, k)
-        k = tostring(k):upper()
-    
-        if not engine.keys._names[k] then
-            return false
-        end
-    
-        return get_key(engine.keys._names[k])
-    end
-})
 
 function engine.add_verb(name, use, offset, size)
     engine.verbs[name] = {
@@ -121,25 +111,16 @@ function engine.mouse.pump()
 end
 
 function engine.keys.is_press(key)
-    key = tostring(key):upper()
-
-    return engine.keys[key] 
-        and not engine.keys["last_" .. key]
+    return engine.keys.pressed[key]
 end
 
 function engine.keys.is_release(key)
-    key = tostring(key):upper()
-
-    return not engine.keys[key] 
-        and engine.keys["last_" .. key]
+    return engine.keys.released[key]
 end
 
 function engine.keys.pump()
-    local keys = engine.keys
-
-    for key in pairs(keys._names) do
-        keys["last_" .. key] = keys[key]
-    end
+    engine.keys.pressed = { }
+    engine.keys.released = { }
 end
 
 events.room = {

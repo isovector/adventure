@@ -1,6 +1,7 @@
 #include "adventure.h"
 
 lua_State *script;
+std::map<int, std::string> key_mappings;
 
 int script_load_room(lua_State *L) {
     int i;
@@ -114,10 +115,6 @@ void init_keys() {
     lua_pushstring(script, "keys");
     lua_gettable(script, -2);
     
-    lua_pushstring(script, "_names");
-    
-    lua_newtable(script);
-    
     lua_setkey(1);
     lua_setkey(2);
     lua_setkey(3);
@@ -162,9 +159,30 @@ void init_keys() {
     lua_setkey(RIGHT);
     lua_setkey(UP);
     lua_setkey(DOWN);
+
+    lua_pop(script, 2);
+}
+
+void update_key_state(int key, bool down) {
+    lua_getglobal(script, "engine");
+    lua_pushstring(script, "keys");
+    lua_gettable(script, -2);
     
+    lua_pushstring(script, key_mappings[key].c_str());
+    lua_pushboolean(script, down);
     lua_settable(script, -3);
-    lua_pop(script, 1);
+    
+    if (down)
+        lua_pushstring(script, "pressed");
+    else
+        lua_pushstring(script, "released");
+    lua_gettable(script, -2);
+    
+    lua_pushstring(script, key_mappings[key].c_str());
+    lua_pushboolean(script, true);
+    lua_settable(script, -3);
+    
+    lua_pop(script, 3);
 }
 
 void boot_module() {

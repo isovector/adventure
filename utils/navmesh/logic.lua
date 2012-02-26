@@ -117,7 +117,7 @@ local logic = function()
     end
     
     for i = 1, 9 do
-        if engine.keys.is_press(i) and hotspots[i] then
+        if engine.keys.is_press(tostring(i)) and hotspots[i] then
             vertices = hotspots[i]
             curhotspot = i
         end

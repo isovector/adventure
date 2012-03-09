@@ -45,7 +45,7 @@ engine.events.draw.sub(function()
     drawing.blit(engine.resources.cursors, engine.mouse.pos - engine.cursors.offsets[engine.mouse.cursor + 1], false, vec(32 * engine.mouse.cursor, 0), vec(32))
     
     for _, msg in ipairs(conversation.words) do
-        drawing.text_center(msg.pos, msg.color, color.black, msg.message)
+        drawing.blit(msg.message, msg.pos - vec(msg.message.size.x / 2, 0))
     end
 
     local i = 0
@@ -63,5 +63,5 @@ engine.events.draw.sub(function()
     end
     
     drawing.text(vec(32), color.make(255, 255, 255), engine.hovertext)
-    drawing.text(vec(screen_width - 50, 32), color.make(255, 0, 0), color.transparent, engine.fps)
+    drawing.text(vec(screen_width - 50, 32), color.make(255, 0, 0), color.black, engine.fps)
 end)

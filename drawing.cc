@@ -47,9 +47,37 @@ int script_draw_clear(lua_State *L) {
     return 0;
 }
 
-int script_draw_text(lua_State *L) {
+SDL_Surface* render_text(const char* str, int fgcolor, int bgcolor) {
     static const int OUTLINE_SIZE = 2;
     
+    SDL_Surface *outline, *text, *temp;
+
+    SDL_Rect dest;
+    dest.x = OUTLINE_SIZE;
+    dest.y = OUTLINE_SIZE;
+    
+    if (bgcolor != -1) {
+        TTF_SetFontOutline(font, OUTLINE_SIZE);
+        outline = TTF_RenderText_Solid(font, str, translate_color(bgcolor));
+        
+        TTF_SetFontOutline(font, 0);
+    }
+    
+    text = TTF_RenderText_Solid(font, str, translate_color(fgcolor));
+    
+    if (bgcolor != -1) {
+        temp = SDL_DisplayFormat(outline);
+        SDL_BlitSurface(text, NULL, temp, &dest);
+        SDL_FreeSurface(text);
+        SDL_FreeSurface(outline);
+        
+        return temp;
+    }
+    
+    return text;
+}
+
+int script_draw_text(lua_State *L) {
     SDL_Surface *target = get_target(L, 5), *text;
     
     CALL_ARGS(5)
@@ -59,28 +87,13 @@ int script_draw_text(lua_State *L) {
     CALL_TYPE(number)
     CALL_TYPE(string)
     CALL_ERROR("drawing.text expects (int, int, int, int, string)")
-    
-    int bgcolor = (int)lua_tonumber(L, 4);
+
+    text = render_text(lua_tostring(L, 5), (int)lua_tonumber(L, 3), (int)lua_tonumber(L, 4));
     
     SDL_Rect dest;
     dest.x = lua_tonumber(L, 1);
     dest.y = lua_tonumber(L, 2);
     
-    if (bgcolor != -1) {
-        TTF_SetFontOutline(font, OUTLINE_SIZE);
-        text = TTF_RenderText_Solid(font, lua_tostring(L, 5), translate_color(bgcolor));
-    
-        SDL_BlitSurface(text, NULL, target, &dest);
-        SDL_FreeSurface(text);
-    
-        dest.x += OUTLINE_SIZE;
-        dest.y += OUTLINE_SIZE;
-        
-        TTF_SetFontOutline(font, 0);
-    }
-    
-    
-    text = TTF_RenderText_Solid(font, lua_tostring(L, 5), translate_color((int)lua_tonumber(L, 3)));
     SDL_BlitSurface(text, NULL, target, &dest);
     SDL_FreeSurface(text);
     
@@ -100,21 +113,11 @@ int script_draw_text_center(lua_State *L) {
     CALL_TYPE(string)
     CALL_ERROR("drawing.text expects (int, int, int, int, string)")
     
-    TTF_SetFontOutline(font, OUTLINE_SIZE);
-    text = TTF_RenderText_Solid(font, lua_tostring(L, 5), translate_color((int)lua_tonumber(L, 4)));
+    text = render_text(lua_tostring(L, 5), (int)lua_tonumber(L, 3), (int)lua_tonumber(L, 4));
     
     SDL_Rect dest;
     dest.x = lua_tonumber(L, 1) - text->w / 2;
     dest.y = lua_tonumber(L, 2);
-    
-    SDL_BlitSurface(text, NULL, target, &dest);
-    SDL_FreeSurface(text);
-    
-    dest.x += OUTLINE_SIZE;
-    dest.y += OUTLINE_SIZE;
-    
-    TTF_SetFontOutline(font, 0);
-    text = TTF_RenderText_Solid(font, lua_tostring(L, 5), translate_color((int)lua_tonumber(L, 3)));
     
     SDL_BlitSurface(text, NULL, target, &dest);
     SDL_FreeSurface(text);
@@ -160,6 +163,27 @@ int script_draw_blit(lua_State *L) {
     }*/
     
     return 0;
+}
+
+int script_draw_get_text(lua_State *L) {
+    SDL_Surface **userdata;
+    
+    CALL_ARGS(3)
+    CALL_TYPE(string)
+    CALL_TYPE(number)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.get_text expects (string, int, int)")
+    
+    userdata = (SDL_Surface**)lua_newuserdata(L, sizeof(SDL_Surface*));
+    *userdata = render_text(lua_tostring(L, 1), (int)lua_tonumber(L, 2), (int)lua_tonumber(L, 3));
+    
+    if (!*userdata)
+        printf("failed to create bitmap\n");
+
+    luaL_newmetatable(L, "adventure.bitmap");
+    lua_setmetatable(L, -2);
+    
+    return 1;
 }
 
 int script_draw_circle(lua_State *L) {
@@ -309,6 +333,16 @@ int script_blit_rotate(lua_State *L) {
     return 0;
 }
 
+int script_draw_free(lua_State *L) {
+    CALL_ARGS(1)
+    CALL_TYPE(userdata)
+    CALL_ERROR("drawing.free expects (bitmap)")
+            
+    SDL_FreeSurface(*(SDL_Surface**)lua_touserdata(L, 1));
+    
+    return 0;
+}
+
 int script_get_bitmap(lua_State *L) {
     SDL_Surface** userdata, *temp;
     
@@ -413,6 +447,8 @@ void register_drawing() {
     lua_regtable(script, "drawing", "clear", script_draw_clear);
     lua_regtable(script, "drawing", "circle", script_draw_circle);
     lua_regtable(script, "drawing", "ellipse", script_draw_ellipse);
+    lua_regtable(script, "drawing", "free", script_draw_free);
+    lua_regtable(script, "drawing", "get_text", script_draw_get_text);
     lua_regtable(script, "drawing", "line", script_draw_line);
     lua_regtable(script, "drawing", "point", script_draw_point);
     lua_regtable(script, "drawing", "rect", script_draw_rect);

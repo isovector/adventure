@@ -96,9 +96,9 @@ function conversation.continue(opt)
     coroutine.resume(conversation.continue_routine, opt)
 end
 
-function conversation.say(message, pos, color, duration)
-    if not color then
-        color = 0
+function conversation.say(message, pos, col, duration)
+    if not col then
+        col = 0
     end
 
     if not duration then
@@ -106,8 +106,7 @@ function conversation.say(message, pos, color, duration)
     end
 
     msg = {
-        message = message,
-        color = color,
+        message = drawing.get_text(message, col, color.black),
         pos = pos,
         duration = duration
     }
@@ -118,6 +117,11 @@ function conversation.say(message, pos, color, duration)
 end
 
 function conversation.clear()
+    -- free the allocated texts
+    for key, val in ipairs(conversation.words) do
+        drawing.free(val.message)
+    end
+    
     conversation.words = { }
 end
 
@@ -130,6 +134,7 @@ function conversation.pump_words()
         end
 
         if val.duration < 0 then
+            drawing.free(val.message)
             table.remove(conversation.words, key)
         end
     end

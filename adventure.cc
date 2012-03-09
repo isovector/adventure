@@ -5,33 +5,6 @@ SDL_Surface *room_hot = NULL;
 bool quit = false;
 bool in_console = false;
 
-void sdl_info() {
-    const SDL_VideoInfo* videoInfo = SDL_GetVideoInfo( );
-
-    if ( !videoInfo )
-    {
-        fprintf( stderr, "Video query failed: %s\n",
-        SDL_GetError( ) );
-    }
-
-    /* This checks to see if surfaces can be stored in memory */
-    if ( videoInfo->hw_available )
-    {
-    printf("Hardware surface available\n");
-    }
-    else
-    {
-    printf("Software surface available\n");
-    }
-
-    /* This checks if hardware blits can be done */
-    if ( videoInfo->blit_hw )
-    {
-    printf("Hardware blits can be done\n");
-    } 
-}
-
-
 // updates the regular game state
 void update_game() {
     update_mouse();
@@ -95,8 +68,6 @@ int main(int argc, char* argv[]) {
 
     screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_SWSURFACE | SDL_ANYFORMAT | SDL_DOUBLEBUF);
     
-        sdl_info();
-    
     SDL_ShowCursor(false);
     SDL_WM_SetCaption("Adventure // Corpus Damaged", NULL);
     
@@ -139,8 +110,6 @@ int main(int argc, char* argv[]) {
             lua_pushnumber(script, frames_done);
             lua_settable(script, -3);
             lua_pop(script, 1);
-            
-            printf("%d\n", frames_done);
             
             frames_done = 0;
         }

@@ -33,8 +33,4 @@ void update_mouse();
                           } \
                         }
 
-#ifndef DRAW_SPRITE_NORMAL
-#define DRAW_SPRITE_NORMAL 0
-#endif
-
 #endif

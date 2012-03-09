@@ -60,22 +60,27 @@ int script_draw_text(lua_State *L) {
     CALL_TYPE(string)
     CALL_ERROR("drawing.text expects (int, int, int, int, string)")
     
+    int bgcolor = (int)lua_tonumber(L, 4);
+    
     SDL_Rect dest;
     dest.x = lua_tonumber(L, 1);
     dest.y = lua_tonumber(L, 2);
     
-    TTF_SetFontOutline(font, OUTLINE_SIZE);
-    text = TTF_RenderText_Solid(font, lua_tostring(L, 5), translate_color((int)lua_tonumber(L, 4)));
+    if (bgcolor != -1) {
+        TTF_SetFontOutline(font, OUTLINE_SIZE);
+        text = TTF_RenderText_Solid(font, lua_tostring(L, 5), translate_color(bgcolor));
     
-    SDL_BlitSurface(text, NULL, target, &dest);
-    SDL_FreeSurface(text);
+        SDL_BlitSurface(text, NULL, target, &dest);
+        SDL_FreeSurface(text);
     
-    dest.x += OUTLINE_SIZE;
-    dest.y += OUTLINE_SIZE;
+        dest.x += OUTLINE_SIZE;
+        dest.y += OUTLINE_SIZE;
+        
+        TTF_SetFontOutline(font, 0);
+    }
     
-    TTF_SetFontOutline(font, 0);
+    
     text = TTF_RenderText_Solid(font, lua_tostring(L, 5), translate_color((int)lua_tonumber(L, 3)));
-    
     SDL_BlitSurface(text, NULL, target, &dest);
     SDL_FreeSurface(text);
     
@@ -143,16 +148,16 @@ int script_draw_blit(lua_State *L) {
     dest.x = lua_tonumber(L, 2);
     dest.y = lua_tonumber(L, 3);
     
-    // we might not want to do this at drawtime
-    if (lua_toboolean(L, 4)) {
+    // TODO(sandy): fix flipping
+    /*if (lua_toboolean(L, 4)) {
         bmp = rotozoomSurfaceXY(bmp, 0, -1, 1, SMOOTHING_OFF);
-    }
+    }*/
     
     SDL_BlitSurface(bmp, &src, target, &dest);
     
-    if (lua_toboolean(L, 4)) {
+    /*if (lua_toboolean(L, 4)) {
         SDL_FreeSurface(bmp);
-    }
+    }*/
     
     return 0;
 }
@@ -242,9 +247,7 @@ int script_draw_point(lua_State *L) {
     
     extract_vector(L, 1, &x, &y);
     
-    SDL_LockSurface(target);
     putpixel(target, x, y, lua_tonumber(L, 2));
-    SDL_UnlockSurface(target);
     
     return 0;
 }
@@ -323,7 +326,7 @@ int script_get_bitmap(lua_State *L) {
     *userdata = SDL_DisplayFormat(temp);
     SDL_FreeSurface(temp);
     
-    SDL_SetColorKey(*userdata, SDL_SRCCOLORKEY, SDL_MapRGB((*userdata)->format, 255, 0, 255));
+    SDL_SetColorKey(*userdata, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB((*userdata)->format, 255, 0, 255));
     luaL_newmetatable(script, "adventure.bitmap");
     lua_setmetatable(script, -2);
     

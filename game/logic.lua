@@ -200,7 +200,7 @@ function engine.inventory_state()
         i = i + 1
     end
 
-    if engine.mouse.is_click("left") and not rect.create(vec(270, 210), engine.resources.inventory.size).contains(mouse.pos) then
+    if engine.mouse.is_click("left") and not engine.inventory_rect.contains(mouse.pos) then
         engine.state = "game"
     end
     

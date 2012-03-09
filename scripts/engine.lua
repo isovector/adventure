@@ -57,6 +57,8 @@ engine = {
     verbs = { }
 }
 
+engine.inventory_rect = rect.create(vec(270, 210), engine.resources.inventory.size)
+
 events.game = {
     tick = event.create()
 }

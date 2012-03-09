@@ -11,6 +11,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <cstdlib>
 
 #include <assert.h>
 #include <SDL/SDL.h>
@@ -47,7 +48,8 @@ extern SDL_Surface *screen, *room_hot;
 extern POINT *waypoints[MAX_WAYPOINTS];
 extern int waypoint_count;
 extern unsigned int waypoint_connections[MAX_WAYPOINTS];
-extern int in_console;
+extern bool in_console;
+extern bool quit;
 
 void init_console(int);
 void open_console(int);

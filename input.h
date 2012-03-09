@@ -3,8 +3,9 @@
 
 #include "adventure.h"
 
-void update_key_state(int key, bool down);
 void init_keys();
+void process_input_event(const SDL_Event &event);
+void update_key_state(int key, bool down);
 
 #define lua_setkey(key) { \
                             std::string data = #key; \

@@ -29,6 +29,32 @@ geometry = {
                     return tab.y
                 end
             end
+    },
+    
+    rect_mt = {
+        __eq = function(op1, op2)
+                return op1.pos == op2.pos and op1.size == op2.size
+            end,
+        __index = function(tab, key)
+                if key == "contains" then
+                    return function(pos)
+                        return  tab.pos.x < pos.x
+                            and tab.pos.y < pos.y
+                            and tab.pos.x + tab.size.x > pos.x
+                            and tab.pos.y + tab.size.y > pos.y
+                    end
+                elseif key == "intersects" then
+                    return function(other)
+                        local r1 = tab.pos
+                        local r2 = other.pos
+                    
+                        return not(r1.x > r2.x + other.size.x
+                                or r2.x > r1.x + tab.size.x
+                                or r1.y > r2.y + other.size.y
+                                or r2.y > r1.y + tab.size.y)
+                    end
+                end
+            end
     }
 }
 
@@ -42,24 +68,9 @@ function rect.create(pos, size, w, h)
         pos = pos,
         size = size
     }
-        
-    outrect.contains = function(pos)
-        return  outrect.pos.x < pos.x
-            and outrect.pos.y < pos.y
-            and outrect.pos.x + outrect.size.x > pos.x
-            and outrect.pos.y + outrect.size.y > pos.y
-    end
-        
-    outrect.intersects = function(other)
-        local r1 = outrect.pos
-        local r2 = other.pos
-    
-        return not(r1.x > r2.x + other.size.x
-                or r2.x > r1.x + outrect.size.x
-                or r1.y > r2.y + other.size.y
-                or r2.y > r1.y + outrect.size.y)
-    end
-    
+
+    setmetatable(outrect, geometry.rect_mt)
+
     return outrect
 end
 

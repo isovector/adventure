@@ -11,6 +11,9 @@ objects = $(addprefix $(OBJDIR)/, adventure.o console.o drawing.o input.o lua.o 
 all : objdir $(objects) $(poly2tri)
 	g++ -o adventure -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lpthread -lm -llua $(objects) $(poly2tri)
 
+profile :  objdir $(objects) $(poly2tri)
+	g++ -pg -o adventure -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lpthread -lm -llua $(objects) $(poly2tri)
+
 objdir : $(OBJDIR)
 
 $(OBJDIR) : 

@@ -1,6 +1,38 @@
 #include "adventure.h"
 
+bool text_mode = false;
 std::map<int, std::string> key_mappings;
+
+void process_text_input() {
+}
+
+void process_input_event(const SDL_Event &event) {
+    if (text_mode)
+        return process_text_input();
+    
+    switch (event.type) {
+        case SDL_KEYDOWN: {
+            if (event.key.keysym.sym == SDLK_ESCAPE) {
+                quit = true;
+            } else if (event.key.keysym.sym == SDLK_F10) {
+                //open_console(1);
+            } else {
+                update_key_state(event.key.keysym.sym, true);
+            }
+        } break;
+
+        case SDL_KEYUP: {
+            update_key_state(event.key.keysym.sym, false);
+        } break;
+        
+        case SDL_QUIT: {
+            quit = true;
+        } break;
+
+        default: {
+        } break;
+    }
+}
 
 void init_keys() {
     lua_getglobal(script, "engine");
@@ -77,36 +109,21 @@ void update_key_state(int key, bool down) {
     lua_pop(script, 3);
 }
 
-char getUnicodeValue( const SDL_KeyboardEvent &key )
-{
-    assert( SDL_EnableUNICODE(SDL_QUERY) == SDL_ENABLE );
-    // magic numbers courtesy of SDL docs :)
-    const int INTERNATIONAL_MASK = 0xFF80, UNICODE_MASK = 0x7F;
+void set_text_input_mode(bool enabled) {
+    text_mode = enabled;
+    SDL_EnableUNICODE(text_mode ? SDL_ENABLE : SDL_DISABLE);
+}
 
+char event_to_char(const SDL_KeyboardEvent &key) {
+    static const int INTERNATIONAL_MASK = 0xFF80, UNICODE_MASK = 0x7F;
+    
     int uni = key.keysym.unicode;
+    if (uni == 0 || (uni & INTERNATIONAL_MASK) != 0) // no usable unicode value
+        return 0;
 
-    if( uni == 0 ) // not translatable key (like up or down arrows)
-    {
-        // probably not useful as string input
-        // we could optionally use this to get some value
-        // for it: SDL_GetKeyName( key );
-        return 0;
-    }
-    else if( ( uni & INTERNATIONAL_MASK ) == 0 )
-    {
-        if( SDL_GetModState() & KMOD_SHIFT )
-        {
-            return static_cast<char>(toupper(uni & UNICODE_MASK));
-        }
-        else
-        {
-            return static_cast<char>(uni & UNICODE_MASK);
-        }
-    }
-    else // we have a funky international character. one we can't read :(
-    {
-        // we could do nothing, or we can just show some sign of input, like so:
-        // return '?';
-        return 0;
-    }
+    uni &= UNICODE_MASK;
+    if(SDL_GetModState() & KMOD_SHIFT)
+        return toupper(uni);
+    
+    return uni;
 }

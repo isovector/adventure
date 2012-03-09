@@ -2,7 +2,7 @@ color = {
     black = 0x000000,
     red =   0xFF0000,
     white = 0xFFFFFF,
-    transparent = 0x000000
+    transparent = -1
 }
 
 function color.make(r, g, b)
@@ -48,7 +48,7 @@ function drawing.set_mode(mode)
 end
     
 function drawing.blit(bmp, pos, flipped, src, size)
-    if type(flipped) == "nil" then
+    if flipped == nil then
         flipped = false
     end
 

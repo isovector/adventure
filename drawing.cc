@@ -2,6 +2,7 @@
 
 SDL_Surface *screen;
 TTF_Font *font;
+map<SDL_Surface*, SDL_Surface*> flipped_map;
 
 int getpixel(SDL_Surface *surface, int x, int y) {
     int bpp = surface->format->BytesPerPixel;
@@ -151,17 +152,16 @@ int script_draw_blit(lua_State *L) {
     dest.x = lua_tonumber(L, 2);
     dest.y = lua_tonumber(L, 3);
     
-    // TODO(sandy): fix flipping
-    /*if (lua_toboolean(L, 4)) {
-        bmp = rotozoomSurfaceXY(bmp, 0, -1, 1, SMOOTHING_OFF);
-    }*/
-    
+    if (lua_toboolean(L, 4)) {
+        if (flipped_map.find(bmp) == flipped_map.end())
+            flipped_map[bmp] = rotozoomSurfaceXY(bmp, 0, -1, 1, SMOOTHING_OFF);
+        
+        bmp = flipped_map[bmp];
+        src.x = bmp->w - src.x - src.w;
+    }
+
     SDL_BlitSurface(bmp, &src, target, &dest);
-    
-    /*if (lua_toboolean(L, 4)) {
-        SDL_FreeSurface(bmp);
-    }*/
-    
+
     return 0;
 }
 
@@ -446,6 +446,7 @@ void register_drawing() {
     
     lua_regtable(script, "drawing", "clear", script_draw_clear);
     lua_regtable(script, "drawing", "circle", script_draw_circle);
+    lua_regtable(script, "drawing", "create_bitmap", script_create_bitmap);
     lua_regtable(script, "drawing", "ellipse", script_draw_ellipse);
     lua_regtable(script, "drawing", "free", script_draw_free);
     lua_regtable(script, "drawing", "get_text", script_draw_get_text);
@@ -460,5 +461,4 @@ void register_drawing() {
     lua_regtable(script, "drawing", "blit_rotate", script_blit_rotate);
     
     lua_register(script, "bitmap", &script_get_bitmap);
-    lua_register(script, "create_bitmap", &script_create_bitmap);
 }

@@ -30,4 +30,4 @@ function get_skel_structure(bone)
 end
 
 dofile("utils/choreo/logic.lua")
-dofile("utils/choreo/drawing.lua")
+dofile("utils/choreo/render.lua")

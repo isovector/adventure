@@ -25,7 +25,7 @@ vertices = navigation
 engine.mouse.cursor = 10
 
 image = bitmap("game/rooms/outside/art.pcx")
-hot = create_bitmap(screen_width, screen_height, 0)
+hot = drawing.create_bitmap(screen_width, screen_height, 0)
 
 dofile("utils/navmesh/logic.lua")
-dofile("utils/navmesh/drawing.lua")
+dofile("utils/navmesh/render.lua")

@@ -10,7 +10,7 @@ load_script("scripts/repl.lua")
 
 load_script("scripts/engine.lua")
 load_script("game/logic.lua")
-load_script("game/drawing.lua")
+load_script("game/render.lua")
 load_script("scripts/animation.lua")
 
 load_script("scripts/actors.lua")

@@ -86,7 +86,7 @@ function engine.game_state()
     
     local found = false
     for _, actor in ipairs(room.scene) do
-        if actor.pos and not actor.ignore_ui then -- flush out foreground elements
+        if actor.origin and not actor.ignore_ui then -- flush out foreground elements
             local hitbox = rect.create(actor.pos - actor.origin, actor.size)
             if hitbox.contains(mouse.pos) then
                 --[[or pixel perfect]]

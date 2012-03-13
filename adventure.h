@@ -1,10 +1,6 @@
 #ifndef ADVENTURE_ADVENTURE_H
 #define ADVENTURE_ADVENTURE_H
 
-#ifdef	WIN32
-#define ALLEGRO_USE_CONSOLE
-#endif
-
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -34,6 +30,7 @@ using namespace std;
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 #define FRAMERATE 60
+#define BITS_PER_PIXEL 0
 
 typedef struct tagPOINT {
     int x, y;

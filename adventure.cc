@@ -61,12 +61,12 @@ bool lock_fps(int framerate) {
 
 
 int main(int argc, char* argv[]) {
-    int last_ticks = 0, frames_done = 0;
+    int last_ticks = 0, frames_done = 1;
 
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
 
-    screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_SWSURFACE | SDL_ANYFORMAT | SDL_DOUBLEBUF);
+    screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, BITS_PER_PIXEL, SDL_SWSURFACE | SDL_ANYFORMAT | SDL_DOUBLEBUF);
     
     SDL_ShowCursor(false);
     SDL_WM_SetCaption("Adventure // Corpus Damaged", NULL);
@@ -111,7 +111,7 @@ int main(int argc, char* argv[]) {
             lua_settable(script, -3);
             lua_pop(script, 1);
             
-            frames_done = 0;
+            frames_done = 1;
         }
     }
     

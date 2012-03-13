@@ -26,6 +26,26 @@ SDL_Surface *get_target(lua_State *L, int size) {
     return target;
 }
 
+SDL_Surface *make_bitmap(int w, int h) {
+    uint rmask, gmask, bmask, amask;
+    
+    /* SDL interprets each pixel as a 32-bit number, so our masks must depend
+       on the endianness (byte order) of the machine */
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    rmask = 0xff000000;
+    gmask = 0x00ff0000;
+    bmask = 0x0000ff00;
+    amask = 0x000000ff;
+#else
+    rmask = 0x000000ff;
+    gmask = 0x0000ff00;
+    bmask = 0x00ff0000;
+    amask = 0xff000000;
+#endif
+    
+    return SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, rmask, gmask, bmask, amask);
+}
+
 SDL_Color translate_color(int int_color) {
     SDL_Color color = { 
         (int_color & 0xff0000) >> 16, 
@@ -343,6 +363,57 @@ int script_draw_free(lua_State *L) {
     return 0;
 }
 
+int script_mask_copy(lua_State *L) {
+    SDL_Surface **userdata, *src, *mask;
+    int x, y, color;
+    int fx = 99999, fy = 99999, lx = -1, ly = -1;
+    unsigned char r, g, b;
+    
+    CALL_ARGS(3)
+    CALL_TYPE(userdata)
+    CALL_TYPE(userdata)
+    CALL_TYPE(number)
+    CALL_ERROR("drawing.mask_copy expects (bitmap, bitmap, color)")
+    
+    src = *(SDL_Surface**)lua_touserdata(L, 1);
+    mask = *(SDL_Surface**)lua_touserdata(L, 2);
+    color = lua_tonumber(L, 3);
+    
+    bool first = true;
+    for (x = 0; x < mask->w; x++)    
+    for (y = 0; y < mask->h; y++)
+        if ((getpixel(mask, x, y) & 255) == color) {
+            if (x < fx) fx = x;
+            if (x > lx) lx = x;
+            if (y < fy) fy = y;
+            if (y > ly) ly = y;
+        }
+        
+    userdata = (SDL_Surface**)lua_newuserdata(L, sizeof(SDL_Surface*));
+    *userdata = make_bitmap(lx - fx, ly - fy);
+    
+    if (!*userdata)
+        printf("failed to create bitmap\n");
+
+    SDL_FillRect(*userdata, NULL, lua_tonumber(L, 3));
+    SDL_SetColorKey(*userdata, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB((*userdata)->format, 255, 0, 255));
+    
+    luaL_newmetatable(script, "adventure.bitmap");
+    lua_setmetatable(script, -2);
+    
+        
+    for (y = fy; y < ly; y++)
+    for (x = fx; x < lx; x++)
+        if ((getpixel(mask, x, y) & 255) == color) {
+            SDL_Color pixcol = translate_color(getpixel(src, x, y));
+            putpixel(*userdata, x - fx, y - fy, SDL_MapRGB((*userdata)->format, pixcol.r, pixcol.g, pixcol.b));
+        }
+        
+    lua_vector(L, fx, fy);
+    
+    return 2;
+}
+
 int script_get_bitmap(lua_State *L) {
     SDL_Surface** userdata, *temp;
     
@@ -369,7 +440,6 @@ int script_get_bitmap(lua_State *L) {
 
 int script_create_bitmap(lua_State *L) {
     SDL_Surface** userdata;
-    uint rmask, gmask, bmask, amask;
     
     CALL_ARGS(3)
     CALL_TYPE(number)
@@ -377,27 +447,14 @@ int script_create_bitmap(lua_State *L) {
     CALL_TYPE(number)
     CALL_ERROR("drawing.create_bitmap expects (int, int, int)")    
     
-    /* SDL interprets each pixel as a 32-bit number, so our masks must depend
-       on the endianness (byte order) of the machine */
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    rmask = 0xff000000;
-    gmask = 0x00ff0000;
-    bmask = 0x0000ff00;
-    amask = 0x000000ff;
-#else
-    rmask = 0x000000ff;
-    gmask = 0x0000ff00;
-    bmask = 0x00ff0000;
-    amask = 0xff000000;
-#endif
-    
     userdata = (SDL_Surface**)lua_newuserdata(L, sizeof(SDL_Surface*));
-    *userdata = SDL_CreateRGBSurface(SDL_SWSURFACE, lua_tonumber(L, 1), lua_tonumber(L, 2), 32, rmask, gmask, bmask, amask);
+    *userdata = make_bitmap(lua_tonumber(L, 1), lua_tonumber(L, 2));
     
     if (!*userdata)
         printf("failed to create bitmap\n");
 
     SDL_FillRect(*userdata, NULL, lua_tonumber(L, 3));
+    SDL_SetColorKey(*userdata, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB((*userdata)->format, 255, 0, 255));
     
     luaL_newmetatable(script, "adventure.bitmap");
     lua_setmetatable(script, -2);
@@ -444,6 +501,7 @@ void register_drawing() {
     lua_settable(script, -3);
     lua_pop(script, 1);
     
+    lua_regtable(script, "drawing", "blit_rotate", script_blit_rotate);
     lua_regtable(script, "drawing", "clear", script_draw_clear);
     lua_regtable(script, "drawing", "circle", script_draw_circle);
     lua_regtable(script, "drawing", "create_bitmap", script_create_bitmap);
@@ -451,14 +509,15 @@ void register_drawing() {
     lua_regtable(script, "drawing", "free", script_draw_free);
     lua_regtable(script, "drawing", "get_text", script_draw_get_text);
     lua_regtable(script, "drawing", "line", script_draw_line);
+    lua_regtable(script, "drawing", "mask_copy", script_mask_copy);
     lua_regtable(script, "drawing", "point", script_draw_point);
-    lua_regtable(script, "drawing", "rect", script_draw_rect);
     lua_regtable(script, "drawing", "polygon", script_draw_polygon);
     lua_regtable(script, "drawing", "raw_text", script_draw_text);
     lua_regtable(script, "drawing", "raw_text_center", script_draw_text_center);
     lua_regtable(script, "drawing", "raw_blit", script_draw_blit);
     lua_regtable(script, "drawing", "raw_set_mode", script_draw_set_mode);
-    lua_regtable(script, "drawing", "blit_rotate", script_blit_rotate);
+    lua_regtable(script, "drawing", "rect", script_draw_rect);
+    
     
     lua_register(script, "bitmap", &script_get_bitmap);
 }

@@ -35,6 +35,7 @@ room.hotspot(119, "rope", "Rope");
 
 room.door(17, "door", "Pub Entrance", "outside", 68, 8)
 
+room.foreground(17, 600)
 
 actors.bouncer.events.talk.sub(function()
     open_topic(room.dialogue.bouncer)

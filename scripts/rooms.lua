@@ -144,9 +144,13 @@ function rooms.prototype(room)
     end
     
     function room.foreground(shade, baseline)
+        local fg, pos = drawing.mask_copy(room.artwork, room.hotmap, shade)
+    
         table.insert(room.scene, { 
             baseline = baseline, 
-            level = level 
+            sprite = fg,
+            pos = pos,
+            flipped = false
         })
     end
     

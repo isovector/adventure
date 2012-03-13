@@ -2,27 +2,53 @@
 
 bool text_mode = false;
 std::map<int, std::string> key_mappings;
+string input_string = "";
 
-void process_text_input() {
+void set_text_input_mode(bool enabled) {
+    text_mode = enabled;
+    SDL_EnableUNICODE(text_mode ? SDL_ENABLE : SDL_DISABLE);
+    
+    if (enabled)
+        SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+    else
+        SDL_EnableKeyRepeat(0, 0);
+}
+
+char event_to_char(const SDL_KeyboardEvent &key) {
+    static const int INTERNATIONAL_MASK = 0xFF80, UNICODE_MASK = 0x7F;
+    
+    int uni = key.keysym.unicode;
+    if (uni == 0 || (uni & INTERNATIONAL_MASK) != 0) // no usable unicode value
+        return 0;
+
+    return uni & UNICODE_MASK;
+}
+
+void process_text_input(const SDL_KeyboardEvent &event) {
+    char c;
+
+    if (event.keysym.sym == SDLK_BACKSPACE && input_string.length() > 0)
+        input_string.erase(input_string.size() - 1);
+    else if (c = event_to_char(event))
+        input_string += c;
 }
 
 void process_input_event(const SDL_Event &event) {
-    if (text_mode)
-        return process_text_input();
-    
     switch (event.type) {
         case SDL_KEYDOWN: {
-            if (event.key.keysym.sym == SDLK_ESCAPE) {
+            if (event.key.keysym.sym == SDLK_ESCAPE)
                 quit = true;
-            } else if (event.key.keysym.sym == SDLK_F10) {
+            else if (text_mode)
+                process_text_input(event.key);
+            else if (event.key.keysym.sym == SDLK_F10) {
                 //open_console(1);
-            } else {
+            } else
                 update_key_state(event.key.keysym.sym, true);
-            }
         } break;
 
         case SDL_KEYUP: {
-            update_key_state(event.key.keysym.sym, false);
+            if (!text_mode)
+                update_key_state(event.key.keysym.sym, false);
         } break;
         
         case SDL_QUIT: {
@@ -107,23 +133,4 @@ void update_key_state(int key, bool down) {
     lua_settable(script, -3);
     
     lua_pop(script, 3);
-}
-
-void set_text_input_mode(bool enabled) {
-    text_mode = enabled;
-    SDL_EnableUNICODE(text_mode ? SDL_ENABLE : SDL_DISABLE);
-}
-
-char event_to_char(const SDL_KeyboardEvent &key) {
-    static const int INTERNATIONAL_MASK = 0xFF80, UNICODE_MASK = 0x7F;
-    
-    int uni = key.keysym.unicode;
-    if (uni == 0 || (uni & INTERNATIONAL_MASK) != 0) // no usable unicode value
-        return 0;
-
-    uni &= UNICODE_MASK;
-    if(SDL_GetModState() & KMOD_SHIFT)
-        return toupper(uni);
-    
-    return uni;
 }

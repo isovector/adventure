@@ -181,10 +181,6 @@ function engine.callback(callback_type, object, method)
     end
 end
 
-function register_foreground(level, baseline)
-    room.register_foreground(level, baseline)
-end
-
 function append_dispatch(actor, callback_type, object, method, flipped)
     if not actor then return end
     

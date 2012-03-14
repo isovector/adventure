@@ -6,7 +6,7 @@ vpath %.h libs/poly2tri/common
 vpath %.cc libs/poly2tri/sweep
 vpath %.h libs/poly2tri/sweep
 
-objects = $(addprefix $(OBJDIR)/, adventure.o console.o drawing.o input.o lua.o path.o shapes.o advancing_front.o cdt.o sweep.o sweep_context.o)
+objects = $(addprefix $(OBJDIR)/, adventure.o drawing.o input.o lua.o path.o shapes.o advancing_front.o cdt.o sweep.o sweep_context.o)
 
 all : objdir $(objects) $(poly2tri)
 	g++ -o adventure -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lpthread -lm -llua $(objects) $(poly2tri)

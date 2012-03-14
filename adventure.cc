@@ -90,8 +90,6 @@ int main(int argc, char* argv[]) {
     lua_settable(script, -3);
     lua_pop(script, 1);
     
-    init_console(32);
-    
     last_ticks = SDL_GetTicks();
 
     while (!quit) {

@@ -27,7 +27,7 @@ SDL_Surface *get_target(lua_State *L, int size) {
 }
 
 SDL_Surface *make_bitmap(int w, int h) {
-    uint rmask, gmask, bmask, amask;
+    unsigned int rmask, gmask, bmask, amask;
     
     /* SDL interprets each pixel as a 32-bit number, so our masks must depend
        on the endianness (byte order) of the machine */

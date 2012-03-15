@@ -60,6 +60,9 @@
     <ClInclude Include="..\..\libs\poly2tri\sweep\sweep_context.h">
       <Filter>Source Files\libs\poly2tri</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\input.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\libs\poly2tri\common\shapes.cc">
@@ -80,9 +83,6 @@
     <ClCompile Include="..\..\adventure.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\console.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\drawing.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -90,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\path.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\input.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

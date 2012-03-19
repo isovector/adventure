@@ -89,42 +89,42 @@ function next_hotspot()
 end
 
 local logic = function()
-    if engine.mouse.is_click("left") then
-        table.insert(vertices, vec(engine.mouse.pos))
+    if input.mouse.is_click("left") then
+        table.insert(vertices, vec(input.mouse.pos))
         vertices[#vertices].n = string.sub("abcdefghijklmnopqrstuvwxyz", #vertices, #vertices)
     end
     
-    if engine.mouse.is_click("right") then
+    if input.mouse.is_click("right") then
         vertices[#vertices] = nil
     end
     
-    if engine.keys.is_press("space") then
+    if input.keys.is_press("space") then
         rebuild()
         next_hotspot()
     end
     
-    if engine.keys.is_press("w") then
+    if input.keys.is_press("w") then
         vertices = waypoints
     end
     
-    if engine.keys.is_press("c") then
+    if input.keys.is_press("c") then
         for k in pairs(vertices) do vertices[k] = nil end
     end
     
-    if engine.keys.is_press("0") then
+    if input.keys.is_press("0") then
         vertices = navigation
         curhotspot = 0
     end
     
     for i = 1, 9 do
-        if engine.keys.is_press(tostring(i)) and hotspots[i] then
+        if input.keys.is_press(tostring(i)) and hotspots[i] then
             vertices = hotspots[i]
             curhotspot = i
         end
     end
 
-    engine.mouse.pump()
-    engine.keys.pump()
+    input.mouse.pump()
+    input.keys.pump()
 end
 
 events.game.tick.sub(logic)

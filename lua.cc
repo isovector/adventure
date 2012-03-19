@@ -42,62 +42,13 @@ int script_which_hotspot(lua_State *L) {
     return 1;
 }
 
-void update_mouse() {
-    int mouse_x, mouse_y;
-    int mouse_b = SDL_GetMouseState(&mouse_x, &mouse_y);
-    
-    
-    lua_getglobal(script, "engine");
-    lua_pushstring(script, "mouse");
-    lua_gettable(script, -2);
-    
-    lua_pushstring(script, "pos");
-    lua_gettable(script, -2);
-    lua_pushstring(script, "x");
-    lua_pushnumber(script, mouse_x);
-    lua_settable(script, -3);
-    lua_pushstring(script, "y");
-    lua_pushnumber(script, mouse_y);
-    lua_settable(script, -3);
-    lua_pop(script, 1);
-    
-    lua_pushstring(script, "buttons");
-    lua_gettable(script, -2);
-    lua_pushstring(script, "left");
-    lua_pushboolean(script, mouse_b & SDL_BUTTON(1));
-    lua_settable(script, -3);
-    lua_pushstring(script, "right");
-    lua_pushboolean(script, mouse_b & SDL_BUTTON(3));
-    lua_settable(script, -3);
-    lua_pushstring(script, "middle");
-    lua_pushboolean(script, mouse_b & SDL_BUTTON(2));
-    lua_settable(script, -3);
-    lua_pop(script, 3);
-}
-
-int script_get_key(lua_State *L) {
-    CALL_ARGS(1)
-    CALL_TYPE(string)
-    CALL_ERROR("get_key expects (string)")
-    
-    // this seems REALLY fishy to me
-    //lua_pushboolean(L, key[(int)lua_tonumber(L, 1)]);
-    return 1;
-}
-
 void init_script() {
     script = lua_open();
     luaL_openlibs(script);
     lua_atpanic(script, script_panic);
     
-    lua_newtable(script);
-    lua_setregister(script, "render_obj");
-    lua_newtable(script);
-    lua_setregister(script, "render_inv");
-    
     lua_register(script, "set_room_data", &script_load_room);
     lua_register(script, "which_hotspot", &script_which_hotspot);
-    lua_register(script, "get_key", &script_get_key);
     
     register_path();
     register_drawing();

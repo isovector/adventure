@@ -24,7 +24,7 @@ local draw = function()
         drawing.line(tr, br, color.make(255, 0, 0))
     end
     
-    drawing.blit(engine.resources.cursors, engine.mouse.pos - engine.cursors.offsets[engine.mouse.cursor + 1], false, vec(32 * engine.mouse.cursor, 0), vec(32))
+    drawing.blit(game.resources.cursors, input.mouse.pos - game.cursors.offsets[input.mouse.cursor + 1], false, vec(32 * input.mouse.cursor, 0), vec(32))
     
     local start = vec(400, 600)
     local size = vec(480, 30)

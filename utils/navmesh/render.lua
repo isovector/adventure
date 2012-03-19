@@ -1,7 +1,7 @@
 local draw = function()
     drawing.clear(color.make(255, 255, 0))
     
-    if not engine.keys.h then
+    if not input.keys.h then
         drawing.blit(image, vec(0))
     end
     
@@ -29,11 +29,11 @@ local draw = function()
     
     drawing.set_mode(mode)
     
-    if engine.keys.h then
+    if input.keys.h then
         drawing.blit(hot, vec(0))
     end
     
-    drawing.blit(engine.resources.cursors, engine.mouse.pos - engine.cursors.offsets[engine.mouse.cursor + 1], false, vec(32 * engine.mouse.cursor, 0), vec(32))
+    drawing.blit(game.resources.cursors, input.mouse.pos - game.cursors.offsets[input.mouse.cursor + 1], false, vec(32 * input.mouse.cursor, 0), vec(32))
 end
 
 engine.events.draw.sub(draw)

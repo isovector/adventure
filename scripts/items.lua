@@ -12,7 +12,7 @@ function items.create(id, name, bmpfile)
     }
     
     -- create events for all the verbs
-    for id, verb in pairs(engine.verbs) do
+    for id, verb in pairs(game.verbs) do
         item.events[id] = event.create()
     end
     

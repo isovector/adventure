@@ -10,7 +10,7 @@ function color.make(r, g, b)
     g = math.clamp(g, 0, 255)
     b = math.clamp(b, 0, 255)
     
-    return r * 65536 + g * 256 + b
+    return r * 0x10000 + g * 0x100 + b
 end
 
 function drawing.text(pos, col, background, format, ...)
@@ -61,23 +61,4 @@ function drawing.blit(bmp, pos, flipped, src, size)
     end
 
     drawing.raw_blit(bmp, pos.x, pos.y, flipped, src.x, src.y, size.x, size.y)
-end
-
-function drawing.skeleton(skel, orig, scale)
-    if not orig then
-        orig = vec(0)
-    end
-    
-    if not scale then
-        scale = 1
-    end
-
-    local tab = rig.get_bone_table(root)
-    local keys = table.keys(tab)
-    
-    for _, key in ipairs(keys) do
-        for _, bone in pairs(tab[key]) do
-            drawing.blit_rotate(bone.image, orig + bone.get_position(scale), bone.image_offset, bone.get_rotation(), scale)
-        end
-    end
 end

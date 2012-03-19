@@ -40,7 +40,7 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
     }
     
     -- create events for all the verbs
-    for id, verb in pairs(engine.verbs) do
+    for id, verb in pairs(game.verbs) do
         actor.events[id] = event.create()
     end
     
@@ -167,7 +167,7 @@ function actors.prototype(actor)
     
     function actor.give(recip, item)
         if actor.inventory[item] then
-            actor.walk(make_walkspot(recip))
+            actor.walk(game.make_walkspot(recip))
             
             actor.queue(function()
                 actor.lose_item(item)

@@ -61,7 +61,7 @@ void process_input_event(const SDL_Event &event) {
 }
 
 void init_keys() {
-    lua_getglobal(script, "engine");
+    lua_getglobal(script, "input");
     lua_pushstring(script, "keys");
     lua_gettable(script, -2);
     
@@ -113,8 +113,41 @@ void init_keys() {
     lua_pop(script, 2);
 }
 
+void update_mouse() {
+    int mouse_x, mouse_y;
+    int mouse_b = SDL_GetMouseState(&mouse_x, &mouse_y);
+    
+    
+    lua_getglobal(script, "input");
+    lua_pushstring(script, "mouse");
+    lua_gettable(script, -2);
+    
+    lua_pushstring(script, "pos");
+    lua_gettable(script, -2);
+    lua_pushstring(script, "x");
+    lua_pushnumber(script, mouse_x);
+    lua_settable(script, -3);
+    lua_pushstring(script, "y");
+    lua_pushnumber(script, mouse_y);
+    lua_settable(script, -3);
+    lua_pop(script, 1);
+    
+    lua_pushstring(script, "buttons");
+    lua_gettable(script, -2);
+    lua_pushstring(script, "left");
+    lua_pushboolean(script, mouse_b & SDL_BUTTON(1));
+    lua_settable(script, -3);
+    lua_pushstring(script, "right");
+    lua_pushboolean(script, mouse_b & SDL_BUTTON(3));
+    lua_settable(script, -3);
+    lua_pushstring(script, "middle");
+    lua_pushboolean(script, mouse_b & SDL_BUTTON(2));
+    lua_settable(script, -3);
+    lua_pop(script, 3);
+}
+
 void update_key_state(int key, bool down) {
-    lua_getglobal(script, "engine");
+    lua_getglobal(script, "input");
     lua_pushstring(script, "keys");
     lua_gettable(script, -2);
     

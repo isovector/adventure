@@ -13,7 +13,7 @@ tmp_anims.sign.anims.stand = {
 
 local room = rooms.create("outside")
 
-load_module("rooms/outside/dialogue.lua")
+load.module("rooms/outside/dialogue.lua")
 
 room.place(actors.gomez)
 room.place(actors.bouncer)

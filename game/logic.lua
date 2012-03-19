@@ -1,7 +1,7 @@
 function engine.update()
     local elapsed = 1 / framerate
     
-    engine.life = engine.life + elapsed
+    game.life = game.life + elapsed
 
     if table.getn(conversation.options) ~= 0 then
         engine.dialogue_state()
@@ -15,19 +15,19 @@ function engine.update()
         end
     end
     
-    engine.mouse.pump()
-    engine.keys.pump()
+    input.mouse.pump()
+    input.keys.pump()
 end
 
 function engine.dialogue_state()
-    if engine.mouse.is_click("left") then
+    if input.mouse.is_click("left") then
         local top = table.getn(conversation.options)
         local i = 0
         
         for _, str in ipairs(conversation.options) do
             local y =  695 - 14 * (top - i)
         
-            if rect.create(vec(0, y), vec(1280, 14)).contains(engine.mouse.pos) then
+            if rect.create(vec(0, y), vec(1280, 14)).contains(input.mouse.pos) then
                 conversation.continue(i + 1)
                 return
             end
@@ -39,7 +39,7 @@ end
 
 function engine.action_state()
     local action = engine.action
-    local mouse = engine.mouse
+    local mouse = input.mouse
     mouse.cursor = 0
     
     if not action or not action.active then return end
@@ -49,7 +49,7 @@ function engine.action_state()
         if hitbox.contains(mouse.pos) then
             mouse.cursor = 5
             action.method = htype
-            engine.hovertext = engine.verbs[htype].use:format(action.name)
+            game.hovertext = game.verbs[htype].use:format(action.name)
         end
     end
                 
@@ -57,9 +57,9 @@ function engine.action_state()
         if action.method ~= "" then
             if action.spot then
                 player.walk(action.spot)
-                append_dispatch(player, action.type, action.object, action.method, action.flip)
+                game.append_dispatch(player, action.type, action.object, action.method, action.flip)
             else
-                engine.callback(action.type, action.object, action.method)
+                game.dispatch(action.type, action.object, action.method)
             end
             
             if action.last_state then
@@ -76,12 +76,12 @@ function engine.game_state()
     
     local action = engine.action
     local item = engine.item
-    local mouse = engine.mouse
+    local mouse = input.mouse
     
     if engine.action and engine.action.active then return end
     
     mouse.cursor = 0
-    engine.hovertext = ""
+    game.hovertext = ""
     
     
     local found = false
@@ -92,14 +92,14 @@ function engine.game_state()
                 --[[or pixel perfect]]
                 found = 1
                 mouse.cursor = 5
-                engine.hovertext = actor.name
+                game.hovertext = actor.name
                 
                 if mouse.is_click("left") then
                     if item then
-                        engine.callback(item.type, item.object, item.method)
+                        game.dispatch(item.type, item.object, item.method)
                         engine.item = nil
                     else
-                        engine.set_action("object", actor.id, actor.name, make_walkspot(actor))
+                        game.set_action("object", actor.id, actor.name, game.make_walkspot(actor))
                     end
                 end
             end
@@ -112,7 +112,7 @@ function engine.game_state()
                 engine.tooltip = hotspot.name
                 mouse.cursor = hotspot.cursor
                 found = true
-                engine.hovertext = hotspot.name
+                game.hovertext = hotspot.name
                 
                 if mouse.is_click("left") then
                     if hotspot.clickable then
@@ -124,10 +124,10 @@ function engine.game_state()
                     else
                         if item then
                             player.walk(hotspot.spot)
-                            engine.callback(item.type, item.object, item.method)
+                            game.dispatch(item.type, item.object, item.method)
                             engine.item = nil
                         else
-                            engine.set_action("hotspot", hotspot.id, hotspot.name, hotspot.spot)
+                            game.set_action("hotspot", hotspot.id, hotspot.name, hotspot.spot)
                         end
                     end
                 end
@@ -146,12 +146,12 @@ function engine.game_state()
     end
     
     if mouse.buttons.left and engine.action and not engine.action.active then
-        if engine.life >= engine.action.activates_at then
+        if game.life >= engine.action.activates_at then
             action.last_state = "game"
             action.active = true
             
             action.hitboxes = { }
-            for verb, data in pairs(engine.verbs) do
+            for verb, data in pairs(game.verbs) do
                 action.hitboxes[verb] = rect.create(action.pos + data.offset, data.size)
             end
         end
@@ -169,24 +169,24 @@ end
 function engine.inventory_state()
     if engine.action and engine.action.active then return end
 
-    local mouse = engine.mouse
+    local mouse = input.mouse
     local action = engine.action
     mouse.cursor = 0
 
     local i = 0
     for key, item in pairs(player.inventory) do
         if rect.create(vec(270 + 75 * (i % 10), 215 + 75 * math.floor(i / 10)), vec(64)).contains(mouse.pos) then
-            engine.hovertext = item.name
+            game.hovertext = item.name
             mouse.cursor = 5
             
             if mouse.is_click("left") then
                 if engine.item then
-                    engine.callback("combine", key, engine.item.id)
+                    game.dispatch("combine", key, engine.item.id)
                     
                     engine.item = nil
                     engine.just_item = true
                 else
-                    engine.set_action("item", key, item.name)
+                    game.set_action("item", key, item.name)
                 end
             elseif mouse.is_upclick("left") and not (engine.action and engine.action.active) then
                 if not engine.just_item then
@@ -200,21 +200,21 @@ function engine.inventory_state()
         i = i + 1
     end
 
-    if engine.mouse.is_click("left") and not engine.inventory_rect.contains(mouse.pos) then
+    if input.mouse.is_click("left") and not game.inventory_rect.contains(mouse.pos) then
         engine.state = "game"
     end
     
     if mouse.buttons.left and engine.action and not engine.action.active then
-        if engine.life >= engine.action.activates_at then
+        if game.life >= engine.action.activates_at then
             action.last_state = "game"
             action.active = true
             
             action.hitboxes = { }
-            for verb, data in pairs(engine.verbs) do
+            for verb, data in pairs(game.verbs) do
                 action.hitboxes[verb] = rect.create(action.pos + data.offset, data.size)
             end
         end
-    elseif engine.mouse.is_click("right") then
+    elseif input.mouse.is_click("right") then
         if engine.item then
             engine.item = nil
         else

@@ -5,6 +5,7 @@
 
 void init_keys();
 void process_input_event(const SDL_Event &event);
+void update_mouse();
 void update_key_state(int key, bool down);
 
 #define lua_setkey(key) { \

@@ -9,7 +9,7 @@ engine.events.draw.sub(function()
                 
                 local c = 0xFFFF00
                 
-                if in_ellipse(actor.pos, actor.pathsize, engine.mouse.pos) then
+                if in_ellipse(actor.pos, actor.pathsize, input.mouse.pos) then
                     c = 0xFF0000
                 end
                 
@@ -25,7 +25,7 @@ engine.events.draw.sub(function()
     end
     
     if engine.state == "inventory" then
-        drawing.blit(engine.resources.inventory, vec(270, 210))
+        drawing.blit(game.resources.inventory, vec(270, 210))
         
         local i = 0
         for _, item in pairs(player.inventory) do
@@ -35,14 +35,14 @@ engine.events.draw.sub(function()
     end
     
     if engine.action and engine.action.active then
-        drawing.blit(engine.resources.action_bar, engine.action.pos)
+        drawing.blit(game.resources.action_bar, engine.action.pos)
     end
     
     if engine.item then
-        drawing.blit(engine.item.image, engine.mouse.pos)
+        drawing.blit(engine.item.image, input.mouse.pos)
     end
     
-    drawing.blit(engine.resources.cursors, engine.mouse.pos - engine.cursors.offsets[engine.mouse.cursor + 1], false, vec(32 * engine.mouse.cursor, 0), vec(32))
+    drawing.blit(game.resources.cursors, input.mouse.pos - game.cursors.offsets[input.mouse.cursor + 1], false, vec(32 * input.mouse.cursor, 0), vec(32))
     
     for _, msg in ipairs(conversation.words) do
         drawing.blit(msg.message, msg.pos - vec(msg.message.size.x / 2, 0))
@@ -54,7 +54,7 @@ engine.events.draw.sub(function()
         local col = color.white
         local y =  695 - 14 * (top - i)
     
-        if rect.create(vec(0, y), vec(1280, 14)).contains(engine.mouse.pos) then
+        if rect.create(vec(0, y), vec(1280, 14)).contains(input.mouse.pos) then
             col = color.make(255, 0, 0)
         end
         
@@ -62,6 +62,6 @@ engine.events.draw.sub(function()
         i = i + 1
     end
     
-    drawing.text(vec(32), color.make(255, 255, 255), engine.hovertext)
+    drawing.text(vec(32), color.make(255, 255, 255), game.hovertext)
     drawing.text(vec(screen_width - 50, 32), color.make(255, 0, 0), color.black, engine.fps)
 end)

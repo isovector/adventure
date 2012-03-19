@@ -1,8 +1,8 @@
-load_script("scripts/rig.lua")
-load_script("scripts/tasks.lua")
-load_script("scripts/drawing.lua")
-load_script("scripts/filesystem.lua")
-load_script("scripts/repl.lua")
+load.script("scripts/rig.lua")
+load.script("scripts/tasks.lua")
+load.script("scripts/drawing.lua")
+load.script("scripts/filesystem.lua")
+load.script("scripts/repl.lua")
 
 navigation = { }
 hotspots = { }
@@ -22,7 +22,7 @@ colors = {  0xFF0000,
         }
 
 vertices = navigation
-engine.mouse.cursor = 10
+input.mouse.cursor = 10
 
 image = bitmap("game/rooms/outside/art.pcx")
 hot = drawing.create_bitmap(screen_width, screen_height, 0)

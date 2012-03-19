@@ -1,4 +1,10 @@
+room = nil
 rooms = { }
+
+events.room = {
+    unload = event.create(),
+    switch = event.create()
+}
 
 function rooms.create(id)  
     local room = {
@@ -114,7 +120,7 @@ function rooms.prototype(room)
         }
         
         -- create events for all the verbs
-        for vid, verb in pairs(engine.verbs) do
+        for vid, verb in pairs(game.verbs) do
             room.hotspots[id].events[vid] = event.create()
         end
         
@@ -154,7 +160,6 @@ function rooms.prototype(room)
         })
     end
     
-    --TODO(sandy): fix this
     function room.is_walkable(pos, y)
         if y then
             pos = vec(pos, y)
@@ -163,7 +168,6 @@ function rooms.prototype(room)
         return room.enabled_paths[is_walkable(room.hotmap, pos)]
     end
     
-    -- TODO(sandy): make this work
     function room.enable_path(key, val)
         if not val then
             val = true

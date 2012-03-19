@@ -1,10 +1,10 @@
-load_script("scripts/rig.lua")
-load_script("scripts/tasks.lua")
-load_script("scripts/drawing.lua")
-load_script("scripts/filesystem.lua")
---load_script("scripts/repl.lua")
+load.script("scripts/rig.lua")
+load.script("scripts/tasks.lua")
+load.script("scripts/drawing.lua")
+load.script("scripts/filesystem.lua")
+--load.script("scripts/repl.lua")
 
-load_script("game/actors/richard/rig.lua")
+load.script("game/actors/richard/rig.lua")
 
 tonumber("5")
 
@@ -19,7 +19,7 @@ kframes = { }
 frame = 0
 
 keys = table.keys(root.bones)
-engine.mouse.cursor = 10
+input.mouse.cursor = 10
 
 function get_skel_structure(bone)
     if #bone.children == 0 then

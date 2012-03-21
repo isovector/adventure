@@ -1,4 +1,15 @@
 OBJDIR = obj
+LINK_FLAGS = $(addprefix -l, SDL SDL_image SDL_gfx SDL_ttf pthread m lua)
+
+#########################################################
+
+c_files =  $(addsuffix .o, adventure drawing geometry input lua path shapes advancing_front cdt sweep sweep_context)
+headers =  $(addsuffix .h, adventure drawing geometry input lua path)
+wrappers = $(addsuffix _wrap.o, geometry)
+
+#########################################################
+
+objects =  $(addprefix $(OBJDIR)/, $(c_files) $(wrappers))
 
 vpath %.h libs/poly2tri
 vpath %.cc libs/poly2tri/common
@@ -6,23 +17,28 @@ vpath %.h libs/poly2tri/common
 vpath %.cc libs/poly2tri/sweep
 vpath %.h libs/poly2tri/sweep
 
-objects = $(addprefix $(OBJDIR)/, adventure.o drawing.o input.o lua.o path.o shapes.o advancing_front.o cdt.o sweep.o sweep_context.o)
+#########################################################
 
-all : objdir $(objects) $(poly2tri)
-	g++ -o adventure -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lpthread -lm -llua $(objects) $(poly2tri)
+adventure : $(OBJDIR) $(objects)
+	g++ -o adventure $(LINK_FLAGS) $(objects)
 
-profile :  objdir $(objects) $(poly2tri)
-	g++ -pg -o adventure -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lpthread -lm -llua $(objects) $(poly2tri)
+%_wrap.cc : exports/%.i $(headers)
+	swig -c++ -lua -o $@ $<
+	sed -i 's/"lua.h"/<lua.h>/g' $@
 
-objdir : $(OBJDIR)
+$(OBJDIR)/%.o : %.cc $(headers) poly2tri.h shapes.h utils.h advancing_front.h cdt.h sweep.h sweep_context.h
+	g++ -g -c $< -o $@
+
+#########################################################
+
+.PHONY : clean profile
+
+profile : $(OBJDIR) $(objects)
+	g++ -pg -o adventure $(LINK_FLAGS) $(objects)
 
 $(OBJDIR) : 
 	mkdir $(OBJDIR)
 
-$(OBJDIR)/%.o : %.cc adventure.h drawing.h input.h lua.h path.h poly2tri.h shapes.h utils.h advancing_front.h cdt.h sweep.h sweep_context.h
-	g++ -g -c $< -o $@
-
-.PHONY : clean
 clean : 
 	rm adventure $(objects)
 	rmdir $(OBJDIR)

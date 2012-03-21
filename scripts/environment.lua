@@ -43,3 +43,5 @@ load.script("scripts/tasks.lua")
 load.script("scripts/engine.lua")
 
 load.script("scripts/drawing.lua")
+
+vector = geometry.Vector

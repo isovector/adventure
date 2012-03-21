@@ -45,6 +45,7 @@ int script_which_hotspot(lua_State *L) {
 void init_script() {
     script = lua_open();
     luaL_openlibs(script);
+    luaopen_geometry(script);
     lua_atpanic(script, script_panic);
     
     lua_register(script, "set_room_data", &script_load_room);
@@ -56,8 +57,6 @@ void init_script() {
     if (luaL_dofile(script, "scripts/environment.lua") != 0)
 		printf("%s\n", lua_tostring(script, -1));
 }
-
-
 
 void boot_module() {
     string initcode = "module = dofile(\"module.lua\")\n"

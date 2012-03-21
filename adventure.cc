@@ -59,7 +59,6 @@ bool lock_fps(int framerate) {
     return false;
 }
 
-
 int main(int argc, char* argv[]) {
     int last_ticks = 0, frames_done = 1;
 

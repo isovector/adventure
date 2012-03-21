@@ -47,6 +47,7 @@ typedef struct tagPOINT {
     int x, y;
 } POINT;
 
+#include "geometry.h"
 #include "path.h"
 #include "drawing.h"
 #include "input.h"
@@ -61,5 +62,9 @@ extern bool quit;
 
 void init_console(int);
 void open_console(int);
+
+extern "C" {
+    int luaopen_geometry(lua_State* L);
+}
 
 #endif

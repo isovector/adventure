@@ -150,14 +150,14 @@ function rooms.prototype(room)
     end
     
     function room.foreground(shade, baseline)
-        local fg, pos = drawing.mask_copy(room.artwork, room.hotmap, shade)
+        --[[local fg, pos = drawing.mask_copy(room.artwork, room.hotmap, shade)
     
         table.insert(room.scene, { 
             baseline = baseline, 
             sprite = fg,
             pos = pos,
             flipped = false
-        })
+        })]]
     end
     
     function room.is_walkable(pos, y)

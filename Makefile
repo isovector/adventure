@@ -5,7 +5,7 @@ LINK_FLAGS = $(addprefix -l, SDL SDL_image SDL_gfx SDL_ttf pthread m lua)
 
 c_files =  $(addsuffix .o, adventure drawing geometry input lua path shapes advancing_front cdt sweep sweep_context)
 headers =  $(addsuffix .h, adventure drawing geometry input lua path)
-wrappers = $(addsuffix _wrap.o, geometry)
+wrappers = $(addsuffix _wrap.o, geometry drawing)
 
 #########################################################
 

@@ -9,7 +9,7 @@ class Vector {
     
         Vector(float x, float y);
         Vector(float splat = 0.0f);
-        ~Vector() {};
+        ~Vector() { };
 
         float Length() const;
         float Normalize();

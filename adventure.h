@@ -42,6 +42,7 @@ using namespace std;
 #define SCREEN_HEIGHT 720
 #define FRAMERATE 60
 #define BITS_PER_PIXEL 0
+#define OUTLINE_SIZE 2
 
 typedef struct tagPOINT {
     int x, y;
@@ -65,6 +66,7 @@ void open_console(int);
 
 extern "C" {
     int luaopen_geometry(lua_State* L);
+    int luaopen_newdrawing(lua_State* L);
 }
 
 #endif

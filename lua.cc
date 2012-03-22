@@ -46,6 +46,7 @@ void init_script() {
     script = lua_open();
     luaL_openlibs(script);
     luaopen_geometry(script);
+    luaopen_newdrawing(script);
     lua_atpanic(script, script_panic);
     
     lua_register(script, "set_room_data", &script_load_room);

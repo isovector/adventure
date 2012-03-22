@@ -71,6 +71,8 @@ int main(int argc, char* argv[]) {
     SDL_WM_SetCaption("Adventure // Corpus Damaged", NULL);
     
     font = TTF_OpenFont("resources/FreeMono.ttf", 18);
+    font_outline = TTF_OpenFont("resources/FreeMono.ttf", 18);
+    TTF_SetFontOutline(font_outline, OUTLINE_SIZE);
     
     enabled_paths[255] = 1;
 

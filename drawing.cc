@@ -2,6 +2,7 @@
 
 SDL_Surface *screen;
 TTF_Font *font;
+TTF_Font *font_outline;
 map<SDL_Surface*, SDL_Surface*> flipped_map;
 
 int getpixel(SDL_Surface *surface, int x, int y) {
@@ -69,8 +70,6 @@ int script_draw_clear(lua_State *L) {
 }
 
 SDL_Surface* render_text(const char* str, int fgcolor, int bgcolor) {
-    static const int OUTLINE_SIZE = 2;
-    
     SDL_Surface *outline, *text, *temp;
 
     SDL_Rect dest;
@@ -78,10 +77,7 @@ SDL_Surface* render_text(const char* str, int fgcolor, int bgcolor) {
     dest.y = OUTLINE_SIZE;
     
     if (bgcolor != -1) {
-        TTF_SetFontOutline(font, OUTLINE_SIZE);
-        outline = TTF_RenderText_Solid(font, str, translate_color(bgcolor));
-        
-        TTF_SetFontOutline(font, 0);
+        outline = TTF_RenderText_Solid(font_outline, str, translate_color(bgcolor));
     }
     
     text = TTF_RenderText_Solid(font, str, translate_color(fgcolor));
@@ -98,7 +94,7 @@ SDL_Surface* render_text(const char* str, int fgcolor, int bgcolor) {
     return text;
 }
 
-int script_draw_text(lua_State *L) {
+int script_draw_text(lua_State *L) { // DONE
     SDL_Surface *target = get_target(L, 5), *text;
     
     CALL_ARGS(5)
@@ -121,9 +117,7 @@ int script_draw_text(lua_State *L) {
     return 0;
 }
 
-int script_draw_text_center(lua_State *L) {
-    static const int OUTLINE_SIZE = 2;
-    
+int script_draw_text_center(lua_State *L) { // DONE
     SDL_Surface *target = get_target(L, 5), *text;
     
     CALL_ARGS(5)
@@ -146,7 +140,8 @@ int script_draw_text_center(lua_State *L) {
     return 0;
 }
 
-int script_draw_blit(lua_State *L) {
+
+int script_draw_blit(lua_State *L) { // DONE
     SDL_Surface *bmp;
     SDL_Surface *target = get_target(L, 8);
     
@@ -185,6 +180,7 @@ int script_draw_blit(lua_State *L) {
     return 0;
 }
 
+
 int script_draw_get_text(lua_State *L) {
     SDL_Surface **userdata;
     
@@ -206,7 +202,7 @@ int script_draw_get_text(lua_State *L) {
     return 1;
 }
 
-int script_draw_circle(lua_State *L) {
+int script_draw_circle(lua_State *L) { // DONE
     int x, y, radius, color;
     SDL_Surface *target = get_target(L, 3);
     
@@ -222,7 +218,7 @@ int script_draw_circle(lua_State *L) {
     return 0;
 }
 
-int script_draw_ellipse(lua_State *L) {
+int script_draw_ellipse(lua_State *L) { // DONE
     int x, y, rx, ry, color;
     SDL_Surface *target = get_target(L, 3);
     
@@ -263,7 +259,7 @@ int script_draw_rect(lua_State *L) {
     return 0;
 }
 
-int script_draw_line(lua_State *L) {
+int script_draw_line(lua_State *L) { // DONE
     int x1, y1, x2, y2, color;
     SDL_Surface *target = get_target(L, 3);
     
@@ -280,7 +276,7 @@ int script_draw_line(lua_State *L) {
     return 0;
 }
 
-int script_draw_point(lua_State *L) {
+int script_draw_point(lua_State *L) { // DONE
     int x, y;
     SDL_Surface *target = get_target(L, 2);
     
@@ -296,7 +292,7 @@ int script_draw_point(lua_State *L) {
     return 0;
 }
 
-int script_draw_polygon(lua_State *L) {
+int script_draw_polygon(lua_State *L) { // TODO
     int i, n, x, y, color;
     int vertices[1024];
     SDL_Surface *target = get_target(L, 2);
@@ -331,29 +327,7 @@ int script_draw_polygon(lua_State *L) {
     return 0;
 }
 
-int script_blit_rotate(lua_State *L) {
-    int cx, cy, x, y, angle;
-    SDL_Surface *target = get_target(L, 5);
-    
-    CALL_ARGS(5)
-    CALL_TYPE(userdata)
-    CALL_TYPE(table)
-    CALL_TYPE(table)
-    CALL_TYPE(number)
-    CALL_TYPE(number)
-    CALL_ERROR("drawing.blit_rotate expects (bitmap, vector, vector, int, int)")
-        
-    target = *(SDL_Surface**)lua_touserdata(L, 1);
-    
-    extract_vector(L, 2, &x, &y);
-    extract_vector(L, 3, &cx, &cy);
-    
-    //pivot_scaled_sprite(target, target, x, y, cx, cy, itofix(lua_tonumber(L, 4)), ftofix(lua_tonumber(L, 5)));
-    
-    return 0;
-}
-
-int script_draw_free(lua_State *L) {
+int script_draw_free(lua_State *L) { // DONE
     CALL_ARGS(1)
     CALL_TYPE(userdata)
     CALL_ERROR("drawing.free expects (bitmap)")
@@ -414,7 +388,7 @@ int script_mask_copy(lua_State *L) {
     return 2;
 }
 
-int script_get_bitmap(lua_State *L) {
+int script_get_bitmap(lua_State *L) { // DONE
     SDL_Surface** userdata, *temp;
     
     CALL_ARGS(1)
@@ -438,7 +412,7 @@ int script_get_bitmap(lua_State *L) {
     return 1;
 }
 
-int script_create_bitmap(lua_State *L) {
+int script_create_bitmap(lua_State *L) { // DONE
     SDL_Surface** userdata;
     
     CALL_ARGS(3)
@@ -462,7 +436,7 @@ int script_create_bitmap(lua_State *L) {
     return 1;
 }
 
-int script_bitmap_size(lua_State *L) {
+int script_bitmap_size(lua_State *L) { // DONE
     SDL_Surface *target;
     
     if (strcmp(lua_tostring(L, 2), "size") != 0) {
@@ -481,7 +455,7 @@ int script_bitmap_size(lua_State *L) {
     return 1;
 }
 
-int script_draw_set_mode(lua_State *L) {
+int script_draw_set_mode(lua_State *L) { // DEPRECATED
     CALL_ARGS(1)
     CALL_TYPE(number)
     CALL_ERROR("drawing.set_mode expects (int)")
@@ -490,6 +464,139 @@ int script_draw_set_mode(lua_State *L) {
     
     return 0;
 }
+
+
+// ------------------------------------------------------
+
+
+SDL_Surface *get_bitmap(const char *file) {
+    SDL_Surface *value, *temp;
+    
+    temp = IMG_Load(file);
+    if (!temp) {
+        return 0;
+    }
+     
+    value = SDL_DisplayFormat(temp);
+    SDL_FreeSurface(temp);
+    
+    SDL_SetColorKey(value, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(value->format, 255, 0, 255));
+        
+    return value;
+}
+
+void draw_blit(SDL_Surface *bmp, Vector *destv, bool flipped, Vector *srcv, Vector *size) {
+    draw_blit(screen, bmp, destv, flipped, srcv, size);
+}
+
+void draw_blit(SDL_Surface *target, SDL_Surface *bmp, Vector *destv, bool flipped, Vector *srcv, Vector *size) {
+    SDL_Rect src, dest;
+    
+    src.x = srcv ? srcv->x : 0;
+    src.y = srcv ? srcv->y : 0;
+    src.w = size ? size->x : bmp->w;
+    src.h = size ? size->y : bmp->h;
+     
+    dest.x = destv->x;
+    dest.y = destv->y;
+    
+    if (flipped) {
+        if (flipped_map.find(bmp) == flipped_map.end())
+            flipped_map[bmp] = rotozoomSurfaceXY(bmp, 0, -1, 1, SMOOTHING_OFF);
+        
+        bmp = flipped_map[bmp];
+        src.x = bmp->w - src.x - src.w;
+    }
+
+    SDL_BlitSurface(bmp, &src, target, &dest);
+}
+
+
+SDL_Surface *create_bitmap(int x, int y, int color) {
+    SDL_Surface *result;
+    
+    result = make_bitmap(x, y);
+    
+    if (!result)
+        printf("failed to create bitmap\n");
+
+    SDL_FillRect(result, NULL, color);
+    SDL_SetColorKey(result, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(result->format, 255, 0, 255));
+    
+    return result;
+}
+
+void draw_circle(Vector *center, int radius, int color) {
+    draw_circle(screen, center, radius, color);
+}
+
+void draw_circle(SDL_Surface *target, Vector *center, int radius, int color) {
+    circleColor(target, center->x, center->y, radius, color);
+}
+
+void draw_ellipse(Vector *center, Vector *size, int color) {
+    draw_ellipse(screen, center, size, color);
+}
+
+void draw_ellipse(SDL_Surface *target, Vector *center, Vector *size, int color) {
+    ellipseColor(target, center->x, center->y, size->x, size->y, color);
+}
+
+void draw_line(Vector *start, Vector *end, int color) {
+    draw_line(screen, start, end, color);
+}
+
+void draw_line(SDL_Surface *target, Vector *start, Vector *end, int color) {
+    lineColor(target, start->x, start->y, end->x, end->y, color);
+}
+
+void draw_point(Vector *pos, int color) {
+    draw_point(screen, pos, color);
+}
+
+void draw_point(SDL_Surface *target, Vector *pos, int color) {
+    putpixel(target, pos->x, pos->y, color);
+}
+
+void draw_text(Vector *pos, int fg, int bg, const char *str) {
+    draw_text(screen, pos, fg, bg, str);
+}
+
+void draw_text(SDL_Surface *target, Vector *pos, int fg, int bg, const char *str) {
+    SDL_Surface *text = render_text(str, fg, bg);
+    
+    SDL_Rect dest;
+    dest.x = pos->x;
+    dest.y = pos->y;
+    
+    SDL_BlitSurface(text, NULL, target, &dest);
+    SDL_FreeSurface(text);
+}
+
+void draw_text_center(Vector *pos, int fg, int bg, const char *str) {
+    draw_text_center(screen, pos, fg, bg, str);
+}
+
+void draw_text_center(SDL_Surface *target, Vector *pos, int fg, int bg, const char *str) {
+    SDL_Surface *text = render_text(str, fg, bg);
+    
+    SDL_Rect dest;
+    dest.x = pos->x - text->w / 2;
+    dest.y = pos->y;
+    
+    SDL_BlitSurface(text, NULL, target, &dest);
+    SDL_FreeSurface(text);
+}
+
+void draw_clear(int color) {
+    draw_clear(screen, color);
+}
+
+void draw_clear(SDL_Surface *target, int color) {
+    SDL_FillRect(target, NULL, color);
+}
+
+// ----------------------------------------------------------------------
 
 void register_drawing() {
     lua_newtable(script);
@@ -501,7 +608,6 @@ void register_drawing() {
     lua_settable(script, -3);
     lua_pop(script, 1);
     
-    lua_regtable(script, "drawing", "blit_rotate", script_blit_rotate);
     lua_regtable(script, "drawing", "clear", script_draw_clear);
     lua_regtable(script, "drawing", "circle", script_draw_circle);
     lua_regtable(script, "drawing", "create_bitmap", script_create_bitmap);

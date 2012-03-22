@@ -30,6 +30,9 @@ function load.dir(dir, func)
     end
 end
 
+load.image = newdrawing.load
+vector = geometry.Vector
+
 load.script("scripts/event.lua")
 load.script("scripts/debug.lua")
 load.script("scripts/serialize.lua")
@@ -43,5 +46,3 @@ load.script("scripts/tasks.lua")
 load.script("scripts/engine.lua")
 
 load.script("scripts/drawing.lua")
-
-vector = geometry.Vector

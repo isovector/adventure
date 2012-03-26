@@ -10,6 +10,8 @@ int script_map_out(map<int, int> *table) {
         lua_settable(script, -3);
     }
     
+    delete table;
+    
     return 1;
 }
 
@@ -22,7 +24,11 @@ int script_map_out_vector(map<int, Vector*> *table) {
         swig_type_info *type = SWIG_TypeQueryModule(module, module, "Vector *");
         SWIG_NewPointerObj(script, it->second, type, 0);
         lua_settable(script, -3);
+        
+        delete it->second;
     }
+    
+    delete table;
     
     return 1;
 }

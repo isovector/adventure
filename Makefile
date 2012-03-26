@@ -3,19 +3,13 @@ LINK_FLAGS = $(addprefix -l, SDL SDL_image SDL_gfx SDL_ttf pthread m lua)
 
 #########################################################
 
-c_files =  $(addsuffix .o, adventure drawing geometry input lua path shapes advancing_front cdt sweep sweep_context)
+c_files =  $(addsuffix .o, adventure drawing geometry input lua path)
 headers =  $(addsuffix .h, adventure drawing geometry input lua path)
-wrappers = $(addsuffix _wrap.o, geometry drawing)
+wrappers = $(addsuffix _wrap.o, geometry drawing pathfinding)
 
 #########################################################
 
 objects =  $(addprefix $(OBJDIR)/, $(c_files) $(wrappers))
-
-vpath %.h libs/poly2tri
-vpath %.cc libs/poly2tri/common
-vpath %.h libs/poly2tri/common
-vpath %.cc libs/poly2tri/sweep
-vpath %.h libs/poly2tri/sweep
 
 #########################################################
 
@@ -26,7 +20,7 @@ adventure : $(OBJDIR) $(objects)
 	swig -c++ -lua -o $@ $<
 	sed -i 's/"lua.h"/<lua.h>/g' $@
 
-$(OBJDIR)/%.o : %.cc $(headers) poly2tri.h shapes.h utils.h advancing_front.h cdt.h sweep.h sweep_context.h
+$(OBJDIR)/%.o : %.cc $(headers)
 	g++ -g -c $< -o $@
 
 #########################################################

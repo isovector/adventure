@@ -4,7 +4,7 @@ function items.create(id, name, bmpfile)
     local item = {
         id = id,
         name = name,
-        image = bitmap(bmpfile),
+        image = load.image(bmpfile),
 
         events = {
             item = event.create()

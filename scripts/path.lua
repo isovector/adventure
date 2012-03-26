@@ -17,8 +17,8 @@ function pathfind(from, to)
             if to == path.location then return unwrap_path(path) end
             table.insert(closed, path.location)
 
-            for key, val in ipairs(get_neighbors(path.location)) do
-                local dist = heuristic(path.location, get_waypoint(val))
+            for key, val in ipairs(pathfinding.get_neighbors(path.location)) do
+                local dist = heuristic(path.location, pathfinding.get_waypoint(val))
                 pqueue.enqueue(open, -(path.cost + dist), add_path(path, val, path.cost + dist))
             end
         until true
@@ -31,10 +31,10 @@ function unwrap_path(path)
 
     if path.previous then
         local wind = unwrap_path(path.previous)
-        table.insert(wind, get_waypoint(path.location));
+        table.insert(wind, pathfinding.get_waypoint(path.location));
         return wind
     else
-        return { get_waypoint(path.location) }
+        return { pathfinding.get_waypoint(path.location) }
     end
 end
 

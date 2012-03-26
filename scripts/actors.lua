@@ -5,7 +5,7 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
         id = id,
         name = name,
         
-        pos = vec(0),
+        pos = vector(0),
         ignore_ui = false,
         flipped = false,
         speed = 150,
@@ -18,9 +18,9 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
         goals = { },
         inventory = { },
         
-        size = vec(0),
-        origin = vec(0),
-        pathsize = vec(0),
+        size = vector(0),
+        origin = vector(0),
+        pathsize = vector(0),
         
         events = {
             goal = event.create(),
@@ -46,15 +46,15 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
     
     -- HACK(sandy): this really should create an aplay given xyframes
     if not xframes then
-        actor.sprite = bitmap(bmpfile)
+        actor.sprite = load.image(bmpfile)
         actor.size = actor.sprite.size
     else
         actor.aplay = bmpfile
-        actor.size = vec(actor.aplay.set.width, actor.aplay.set.height)
-        actor.origin = vec(actor.aplay.set.xorigin, actor.aplay.set.yorigin)
+        actor.size = vector(actor.aplay.set.width, actor.aplay.set.height)
+        actor.origin = vector(actor.aplay.set.xorigin, actor.aplay.set.yorigin)
     end
     
-    actor.pathsize = vec(actor.size.x / 2, actor.size.y / 6)
+    actor.pathsize = vector(actor.size.x / 2, actor.size.y / 6)
     
     return actor
 end
@@ -73,15 +73,13 @@ function actors.prototype(actor)
             if actor.aplay then
                 animation.switch(actor.aplay, "walk")
             end
-            
-            if type(actor.goal) == "table" then
-                actor.goal = actor.goal
-            
-                local speed = actor.speed * elapsed
-                local dif = actor.goal - actor.pos
 
-                if dif.len() > speed then
-                    local dir = dif.normal()
+            if type(actor.goal) == "userdata" then
+                local speed = actor.speed * elapsed
+                local dir = actor.goal - actor.pos
+
+                if dir:Length() > speed then
+                    dir:Normalize();
 
                     if dir.x < 0 then
                         actor.flipped = true
@@ -146,7 +144,7 @@ function actors.prototype(actor)
         for _, pos in ipairs(actor.goals) do
             if type(pos) == "function" then break end
 
-            if actor.pos and pos and is_pathable(actor.pos, pos) then
+            if actor.pos and pos and pathfinding.is_pathable(actor.pos, pos) then
                 found = true
                 actor.goal = pos
             end
@@ -190,7 +188,7 @@ function actors.prototype(actor)
             newroom.place(actor)
             
             if newdoor and newdoor.spot then
-                actor.pos = vec(newdoor.spot)
+                actor.pos = vector(newdoor.spot)
             end
             
             actor.events.enter(actor, newroom)
@@ -203,19 +201,19 @@ function actors.prototype(actor)
     
     function actor.walk(to, y)
         if y then 
-            to = vec(to, y)
+            to = vector(to, y)
         else
-            to = vec(to)-- get a new vector
+            to = vector(to)-- get a new vector
         end
         
-        if is_pathable(actor.pos, to) then
+        if pathfinding.is_pathable(actor.pos, to) then
             actor.goal = to
             actor.goals = nil
         else
-            actor.goals = pathfind(get_closest_waypoint(actor.pos), get_closest_waypoint(to))
+            actor.goals = pathfind(pathfinding.get_closest_waypoint(actor.pos), pathfinding.get_closest_waypoint(to))
 
             if actor.goals then
-                actor.goal = get_waypoint(get_closest_waypoint(actor.pos))
+                actor.goal = pathfinding.get_waypoint(pathfinding.get_closest_waypoint(actor.pos))
                 table.insert(actor.goals, to)
             end
         end
@@ -239,7 +237,7 @@ function actors.prototype(actor)
 
     function actor.say(message)
         print(actor.name .. "> " .. message)
-        msg = conversation.say(message, actor.pos - vec(0, actor.origin.y + 20), actor.color)
+        msg = conversation.say(message, actor.pos - vector(0, actor.origin.y + 20), actor.color)
         wait(msg.duration * 1000)
     end
 end

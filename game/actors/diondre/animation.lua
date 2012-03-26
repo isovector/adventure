@@ -1,4 +1,4 @@
-animations.diondre = animation.build_set(bitmap("game/actors/diondre/diondre.pcx"), 8, 3)
+animations.diondre = animation.build_set(load.image("game/actors/diondre/diondre.pcx"), 8, 3)
 animations.diondre.anims.stand = {
     {
         duration = 0.1,

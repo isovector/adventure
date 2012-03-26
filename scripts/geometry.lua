@@ -1,36 +1,4 @@
-rect = { }
-geometry = {
-    vector_mt = {
-        __add = function(op1, op2)
-                return vec(op1.x + op2.x, op1.y + op2.y)
-            end,
-        __sub = function(op1, op2)
-                return vec(op1.x - op2.x, op1.y - op2.y)
-            end,
-        __mul = function(op, k)
-                return vec(op.x * k, op.y * k)
-            end,
-        __eq = function(op1, op2)
-                return op1.x == op2.x and op1.y == op2.y
-            end,
-        __index = function(tab, key)
-                if key == "normal" then
-                    return function()
-                        local len = tab.len()
-                        return vec(tab.x / len, tab.y / len)
-                    end
-                elseif key == "len" then
-                    return function()
-                        return math.sqrt(tab.x * tab.x + tab.y * tab.y)
-                    end
-                elseif key == "x" then
-                    return tab.x
-                elseif key == "y" then
-                    return tab.y
-                end
-            end
-    },
-    
+rect = {   
     rect_mt = {
         __eq = function(op1, op2)
                 return op1.pos == op2.pos and op1.size == op2.size
@@ -60,8 +28,8 @@ geometry = {
 
 function rect.create(pos, size, w, h)
     if w then
-        pos = vec(pos, size)
-        size = vec(w, h)
+        pos = vector(pos, size)
+        size = vector(w, h)
     end
     
     local outrect = {
@@ -69,23 +37,9 @@ function rect.create(pos, size, w, h)
         size = size
     }
 
-    setmetatable(outrect, geometry.rect_mt)
+    setmetatable(outrect, rect.rect_mt)
 
     return outrect
-end
-
-function vec(a, b) 
-    local val = { x = a, y = a }
-
-    if b then
-        val = { x = a, y = b }
-    elseif type(a) == "table" then
-        val = { x = a.x, y = a.y }
-    end
-    
-    setmetatable(val, geometry.vector_mt)
-    
-    return val
 end
 
 function rotate(v, rot)
@@ -93,7 +47,7 @@ function rotate(v, rot)
     local cos = math.cos(rot)
     local sin = math.sin(rot)
     
-    return vec(cos * v.x - sin * v.y, sin * v.x + cos * v.y)
+    return vector(cos * v.x - sin * v.y, sin * v.x + cos * v.y)
 end
 
 function interp(errorval)

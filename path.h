@@ -3,21 +3,27 @@
 
 #define MAX_WAYPOINTS 32
 
-extern POINT *waypoints[MAX_WAYPOINTS];
+extern Vector *waypoints[MAX_WAYPOINTS];
 extern unsigned int waypoint_connections[MAX_WAYPOINTS];
 extern int waypoint_count;
 extern int enabled_paths[256];
 
 void connect_waypoints(int, int);
-int is_pathable(int, int, int, int);
+bool is_pathable(const Vector&, const Vector&);
 void build_waypoints();
 int get_neighbors(lua_State*);
 int get_waypoint(lua_State*);
 int get_closest_waypoint(lua_State*);
-int is_walkable(int, int);
-int closest_waypoint(int, int);
-void extract_vector(lua_State*, int, int*, int*);
-void lua_vector(lua_State*, int, int);
-void register_path();
+bool is_walkable(const Vector&);
+int closest_waypoint(const Vector&);
+
+map<int, int> *script_get_neighbors(int node);
+Vector *script_get_waypoint(int waypointId);
+int script_get_closest_waypoint(Vector *pos);
+void script_enable_path(int path, bool enable = true);
+int script_is_walkable(SDL_Surface *bmp, Vector *pos);
+bool script_is_pathable(Vector *a, Vector *b);
+int script_which_hotspot(Vector *pixel);
+map<int, Vector*> *script_get_walkspots(SDL_Surface *bmp);
 
 #endif

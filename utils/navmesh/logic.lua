@@ -90,7 +90,7 @@ end
 
 local logic = function()
     if input.mouse.is_click("left") then
-        table.insert(vertices, vec(input.mouse.pos))
+        table.insert(vertices, vector(input.mouse.pos))
         vertices[#vertices].n = string.sub("abcdefghijklmnopqrstuvwxyz", #vertices, #vertices)
     end
     

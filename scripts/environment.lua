@@ -30,7 +30,7 @@ function load.dir(dir, func)
     end
 end
 
-load.image = newdrawing.load
+load.image = drawing.load
 vector = geometry.Vector
 
 load.script("scripts/event.lua")

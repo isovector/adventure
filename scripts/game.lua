@@ -8,30 +8,30 @@ game = {
 
     cursors = {
         offsets = {
-            vec(16, 16),
-            vec(3, 27),
-            vec(16, 29),
-            vec(29, 27),
-            vec(3, 16),
-            vec(16, 16),
-            vec(29, 16),
-            vec(3, 5),
-            vec(16, 3),
-            vec(29, 5),
-            vec(16, 16)
+            vector(16, 16),
+            vector(3, 27),
+            vector(16, 29),
+            vector(29, 27),
+            vector(3, 16),
+            vector(16, 16),
+            vector(29, 16),
+            vector(3, 5),
+            vector(16, 3),
+            vector(29, 5),
+            vector(16, 16)
         }
     },
     
     resources = {
-        action_bar = bitmap("resources/actionbar.pcx"),
-        cursors = bitmap("resources/cursors.pcx"),
-        inventory = bitmap("resources/inventory.pcx")
+        action_bar = load.image("resources/actionbar.pcx"),
+        cursors = load.image("resources/cursors.pcx"),
+        inventory = load.image("resources/inventory.pcx")
     },
     
     verbs = { }
 }
 
-game.inventory_rect = rect.create(vec(270, 210), game.resources.inventory.size)
+game.inventory_rect = rect.create(vector(270, 210), game.resources.inventory.size)
 
 function game.register_actor_updates()
     load.script("scripts/animation.lua")
@@ -113,10 +113,10 @@ function game.make_walkspot(actor)
         end)
     end
     
-    if not actor then return vec(0) end
+    if not actor then return vector(0) end
     
     if actor.walkspot then
-        return vec(actor.walkspot.x, actor.walkspot.y)
+        return vector(actor.walkspot.x, actor.walkspot.y)
     end
 
     local x = actor.pos.x
@@ -139,12 +139,12 @@ function game.make_walkspot(actor)
             local ay = math.sin(degree) * dist
             
             if room.is_walkable(x + ax, y + ay) then
-                return vec(x + ax, y + ay)
+                return vector(x + ax, y + ay)
             end
         end
     end
     
-    return vec(x, y)
+    return vector(x, y)
 end
 
 function game.dispatch(callback_type, object, method)

@@ -44,10 +44,6 @@ using namespace std;
 #define BITS_PER_PIXEL 0
 #define OUTLINE_SIZE 2
 
-typedef struct tagPOINT {
-    int x, y;
-} POINT;
-
 #include "geometry.h"
 #include "path.h"
 #include "drawing.h"
@@ -55,7 +51,7 @@ typedef struct tagPOINT {
 #include "lua.h"
 
 extern SDL_Surface *screen, *room_hot;
-extern POINT *waypoints[MAX_WAYPOINTS];
+extern Vector *waypoints[MAX_WAYPOINTS];
 extern int waypoint_count;
 extern unsigned int waypoint_connections[MAX_WAYPOINTS];
 extern bool in_console;
@@ -66,7 +62,8 @@ void open_console(int);
 
 extern "C" {
     int luaopen_geometry(lua_State* L);
-    int luaopen_newdrawing(lua_State* L);
+    int luaopen_drawing(lua_State* L);
+    int luaopen_pathfinding(lua_State* L);
 }
 
 #endif

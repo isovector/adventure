@@ -1,4 +1,4 @@
-animations.gomez = animation.build_set(bitmap("game/actors/gomez/gomez.pcx"), 9, 3)
+animations.gomez = animation.build_set(load.image("game/actors/gomez/gomez.pcx"), 9, 3)
 animations.gomez.anims.stand = {
     {
         duration = 1,

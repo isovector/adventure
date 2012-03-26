@@ -12,8 +12,8 @@ index = 1
 
 last_msg = ""
 moving = false
-pos = vec(screen_width, screen_height) * 0.5
-bone_offset = vec(30, 40)
+pos = vector(screen_width, screen_height) * 0.5
+bone_offset = vector(30, 40)
 
 kframes = { }
 frame = 0

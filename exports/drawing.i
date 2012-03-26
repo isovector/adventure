@@ -1,4 +1,4 @@
-%module newdrawing
+%module drawing
 %{
 #include "adventure.h"
 %}

@@ -106,7 +106,9 @@ function conversation.say(message, pos, col, duration)
     end
 
     msg = {
-        message = drawing.get_text(message, col, color.black),
+        message = message,
+        color = col,
+        outline = color.black,
         pos = pos,
         duration = duration
     }
@@ -117,11 +119,6 @@ function conversation.say(message, pos, col, duration)
 end
 
 function conversation.clear()
-    -- free the allocated texts
-    for key, val in ipairs(conversation.words) do
-        drawing.free(val.message)
-    end
-    
     conversation.words = { }
 end
 
@@ -134,7 +131,6 @@ function conversation.pump_words()
         end
 
         if val.duration < 0 then
-            drawing.free(val.message)
             table.remove(conversation.words, key)
         end
     end

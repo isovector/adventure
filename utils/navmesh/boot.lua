@@ -24,7 +24,7 @@ colors = {  0xFF0000,
 vertices = navigation
 input.mouse.cursor = 10
 
-image = bitmap("game/rooms/outside/art.pcx")
+image = load.image("game/rooms/outside/art.pcx")
 hot = drawing.create_bitmap(screen_width, screen_height, 0)
 
 dofile("utils/navmesh/logic.lua")

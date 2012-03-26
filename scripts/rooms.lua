@@ -26,10 +26,10 @@ function rooms.create(id)
 
     local roompath = "game/rooms/" .. id .. "/"
     
-    room.artwork = bitmap(roompath .. "art.pcx")
-    room.hotmap = bitmap(roompath .. "hot.pcx")
+    room.artwork = load.image(roompath .. "art.pcx")
+    room.hotmap = load.image(roompath .. "hot.pcx")
     
-    room.walkspots = get_walkspots(room.hotmap)
+    room.walkspots = pathfinding.get_walkspots(room.hotmap)
 
     for i = 1, 254 do
         table.insert(room.enabled_paths, false)
@@ -53,12 +53,12 @@ function rooms.prototype(room)
         events.room.unload(room) -- make this cancelable?
         
         _G["room"] = room
-        set_room_data(room.hotmap)
+        pathfinding.load_room(room.hotmap)
         
         for path, enabled in ipairs(room.enabled_paths) do
-            enable_path(path, enabled)
+            pathfinding.enable_path(path, enabled)
         end
-        rebuild_waypoints()
+        pathfinding.rebuild_waypoints()
 
         room.events.load()
         events.room.switch()
@@ -73,7 +73,7 @@ function rooms.prototype(room)
     end
     
     function room.get_hotspot(pos)
-        local shade = which_hotspot(pos)
+        local shade = pathfinding.which_hotspot(pos)
         
         if room.hotspots_by_shade[shade] then
             return room.hotspots_by_shade[shade]
@@ -88,7 +88,7 @@ function rooms.prototype(room)
             id = id,
             name = name,
             cursor = 5,
-            spot = vec(0),
+            spot = vector(0),
             
             clickable = false,
             
@@ -115,7 +115,7 @@ function rooms.prototype(room)
             },
             
             contains = function(pos)
-                return shade == which_hotspot(pos)
+                return shade == pathfinding.which_hotspot(pos)
             end
         }
         
@@ -162,10 +162,10 @@ function rooms.prototype(room)
     
     function room.is_walkable(pos, y)
         if y then
-            pos = vec(pos, y)
+            pos = vector(pos, y)
         end
         
-        return room.enabled_paths[is_walkable(room.hotmap, pos)]
+        return room.enabled_paths[pathfinding.is_walkable(room.hotmap, pos)]
     end
     
     function room.enable_path(key, val)
@@ -174,7 +174,7 @@ function rooms.prototype(room)
         end
         
         room.enabled_paths[key] = val
-        enable_path(key, val)
-        rebuild_waypoints()
+        pathfinding.enable_path(key, val)
+        pathfinding.rebuild_waypoints()
     end
 end

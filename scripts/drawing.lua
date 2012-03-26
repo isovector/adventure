@@ -13,6 +13,7 @@ function color.make(r, g, b)
     return r * 0x10000 + g * 0x100 + b
 end
 
+--[[
 function drawing.text(pos, col, background, format, ...)
     if type(background) ~= "number" then
         drawing.text(pos, col, color.transparent, background, format, ...)
@@ -53,7 +54,7 @@ function drawing.blit(bmp, pos, flipped, src, size)
     end
 
     if src == nil then
-        src = vec(0)
+        src = vector(0)
     end
 
     if size == nil then
@@ -61,4 +62,4 @@ function drawing.blit(bmp, pos, flipped, src, size)
     end
 
     drawing.raw_blit(bmp, pos.x, pos.y, flipped, src.x, src.y, size.x, size.y)
-end
+end]]

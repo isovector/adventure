@@ -1,7 +1,7 @@
 input = {
     mouse = {
         cursor = 0,
-        pos = vec(0),
+        pos = vector(0),
         buttons = {
             left = false,
             middle = false,

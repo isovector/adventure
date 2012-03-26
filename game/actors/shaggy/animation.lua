@@ -1,4 +1,4 @@
-animations.shaggy = animation.build_set(bitmap("game/actors/shaggy/shaggy.pcx"), 12, 2)
+animations.shaggy = animation.build_set(load.image("game/actors/shaggy/shaggy.pcx"), 12, 2)
 
 animations.shaggy.anims.stand = {
     {

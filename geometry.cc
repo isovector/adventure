@@ -1,5 +1,7 @@
 #include "adventure.h"
 
+Vector::Vector(Vector *copy) : x(copy->x), y(copy->y) { }
+
 Vector::Vector(float splat) : x(splat), y(splat) { }
 
 Vector::Vector(float x, float y) : x(x), y(y) { }

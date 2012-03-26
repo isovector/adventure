@@ -1,5 +1,5 @@
 tmp_anims = {}
-tmp_anims.sign = animation.build_set(bitmap("game/rooms/outside/objects/sign.pcx"), 1, 2, 0, 0)
+tmp_anims.sign = animation.build_set(load.image("game/rooms/outside/objects/sign.pcx"), 1, 2, 0, 0)
 tmp_anims.sign.anims.stand = {
     { duration = 3, frame = 0 },
     { duration = 0.3, frame = 1 },
@@ -21,11 +21,11 @@ actors.bouncer.flipped = true
 
 local cup = actors.temp("cup", "Milkshape Cup", "game/rooms/outside/objects/cup.pcx")
 
-room.place(actors.temp("sign", "Sign", animation.start(tmp_anims.sign, "stand"), 1), vec(940, 156))
-room.place(cup, vec(830, 436))
-room.place(actors.temp("sword", "Sword", "game/rooms/outside/objects/sword.pcx"), vec(110, 445))
-room.place(actors.temp("note", "Note", "game/rooms/outside/objects/letter.pcx"), vec(580, 97))
---room.place(actors.temp("rope", "Rope", "game/rooms/outside/objects/rope.pcx"), vec(910, 494))
+room.place(actors.temp("sign", "Sign", animation.start(tmp_anims.sign, "stand"), 1), vector(940, 156))
+room.place(cup, vector(830, 436))
+room.place(actors.temp("sword", "Sword", "game/rooms/outside/objects/sword.pcx"), vector(110, 445))
+room.place(actors.temp("note", "Note", "game/rooms/outside/objects/letter.pcx"), vector(580, 97))
+--room.place(actors.temp("rope", "Rope", "game/rooms/outside/objects/rope.pcx"), vector(910, 494))
 
 room.hotspot(34, "window", "Window");
 room.hotspot(68, "sign", "Sign");

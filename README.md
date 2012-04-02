@@ -3,12 +3,14 @@ Running on Linux
 
 Make sure you install the prerequisites before attempting to compile on linux:
 
+* lua 5.1.4
+* luarocks
 * sdl 1.2
 * sdl_gfx 2.0
 * sdl_image 1.2
 * sdl_ttf 2.0
-* lua 5.1.4
-* luarocks
+* imagemagick 6.7.6.0 (for compile-time image building)
+* synfig 0.63.04 (for compile-time image building)
 
 Then ensure you have lfs installed:
 

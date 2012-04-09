@@ -17,6 +17,8 @@ game.add_verb("touch", "Touch %s", vector(96, 0), vector(48))
 
 -- load content
 
+load.script("game/costumes/costumes.lua")
+
 load.dir("actors")
 load.dir("items")
 load.dir("rooms", function(filename)
@@ -27,7 +29,7 @@ end)
 
 rooms["outside"].switch()
 pathfinding.enable_path(17)
-player = actors.gomez
+player = actors.santino
 
 --[[player.events.tick.sub(function(elapsed)
     local xoffset = math.clamp(player.pos.x - screen_width / 2, 0, room_width - screen_width)

@@ -34,16 +34,14 @@ game = {
 game.inventory_rect = rect.create(vector(270, 210), game.resources.inventory.size)
 
 function game.register_actor_updates()
-    load.script("scripts/animation.lua")
+    load.script("scripts/costume.lua")
     load.script("scripts/path.lua")
 
     local function update(state)
         local elapsed = 1 / framerate
         
         for key, actor in pairs(room.scene) do
-            if actor.aplay then
-                animation.play(actor.aplay, elapsed)
-            end
+            actor.costume.update(elapsed)
 
             if state == "game" and actor.events then
                 actor.events.tick(nil, actor, elapsed)

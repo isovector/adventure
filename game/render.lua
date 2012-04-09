@@ -3,19 +3,9 @@ engine.events.draw.sub(function()
         drawing.blit(room.artwork, vector(0))
         
         for _, actor in ipairs(room.scene) do
-            if actor.aplay then
-                local set = actor.aplay.set
-                drawing.blit(set.image, actor.pos - actor.origin, actor.flipped, vector(animation.get_frame(set, actor.aplay.frame)), actor.size)
-                
-                local c = 0xFFFF00
-                
-                if in_ellipse(actor.pos, actor.pathsize, input.mouse.pos) then
-                    c = 0xFF0000
-                end
-                
-                drawing.ellipse(actor.pos, actor.pathsize, c)
-            elseif actor.sprite then
-                drawing.blit(actor.sprite, actor.pos, actor.flipped)
+            if actor.costume then
+                local anim = actor.costume.anim
+                drawing.blit(anim.image, actor.pos - actor.origin, false, vector(anim.get_frame(anim.frame)), anim.size)
             end
         end
     else

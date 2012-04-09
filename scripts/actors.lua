@@ -1,6 +1,6 @@
 actors = { } 
 
-function actors.temp(id, name, bmpfile, xframes, yframes)
+function actors.temp(id, name, cost)
     local actor = { 
         id = id,
         name = name,
@@ -36,7 +36,9 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
             
             enter = event.create(),
             exit = event.create()
-        }
+        },
+        
+        costume = cost
     }
     
     -- create events for all the verbs
@@ -44,23 +46,13 @@ function actors.temp(id, name, bmpfile, xframes, yframes)
         actor.events[id] = event.create()
     end
     
-    -- HACK(sandy): this really should create an aplay given xyframes
-    if not xframes then
-        actor.sprite = load.image(bmpfile)
-        actor.size = actor.sprite.size
-    else
-        actor.aplay = bmpfile
-        actor.size = vector(actor.aplay.set.width, actor.aplay.set.height)
-        actor.origin = vector(actor.aplay.set.xorigin, actor.aplay.set.yorigin)
-    end
-    
-    actor.pathsize = vector(actor.size.x / 2, actor.size.y / 6)
+    actor.costume.refresh_anim()
     
     return actor
 end
 
-function actors.create(id, name, bmp, xframes, yframes)
-    actors[id] = actors.temp(id, name, bmp, xframes, yframes)
+function actors.create(id, name, costume)
+    actors[id] = actors.temp(id, name, costume)
     actors.prototype(actors[id])
     return actors[id]
 end
@@ -70,9 +62,7 @@ function actors.prototype(actor)
         local name = actor.id
 
         if actor.goal and type(actor.goal) ~= "boolean" then
-            if actor.aplay then
-                animation.switch(actor.aplay, "walk")
-            end
+            actor.costume.set_pose("walk")
 
             if type(actor.goal) == "userdata" then
                 local speed = actor.speed * elapsed
@@ -80,11 +70,19 @@ function actors.prototype(actor)
 
                 if dir:Length() > speed then
                     dir:Normalize();
-
-                    if dir.x < 0 then
-                        actor.flipped = true
+                    
+                    if math.abs(dir.x) > math.abs(dir.y) then
+                        if dir.x > 0 then
+                            actor.costume.set_direction(6)
+                        else
+                            actor.costume.set_direction(4)
+                        end
                     else
-                        actor.flipped = false
+                        if dir.y > 0 then
+                            actor.costume.set_direction(2)
+                        else
+                            actor.costume.set_direction(8)
+                        end
                     end
                     
                     local hotspot = room.get_hotspot(actor.pos)
@@ -109,9 +107,7 @@ function actors.prototype(actor)
                         table.remove(actor.goals, 1)
                     end
                     
-                    if actor.aplay then
-                        animation.switch(actor.aplay, "stand")
-                    end
+                    actor.costume.set_pose("idle")
 
                     if not actor.goal then
                         actor.events.goal()
@@ -120,9 +116,7 @@ function actors.prototype(actor)
                     actor.compress_goals()
                 end
             elseif type(actor.goal) == "function" then
-                if actor.aplay then
-                    animation.switch(actor.aplay, "stand")
-                end
+                actor.costume.set_pose("idle")
             
                 tasks.begin({ actor.goal, function() 
                     if actor.goals and actor.goals[1] then

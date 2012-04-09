@@ -102,6 +102,11 @@ const Vector Vector::operator/(const float scalar) const
 	return Vector(*this) /= scalar;
 }
 
+const Vector Vector::operator/(const Vector& v2) const
+{
+	return Vector(x / v2.x, y / v2.y);
+}
+
 bool Vector::operator== (const Vector& v2) const
 {
 	return ((x == v2.x) && (y == v2.y));

@@ -5,6 +5,7 @@ costumes = { }
 function animation.create(bmp, xframes, yframes, fps)
     local anim = { 
         image = bmp,
+        size = bmp.size / vector(xframes, yframes),
         
         elapsed = 0,
         frame = 1,
@@ -18,10 +19,11 @@ function animation.create(bmp, xframes, yframes, fps)
         events = { }
     }
     
-    animation.prototype(anim)
+    animation.prototype(anim, xframes, yframes)
+    return anim
 end
 
-function animation.prototype(anim)
+function animation.prototype(anim, xframes, yframes)
     function anim.start()
         anim.stopped = false
         anim.frame = 1
@@ -33,18 +35,18 @@ function animation.prototype(anim)
     end
     
     function anim.get_frame(frame)
-        return  (frame % xframes) * anim.image.size.x, 
-                math.floor(frame / yframes) * anim.image.size.y
+        return  (frame % xframes) * anim.size.x, 
+                math.floor(frame / xframes) * anim.size.y
     end
     
     function anim.update(elapsed)
         if anim.stopped then return end
     
         anim.elapsed = anim.elapsed + elapsed
-        if anim.elapsed >= ainm.frame_duration then
-            if anim.frame == anim.frames then
+        if anim.elapsed >= anim.frame_duration then
+            if anim.frame == anim.frames - 1 then
                 if anim.loops then
-                    anim.frame = 0
+                    anim.frame = -1
                 else
                     anim.stop()
                     return

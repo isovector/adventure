@@ -89,8 +89,13 @@ SDL_Surface *get_bitmap(const char *file) {
     if (!temp) {
         return 0;
     }
-     
-    value = SDL_DisplayFormat(temp);
+    
+    // HACK(sandy): biggest hack of my life.
+    if (file[strlen(file) - 1] == 'g')
+        value = SDL_DisplayFormatAlpha(temp);
+    else
+        value = SDL_DisplayFormat(temp);
+    
     SDL_FreeSurface(temp);
     
     SDL_SetColorKey(value, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(value->format, 255, 0, 255));

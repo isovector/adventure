@@ -30,6 +30,7 @@ class Vector {
         const Vector operator-(const Vector &v2) const;
         const Vector operator*(const float scalar) const;
         const Vector operator/(const float scalar) const;
+        const Vector operator/(const Vector &v2) const;
 
         bool operator== (const Vector& v2) const;
         bool operator!= (const Vector& v2) const;

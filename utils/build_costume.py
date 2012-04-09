@@ -54,12 +54,16 @@ for path in glob.iglob(sys.argv[1] + "/*"):
         print("cost = costume.create()")
         print("cost.poses = {")
         for name, pose in poses.items():
-            print("\t%s = {" % name)
-            for dir, data in pose.items():
-                firstpass = "\t\t%s = animation.create(load.bitmap(\"%s\"), %d, 1, %d)," % (dir, data["file"], data["frames"], data["fps"])
-                print(firstpass % anim)
-            print("\t\tnil")
-            print("\t},")
+            print("\t%s = { }," % name)
         print("\tnil")
         print("}")
+        
+        for name, pose in poses.items():
+            for dir, data in pose.items():
+                firstpass = "cost.poses.%s[%s] = animation.create(load.image(\"%s\"), %d, 1, %d)" % (name, dir, data["file"], data["frames"], data["fps"])
+                print(firstpass % anim)
+                
+                if name == "walk" or name == "idle":
+                    print("cost.poses.%s[%s].loops = true" % (name, dir))
+        
         print("costumes.%s = cost\n" % anim)

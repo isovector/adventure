@@ -51,7 +51,7 @@ for path in glob.iglob(sys.argv[1] + "/*"):
                 
             poses[pose][dir] = getFrames(file)
             
-        print("cost = costume.create()")
+        print("cost = Costume.new()")
         print("cost.poses = {")
         for name, pose in poses.items():
             print("\t%s = { }," % name)
@@ -60,7 +60,7 @@ for path in glob.iglob(sys.argv[1] + "/*"):
         
         for name, pose in poses.items():
             for dir, data in pose.items():
-                firstpass = "cost.poses.%s[%s] = animation.create(load.image(\"%s\"), %d, 1, %d)" % (name, dir, data["file"], data["frames"], data["fps"])
+                firstpass = "cost.poses.%s[%s] = Animation.new(load.image(\"%s\"), %d, 1, %d)" % (name, dir, data["file"], data["frames"], data["fps"])
                 print(firstpass % anim)
                 
                 if name == "walk" or name == "idle":

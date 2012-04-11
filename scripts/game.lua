@@ -1,6 +1,6 @@
-load.script("scripts/actors.lua")
-load.script("scripts/rooms.lua")
-load.script("scripts/items.lua")
+load.script("scripts/actor.lua")
+load.script("scripts/room.lua")
+load.script("scripts/item.lua")
 
 game = {
     hovertext = "",
@@ -41,7 +41,7 @@ function game.register_actor_updates()
         local elapsed = 1 / framerate
         
         for key, actor in pairs(room.scene) do
-            actor.costume.update(elapsed)
+            actor.costume:update(elapsed)
 
             if state == "game" and actor.events then
                 actor.events.tick(nil, actor, elapsed)
@@ -136,7 +136,7 @@ function game.make_walkspot(actor)
             local ax = math.cos(degree) * dist * flip
             local ay = math.sin(degree) * dist
             
-            if room.is_walkable(x + ax, y + ay) then
+            if room:is_walkable(x + ax, y + ay) then
                 return vector(x + ax, y + ay)
             end
         end

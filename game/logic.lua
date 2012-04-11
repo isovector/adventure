@@ -56,7 +56,7 @@ function engine.action_state()
     if not mouse.buttons.left then
         if action.method ~= "" then
             if action.spot then
-                player.walk(action.spot)
+                player:walk(action.spot)
                 game.append_dispatch(player, action.type, action.object, action.method, action.flip)
             else
                 game.dispatch(action.type, action.object, action.method)
@@ -123,7 +123,7 @@ function engine.game_state()
                         end
                     else
                         if item then
-                            player.walk(hotspot.spot)
+                            player:walk(hotspot.spot)
                             game.dispatch(item.type, item.object, item.method)
                             engine.item = nil
                         else
@@ -138,8 +138,8 @@ function engine.game_state()
     if not found and mouse.is_click("left") then
         if engine.item then
             engine.item = nil
-        elseif room.is_walkable(mouse.pos) then
-            player.walk(mouse.pos)
+        elseif room:is_walkable(mouse.pos) then
+            player:walk(mouse.pos)
         end
         
         engine.action = nil

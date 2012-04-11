@@ -75,7 +75,7 @@ function conversation.continuer()
             events.dialogue.continue(opt)
         
             if not select[opt].silent then
-                tasks.begin({ function() say(player, select[opt].label) end, conversation.continue })
+                tasks.begin({ function() player:say(select[opt].label) end, conversation.continue })
                 coroutine.yield()
             end
 

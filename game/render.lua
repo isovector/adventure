@@ -5,7 +5,7 @@ engine.events.draw.sub(function()
         for _, actor in ipairs(room.scene) do
             if actor.costume then
                 local anim = actor.costume.anim
-                drawing.blit(anim.image, actor.pos - actor.origin, false, vector(anim.get_frame(anim.frame)), anim.size)
+                drawing.blit(anim.image, actor.pos - actor.origin, false, vector(anim:get_frame(anim.frame)), anim.size)
             end
         end
     else

@@ -27,7 +27,7 @@ end)
 
 -- setup game
 
-rooms["outside"].switch()
+rooms["outside"]:switch()
 pathfinding.enable_path(17)
 player = actors.santino
 

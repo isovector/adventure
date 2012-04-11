@@ -66,7 +66,7 @@ while option ~= "-" do
         end
         
         if instead ~= "" then
-            output = output .. "            player.say(\"" .. instead .. "\")\n"
+            output = output .. "            player:say(\"" .. instead .. "\")\n"
         end
         
         output = output .. "            -- insert logic here\n"

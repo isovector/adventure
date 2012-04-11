@@ -33,6 +33,7 @@ end
 load.image = drawing.load
 vector = geometry.Vector
 
+load.script("scripts/class.lua")
 load.script("scripts/event.lua")
 load.script("scripts/debug.lua")
 load.script("scripts/serialize.lua")

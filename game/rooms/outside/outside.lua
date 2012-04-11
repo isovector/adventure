@@ -1,45 +1,7 @@
-local room = rooms.create("outside")
+local room = Room.new("outside", load.image("game/rooms/outside/art.pcx"), load.image("game/rooms/outside/hot.pcx"))
 
 load.module("rooms/outside/dialogue.lua")
 
-room.place(actors.santino)
---[[
-room.place(actors.bouncer)
-actors.bouncer.flipped = true
-
-local cup = actors.temp("cup", "Milkshape Cup", "game/rooms/outside/objects/cup.pcx")
-
-room.place(actors.temp("sign", "Sign", animation.start(tmp_anims.sign, "stand"), 1), vector(940, 156))
-room.place(cup, vector(830, 436))
-room.place(actors.temp("sword", "Sword", "game/rooms/outside/objects/sword.pcx"), vector(110, 445))
-room.place(actors.temp("note", "Note", "game/rooms/outside/objects/letter.pcx"), vector(580, 97))
---room.place(actors.temp("rope", "Rope", "game/rooms/outside/objects/rope.pcx"), vector(910, 494))
-
-room.hotspot(34, "window", "Window");
-room.hotspot(68, "sign", "Sign");
-room.hotspot(85, "rear", "Back Alley");
-room.hotspot(102, "ladder", "Ladder");
-room.hotspot(119, "rope", "Rope");]]
-
-room.door(17, "door", "Pub Entrance", "outside", 68, 8)
-
-room.foreground(17, 600)
-
---[[actors.bouncer.events.talk.sub(function()
-    open_topic(room.dialogue.bouncer)
-end)
-
-room.hotspots.window.events.look.sub(function()
-    player.say("I can't reach it")
-end)
-
-room.hotspots.ladder.events.touch.sub(function()
-    player.say("That won't fit in my pants")
-end)
-
-cup.events.touch.sub(function()
-    print("hello")
-    player.say("Hey! This is beer!")
-    player.say("Score!")
-    player.obtain_item("beer")
-end)]]
+room:place(actors.santino)
+room:door(17, "door", "Pub Entrance", "outside", 68, 8)
+room:foreground(17, 600)

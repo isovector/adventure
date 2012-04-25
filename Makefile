@@ -11,7 +11,7 @@ wrappers = $(addsuffix _wrap.o, geometry drawing pathfinding)
 #########################################################
 
 objects =  $(addprefix $(OBJDIR)/, $(c_files) $(wrappers))
-art_santino = $(addprefix santino/, walk2 walk4 walk6 walk8 idle5)
+art_santino = $(addprefix santino/, walk2 walk4 walk6 walk8 idle)
 art = $(addsuffix .png, $(addprefix $(COSTDIR)/, $(art_santino)))
 
 #########################################################
@@ -37,7 +37,7 @@ $(COSTDIR)/%.png : art/%.sifz
 	synfig -t png -o $(OBJDIR)/build.png $<
 	mkdir -p $(dir $@)
 	montage $(OBJDIR)/*.png -geometry 50%x50%+0+0 -tile x1 -background none $@
-	rm $(OBJDIR)/build*.png
+	rm $(OBJDIR)/*.png
 
 #########################################################
 

@@ -46,6 +46,9 @@ for path in glob.iglob(sys.argv[1] + "/*"):
             pose = result.group(1)
             dir = result.group(2)
             
+            if dir == "":
+                dir = "5"
+            
             if not pose in poses:
                 poses[pose] = {}
                 

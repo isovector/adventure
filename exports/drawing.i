@@ -46,7 +46,7 @@ void draw_text_center(SDL_Surface *target, Vector *pos, int fg, int bg, const ch
 void draw_clear(int color);
 void draw_clear(SDL_Surface *target, int color);
 
-%rename(SDL_FreeSurface) free;
+%rename(free) SDL_FreeSurface;
 void SDL_FreeSurface(SDL_Surface *surface);
 
 %native(get_screen) int native_get_screen(lua_State *L);

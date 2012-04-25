@@ -49,7 +49,31 @@ void draw_clear(SDL_Surface *target, int color);
 %rename(SDL_FreeSurface) free;
 void SDL_FreeSurface(SDL_Surface *surface);
 
+%native(get_screen) int native_get_screen(lua_State *L);
+
 %{
+int native_get_screen(lua_State *L) {
+    lua_newtable(L);
+    int bpp = screen->format->BytesPerPixel;
+    
+    char *pixels = (char*)screen->pixels;
+    int size = lua_tonumber(L, 1);
+    
+    for (int i = 0; i < screen->pitch * SCREEN_HEIGHT; i += size) {
+        int local = i - (i % 4);
+    
+        if (i % 4 == 3)
+            lua_pushnumber(L, 255);
+        else if(i % 4 == 1)
+            lua_pushnumber(L, pixels[i]);
+        else
+            lua_pushnumber(L, pixels[local + (i + 2) % 4]);
+        lua_rawseti(L, -2, i + 1);
+    }
+    
+    return 1;
+}
+
 Vector *SDL_Surface_size_get(SDL_Surface *surface) {
     return new Vector(surface->w, surface->h);
 }

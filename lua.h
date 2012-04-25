@@ -6,7 +6,7 @@
 extern lua_State *script;
 
 void init_script();
-void boot_module();
+void boot_module(string module);
 void load_room(SDL_Surface *hot);
 
 #define lua_getregister(L, s)  lua_getfield(L, LUA_REGISTRYINDEX, s)

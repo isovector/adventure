@@ -41,9 +41,11 @@ void init_script() {
 		printf("%s\n", lua_tostring(script, -1));
 }
 
-void boot_module() {
-    string initcode = "module = dofile(\"module.lua\")\n"
-                      "dofile(module .. \"/boot.lua\")\n"
+void boot_module(string module) {
+    lua_pushstring(script, module.c_str());
+    lua_setglobal(script, "module");
+    
+    string initcode = "dofile(module .. \"/boot.lua\")\n"
                       "readonly.locks[\"module\"] = module";
     
     if (luaL_dostring(script, initcode.c_str()) != 0)

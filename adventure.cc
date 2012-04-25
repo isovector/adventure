@@ -61,6 +61,11 @@ bool lock_fps(int framerate) {
 
 int main(int argc, char* argv[]) {
     int last_ticks = 0, frames_done = 1;
+    string module = "game";
+    
+    if (argc > 1)
+        module = argv[1];
+    
 
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
@@ -83,7 +88,7 @@ int main(int argc, char* argv[]) {
     lua_setconstant(script, "screen_height", number, SCREEN_HEIGHT);
     lua_setconstant(script, "framerate", number, 60);
     
-    boot_module();
+    boot_module(module);
     
     lua_getglobal(script, "engine");
     lua_pushstring(script, "fps");

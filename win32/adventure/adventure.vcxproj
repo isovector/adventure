@@ -52,7 +52,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;STATIC_LINKED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -82,14 +82,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\adventure.h" />
     <ClInclude Include="..\..\drawing.h" />
+    <ClInclude Include="..\..\geometry.h" />
     <ClInclude Include="..\..\input.h" />
-    <ClInclude Include="..\..\libs\poly2tri\common\shapes.h" />
-    <ClInclude Include="..\..\libs\poly2tri\common\utils.h" />
-    <ClInclude Include="..\..\libs\poly2tri\poly2tri.h" />
-    <ClInclude Include="..\..\libs\poly2tri\sweep\advancing_front.h" />
-    <ClInclude Include="..\..\libs\poly2tri\sweep\cdt.h" />
-    <ClInclude Include="..\..\libs\poly2tri\sweep\sweep.h" />
-    <ClInclude Include="..\..\libs\poly2tri\sweep\sweep_context.h" />
     <ClInclude Include="..\..\lua.h" />
     <ClInclude Include="..\..\path.h" />
     <ClInclude Include="stdafx.h" />
@@ -98,14 +92,13 @@
   <ItemGroup>
     <ClCompile Include="..\..\adventure.cc" />
     <ClCompile Include="..\..\drawing.cc" />
+    <ClCompile Include="..\..\drawing_wrap.cc" />
+    <ClCompile Include="..\..\geometry.cc" />
+    <ClCompile Include="..\..\geometry_wrap.cc" />
     <ClCompile Include="..\..\input.cc" />
-    <ClCompile Include="..\..\libs\poly2tri\common\shapes.cc" />
-    <ClCompile Include="..\..\libs\poly2tri\sweep\advancing_front.cc" />
-    <ClCompile Include="..\..\libs\poly2tri\sweep\cdt.cc" />
-    <ClCompile Include="..\..\libs\poly2tri\sweep\sweep.cc" />
-    <ClCompile Include="..\..\libs\poly2tri\sweep\sweep_context.cc" />
     <ClCompile Include="..\..\lua.cc" />
     <ClCompile Include="..\..\path.cc" />
+    <ClCompile Include="..\..\pathfinding_wrap.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

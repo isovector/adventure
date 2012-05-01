@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <list>
 #include <map>
 #include <algorithm>
 #include <cstdlib>
@@ -49,6 +50,7 @@ using namespace std;
 #include "drawing.h"
 #include "input.h"
 #include "lua.h"
+#include "tasks.h"
 
 extern SDL_Surface *screen, *room_hot;
 extern Vector *waypoints[MAX_WAYPOINTS];
@@ -64,6 +66,7 @@ extern "C" {
     int luaopen_geometry(lua_State* L);
     int luaopen_drawing(lua_State* L);
     int luaopen_pathfinding(lua_State* L);
+    int luaopen_tasks(lua_State* L);
 }
 
 #endif

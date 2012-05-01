@@ -34,6 +34,7 @@ void init_script() {
     luaopen_geometry(script);
     luaopen_drawing(script);
     luaopen_pathfinding(script);
+    luaopen_tasks(script);
     
     lua_atpanic(script, script_panic);
     

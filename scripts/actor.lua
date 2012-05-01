@@ -155,12 +155,12 @@ function Actor:queue(func, ...)
 end
 
 function Actor:say_async(message)
-    tasks.begin(function() self:say(message) end)
+    tasks.start(function() self:say(message) end)
 end
 
 function Actor:say(message)
     msg = conversation.say(message, self.pos - vector(0, self.origin.y + 20), self.color)
-    wait(msg.duration * 1000)
+    sleep(msg.duration)
 end
 
 function Actor:update(sender, target, elapsed)
@@ -210,7 +210,7 @@ function Actor:update(sender, target, elapsed)
         elseif type(self.goal) == "function" then
             self.costume:set_pose("idle")
         
-            tasks.begin({ self.goal, function() 
+            tasks.start({ self.goal, function() 
                 if self.goals and self.goals[1] then
                     self.goal = self.goals[1]
                     table.remove(self.goals, 1)

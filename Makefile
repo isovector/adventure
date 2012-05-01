@@ -4,9 +4,9 @@ LINK_FLAGS = $(addprefix -l, SDL SDL_image SDL_gfx SDL_ttf pthread m lua)
 
 #########################################################
 
-c_files =  $(addsuffix .o, adventure drawing geometry input lua path)
-headers =  $(addsuffix .h, adventure drawing geometry input lua path)
-wrappers = $(addsuffix _wrap.o, geometry drawing pathfinding)
+c_files =  $(addsuffix .o, adventure drawing geometry input lua path tasks)
+headers =  $(addsuffix .h, adventure drawing geometry input lua path tasks)
+wrappers = $(addsuffix _wrap.o, geometry drawing pathfinding tasks)
 
 #########################################################
 
@@ -17,7 +17,7 @@ art = $(addsuffix .png, $(addprefix $(COSTDIR)/, $(art_santino)))
 #########################################################
 
 adventure : $(OBJDIR) $(objects)
-	g++ -o adventure $(LINK_FLAGS) $(objects)
+	g++ -O0 -o adventure $(LINK_FLAGS) $(objects)
     
 %_wrap.cc : exports/%.i $(headers)
 	swig -c++ -lua -o $@ $<
@@ -44,7 +44,7 @@ $(COSTDIR)/%.png : art/%.sifz
 .PHONY : clean profile art
 
 profile : $(OBJDIR) $(objects)
-	g++ -pg -o adventure $(LINK_FLAGS) $(objects)
+	g++ -pg3 -O0 -o adventure $(LINK_FLAGS) $(objects)
 
 $(OBJDIR) : 
 	mkdir $(OBJDIR)

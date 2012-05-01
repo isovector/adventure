@@ -15,5 +15,3 @@ events.game = {
 events.console = {
     input = event.create()
 }
-
-events.game.tick.sub(tasks.update)

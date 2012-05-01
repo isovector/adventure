@@ -33,6 +33,8 @@ end
 load.image = drawing.load
 vector = geometry.Vector
 
+sleep = tasks.sleep
+
 load.script("scripts/class.lua")
 load.script("scripts/event.lua")
 load.script("scripts/debug.lua")

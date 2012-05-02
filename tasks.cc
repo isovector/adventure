@@ -21,7 +21,8 @@ void tasks_update(float elapsed) {
         if (!task.IsInitialized())
             task.Initialize(script);
         
-        task.Update(elapsed);
+        if (!task.IsComplete())
+            task.Update(elapsed);
         
         if (task.IsComplete()) {
             it = current_tasks.erase(it);
@@ -30,16 +31,25 @@ void tasks_update(float elapsed) {
     }
 }
 
+void lua_hook(lua_State *L, lua_Debug *ar) {
+    ScriptTask *task = (ScriptTask*)lua_statedata(L);
+    task->Hook();
+}
+
 ScriptTask::ScriptTask(int taskId) :
     mNextExecutionTimer(0.0f),
     mTaskId(taskId),
     mComplete(false),
-    mInitialized(false) 
+    mInitialized(false),
+    mLinesExecuted(0)
 { }
 
 void ScriptTask::Initialize(lua_State* parent) {
     mState = lua_newthread(parent);
-
+    lua_statedata(mState) = (void*)this;
+    
+    lua_sethook(mState, lua_hook, LUA_MASKLINE, 0);
+    
     lua_getglobal(mState, "tasks");
     lua_pushstring(mState, "jobs");
     lua_gettable(mState, -2);
@@ -69,15 +79,20 @@ void ScriptTask::Raise(string signal) {
     }
 }
 
+void ScriptTask::Hook() {
+    if (++mLinesExecuted == MAX_EXECUTION) {
+        lua_pushstring(mState, "Infinite loop detected - killing task.");
+        lua_error(mState);
+        mComplete = true;
+    }
+}
+
 void ScriptTask::Continue() {
     int top = lua_gettop(mState);
     
     switch (lua_resume(mState, 0)) {
         case LUA_YIELD:
-            if (lua_gettop(mState) - top == 0) {
-                cout << "BUMMER, DUDE" << endl;
-                mComplete = true;
-            } else if (lua_type(mState, -1) == LUA_TNUMBER)
+            if (lua_type(mState, -1) == LUA_TNUMBER)
                 mNextExecutionTimer = lua_tonumber(mState, -1);
             else if (lua_type(mState, -1) == LUA_TSTRING)
                 mNextExecutionSignal = lua_tostring(mState, -1);
@@ -88,7 +103,7 @@ void ScriptTask::Continue() {
             break;
         
         default:
-            cout << "ERROR, DUDE" << endl;
+            cout << "ERROR: " << lua_tostring(mState, -1) << endl;
             mComplete = true;
             break;
     }

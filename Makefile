@@ -1,5 +1,6 @@
 OBJDIR = obj
 COSTDIR = game/costumes
+BUILD_FLAGS = -O0 -g3
 LINK_FLAGS = $(addprefix -l, SDL SDL_image SDL_gfx SDL_ttf pthread m lua)
 
 #########################################################
@@ -17,14 +18,14 @@ art = $(addsuffix .png, $(addprefix $(COSTDIR)/, $(art_santino)))
 #########################################################
 
 adventure : $(OBJDIR) $(objects)
-	g++ -O0 -o adventure $(LINK_FLAGS) $(objects)
+	g++ $(BUILD_FLAGS) -o adventure $(LINK_FLAGS) $(objects)
     
 %_wrap.cc : exports/%.i $(headers)
 	swig -c++ -lua -o $@ $<
 	sed -i 's/"lua.h"/<lua.h>/g' $@
 
 $(OBJDIR)/%.o : %.cc $(headers)
-	g++ -g -c $< -o $@
+	g++ $(BUILD_FLAGS) -c $< -o $@
 
 #########################################################
 
@@ -44,7 +45,7 @@ $(COSTDIR)/%.png : art/%.sifz
 .PHONY : clean profile art
 
 profile : $(OBJDIR) $(objects)
-	g++ -pg3 -O0 -o adventure $(LINK_FLAGS) $(objects)
+	g++ $(BUILD_FLAGS) -p -o adventure $(LINK_FLAGS) $(objects)
 
 $(OBJDIR) : 
 	mkdir $(OBJDIR)

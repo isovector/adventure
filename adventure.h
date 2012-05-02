@@ -45,6 +45,10 @@ using namespace std;
 #define BITS_PER_PIXEL 0
 #define OUTLINE_SIZE 2
 
+// give us some more space!
+#undef LUAI_EXTRASPACE
+#define LUAI_EXTRASPACE sizeof(void**)
+
 #include "geometry.h"
 #include "path.h"
 #include "drawing.h"

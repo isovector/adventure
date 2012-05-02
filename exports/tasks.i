@@ -13,6 +13,11 @@ void task_raise_signal(const char *signal);
 
 %{
 int native_sleep(lua_State *L) {
-    return lua_yield(L, lua_gettop(L));
+    if (lua_gettop(L) != 1) {
+        lua_pushstring(L, "tasks.sleep() expects exactly one parameter");
+        lua_error(L);
+    }
+
+    return lua_yield(L, 1);
 }
 %}

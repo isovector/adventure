@@ -20,7 +20,7 @@ void update_game() {
     lua_call(script, 1, 0);
     lua_pop(script, 2);
     
-    update_tasks(1.0f / FRAMERATE);
+    tasks_update(1.0f / FRAMERATE);
     
     return;
 }

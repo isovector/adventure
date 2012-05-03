@@ -23,9 +23,9 @@ game = {
     },
     
     resources = {
-        action_bar = load.image("resources/actionbar.pcx"),
-        cursors = load.image("resources/cursors.pcx"),
-        inventory = load.image("resources/inventory.pcx")
+        action_bar = load.image("game/resources/actionbar.pcx"),
+        cursors = load.image("game/resources/cursors.pcx"),
+        inventory = load.image("game/resources/inventory.pcx")
     },
     
     verbs = { }

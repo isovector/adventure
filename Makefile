@@ -12,6 +12,7 @@ wrappers = $(addsuffix _wrap.o, geometry drawing pathfinding tasks)
 #########################################################
 
 objects =  $(addprefix $(OBJDIR)/, $(c_files) $(wrappers))
+srcheaders = $(addprefix src/, $(headers))
 art_santino = $(addprefix santino/, walk2 walk4 walk6 walk8 idle)
 art = $(addsuffix .png, $(addprefix $(COSTDIR)/, $(art_santino)))
 
@@ -20,16 +21,16 @@ art = $(addsuffix .png, $(addprefix $(COSTDIR)/, $(art_santino)))
 adventure : $(OBJDIR) $(objects)
 	g++ $(BUILD_FLAGS) -o adventure $(LINK_FLAGS) $(objects)
     
-%_wrap.cc : exports/%.i $(headers)
+src/%_wrap.cc : src/exports/%.i $(srcheaders)
 	swig -c++ -lua -o $@ $<
 	sed -i 's/"lua.h"/<lua.h>/g' $@
 
-$(OBJDIR)/%.o : %.cc $(headers)
+$(OBJDIR)/%.o : src/%.cc $(srcheaders)
 	g++ $(BUILD_FLAGS) -c $< -o $@
 
 #########################################################
 
-art : $(art) $(COSTDIR)/costumes.lua
+art : $(OBJDIR) $(art) $(COSTDIR)/costumes.lua
 
 $(COSTDIR)/costumes.lua : utils/build_costume.py
 	python utils/build_costume.py art > $(COSTDIR)/costumes.lua
@@ -42,7 +43,9 @@ $(COSTDIR)/%.png : art/%.sifz
 
 #########################################################
 
-.PHONY : clean profile art
+.PHONY : all clean profile art clean_all
+
+all : art adventure
 
 profile : $(OBJDIR) $(objects)
 	g++ $(BUILD_FLAGS) -p -o adventure $(LINK_FLAGS) $(objects)
@@ -51,5 +54,8 @@ $(OBJDIR) :
 	mkdir $(OBJDIR)
 
 clean : 
-	rm adventure $(objects)
+	rm adventure $(objects) obj/test.tmp
 	rmdir $(OBJDIR)
+
+clean_all : clean
+	rm -r game/costumes/

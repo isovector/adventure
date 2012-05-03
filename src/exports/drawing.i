@@ -3,7 +3,7 @@
 #include "adventure.h"
 %}
 
-%include "exports/geometry.i"
+%include "src/exports/geometry.i"
 
 struct SDL_Surface {
     %extend {

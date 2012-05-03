@@ -3,4 +3,4 @@
 #include "adventure.h"
 %}
 
-%include "geometry.h"
+%include "src/geometry.h"

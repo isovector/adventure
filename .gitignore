@@ -1,10 +1,11 @@
-adventure
+/adventure
 a.out
 obj
 .dropbox
 *_wrap.cc
-win32/adventure/Debug
-win32/adventure/Release
-win32/adventure/ipch
-win32/adventure/adventure.sdf
+src/*_wrap.cc
+src/win32/adventure/Debug
+src/win32/adventure/Release
+src/win32/adventure/ipch
+src/win32/adventure/adventure.sdf
 editor

@@ -1,6 +1,6 @@
 #include "adventure.h"
 
-map<lua_State*, ScriptTask*> workaround;
+map<lua_State*, ScriptTask*> task_map;
 list<ScriptTask> current_tasks;
 
 void task_start(int taskId) {
@@ -33,7 +33,7 @@ void tasks_update(float elapsed) {
 }
 
 void lua_hook(lua_State *L, lua_Debug *ar) {
-    ScriptTask *task = workaround[L];
+    ScriptTask *task = task_map[L];
     task->Hook();
 }
 
@@ -69,7 +69,7 @@ void ScriptTask::Initialize(lua_State* parent) {
         SetHook(true);
     }
     
-    workaround[mState] = this;
+    task_map[mState] = this;
     
     mInitialized = true;
 }

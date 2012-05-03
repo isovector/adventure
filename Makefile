@@ -13,8 +13,8 @@ wrappers = $(addsuffix _wrap.o, geometry drawing pathfinding tasks)
 
 objects =  $(addprefix $(OBJDIR)/, $(c_files) $(wrappers))
 srcheaders = $(addprefix src/, $(headers))
-art_santino = $(addprefix santino/, walk2 walk4 walk6 walk8 idle)
-art = $(addsuffix .png, $(addprefix $(COSTDIR)/, $(art_santino)))
+
+art = $(patsubst art/%.sifz, $(COSTDIR)/%.png, $(shell find art/ -type f -name '*.sifz'))
 
 #########################################################
 

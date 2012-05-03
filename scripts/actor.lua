@@ -220,7 +220,3 @@ function Actor:update(sender, target, elapsed)
         end
     end
 end
-
-function actors.prototype(self)
-    
-end

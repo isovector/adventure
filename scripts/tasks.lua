@@ -1,4 +1,4 @@
-tasks.last_id = 0
+tasks.last_id = 1
 tasks.jobs = { }
 
 function tasks.start(chain, continue)

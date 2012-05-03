@@ -9,6 +9,8 @@ bool in_console = false;
 void update_game() {
     update_mouse();
     
+    script.ResetExecutedLines();
+    
     // update lua's game loop
     lua_getglobal(script, "events");
     lua_pushstring(script, "game");

@@ -3,11 +3,14 @@
 
 #include "adventure.h"
 
-extern lua_State *script;
+class ScriptTask;
+extern ScriptTask script;
 
 void init_script();
 void boot_module(string module);
 void load_room(SDL_Surface *hot);
+
+int script_panic(lua_State* L);
 
 #define lua_getregister(L, s)  lua_getfield(L, LUA_REGISTRYINDEX, s)
 #define lua_setregister(L, s)  lua_setfield(L, LUA_REGISTRYINDEX, s)

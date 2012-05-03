@@ -12,6 +12,8 @@ public:
     void Update(float elapsed);
     void Raise(string signal);
     void Hook();
+    void SetHook(bool enabled);
+    void ResetExecutedLines();
 
     bool IsInitialized() const { return mInitialized; }
     bool IsComplete() const { return mComplete; }
@@ -38,8 +40,6 @@ void task_raise_signal(const char *signal);
 void tasks_update(float elapsed);
 
 extern list<ScriptTask> current_tasks;
-
-#define lua_statedata(L) (reinterpret_cast<void**>(L)[-1])
 
 #define MAX_EXECUTION 20000
 

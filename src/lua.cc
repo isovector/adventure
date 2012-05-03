@@ -1,6 +1,6 @@
 #include "adventure.h"
 
-lua_State *script;
+ScriptTask script(0);
 
 int script_panic(lua_State* L) {
     lua_Debug entry;
@@ -28,15 +28,7 @@ void load_room(SDL_Surface *hot) {
 }
 
 void init_script() {
-    script = lua_open();
-    
-    luaL_openlibs(script);
-    luaopen_geometry(script);
-    luaopen_drawing(script);
-    luaopen_pathfinding(script);
-    luaopen_tasks(script);
-    
-    lua_atpanic(script, script_panic);
+    script.Initialize(NULL);
     
     if (luaL_dofile(script, "scripts/environment.lua") != 0)
 		printf("%s\n", lua_tostring(script, -1));
@@ -51,4 +43,6 @@ void boot_module(string module) {
     
     if (luaL_dostring(script, initcode.c_str()) != 0)
 		printf("%s\n", lua_tostring(script, -1));
+    
+    script.SetHook(true);
 }

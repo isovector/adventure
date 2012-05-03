@@ -1,5 +1,6 @@
 #include "adventure.h"
 
+map<lua_State*, ScriptTask*> workaround;
 list<ScriptTask> current_tasks;
 
 void task_start(int taskId) {
@@ -32,7 +33,7 @@ void tasks_update(float elapsed) {
 }
 
 void lua_hook(lua_State *L, lua_Debug *ar) {
-    ScriptTask *task = (ScriptTask*)lua_statedata(L);
+    ScriptTask *task = workaround[L];
     task->Hook();
 }
 
@@ -45,16 +46,30 @@ ScriptTask::ScriptTask(int taskId) :
 { }
 
 void ScriptTask::Initialize(lua_State* parent) {
-    mState = lua_newthread(parent);
-    lua_statedata(mState) = (void*)this;
+    if (parent == NULL) {
+        mState = lua_open();
+        
+        luaL_openlibs(mState);
+        luaopen_geometry(mState);
+        luaopen_drawing(mState);
+        luaopen_pathfinding(mState);
+        luaopen_tasks(mState);
+        
+        lua_atpanic(mState, script_panic);
+    }
+    else {
+        mState = lua_newthread(parent);
+        
+        lua_getglobal(mState, "tasks");
+        lua_pushstring(mState, "jobs");
+        lua_gettable(mState, -2);
+        lua_pushnumber(mState, mTaskId);
+        lua_gettable(mState, -2);
+        
+        SetHook(true);
+    }
     
-    lua_sethook(mState, lua_hook, LUA_MASKLINE, 0);
-    
-    lua_getglobal(mState, "tasks");
-    lua_pushstring(mState, "jobs");
-    lua_gettable(mState, -2);
-    lua_pushnumber(mState, mTaskId);
-    lua_gettable(mState, -2);
+    workaround[mState] = this;
     
     mInitialized = true;
 }
@@ -87,9 +102,18 @@ void ScriptTask::Hook() {
     }
 }
 
+void ScriptTask::SetHook(bool enabled) {
+    lua_sethook(mState, lua_hook, enabled ? LUA_MASKLINE : 0, 0);
+}
+
+void ScriptTask::ResetExecutedLines() {
+    mLinesExecuted = 0;
+}
+
 void ScriptTask::Continue() {
     int top = lua_gettop(mState);
     
+    ResetExecutedLines();
     switch (lua_resume(mState, 0)) {
         case LUA_YIELD:
             if (lua_type(mState, -1) == LUA_TNUMBER)

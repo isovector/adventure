@@ -1,5 +1,6 @@
 #include "adventure.h"
 
+map<string, set<size_t> > breakpoints;
 map<lua_State*, ScriptTask*> task_map;
 list<ScriptTask> current_tasks;
 
@@ -34,8 +35,42 @@ void tasks_update(float elapsed) {
 
 void lua_hook(lua_State *L, lua_Debug *ar) {
     ScriptTask *task = task_map[L];
-    task->Hook();
+    task->Hook(ar);
 }
+
+void tasks_get_debug() {
+    static time_t last_mtime = 0;
+    fstream file;
+    size_t line;
+    string fname;
+    
+    struct stat mtstat;
+    if (stat("adventure.dbg", &mtstat) == -1)
+        return;
+    
+    if (mtstat.st_mtime <= last_mtime)
+        return;
+    
+    last_mtime = mtstat.st_mtime;
+    
+    file.open("adventure.dbg", fstream::in);
+    if (file.fail())
+        return;
+    
+    breakpoints.clear();
+    while (!file.eof()) {
+        file >> line;
+        file >> fname;
+        
+        if (!breakpoints.count(fname))
+            breakpoints[fname] = set<size_t>();
+        
+        breakpoints[fname].insert(line);
+    }
+    
+    file.close();
+}
+
 
 ScriptTask::ScriptTask(int taskId) :
     mNextExecutionTimer(0.0f),
@@ -94,7 +129,11 @@ void ScriptTask::Raise(string signal) {
     }
 }
 
-void ScriptTask::Hook() {
+void ScriptTask::Hook(lua_Debug *debug) {
+    lua_getinfo(mState, "Sl", debug);
+    if (breakpoints.count(debug->source) && breakpoints[debug->source].count(debug->currentline))
+        cerr << "BREAKPOINT at " << (debug->source + 1) << " on line #" << debug->currentline << endl;
+    
     if (++mLinesExecuted == MAX_EXECUTION) {
         lua_pushstring(mState, "Infinite loop detected - killing task.");
         lua_error(mState);
@@ -127,7 +166,7 @@ void ScriptTask::Continue() {
             break;
         
         default:
-            cout << "ERROR: " << lua_tostring(mState, -1) << endl;
+            cerr << "ERROR: " << lua_tostring(mState, -1) << endl;
             mComplete = true;
             break;
     }

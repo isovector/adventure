@@ -9,6 +9,8 @@
 #include <map>
 #include <algorithm>
 #include <cstdlib>
+#include <fstream>
+#include <set>
 
 #include <assert.h>
 
@@ -19,12 +21,16 @@
 #include <SDL_gfxPrimitives.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+
 #else
 #include <SDL/SDL.h>
 #include <SDL/SDL_rotozoom.h>
 #include <SDL/SDL_gfxPrimitives.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h> 
 #endif
 
 #include <math.h>

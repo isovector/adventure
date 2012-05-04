@@ -70,6 +70,7 @@ int main(int argc, char* argv[]) {
     if (argc > 1)
         module = argv[1];
     
+    tasks_get_debug();
 
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
@@ -120,6 +121,8 @@ int main(int argc, char* argv[]) {
             lua_pop(script, 1);
             
             frames_done = 1;
+            
+            tasks_get_debug();
         }
     }
     

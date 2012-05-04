@@ -11,7 +11,7 @@ public:
     void Initialize(lua_State* parent);
     void Update(float elapsed);
     void Raise(string signal);
-    void Hook();
+    void Hook(lua_Debug *debug);
     void SetHook(bool enabled);
     void ResetExecutedLines();
 
@@ -38,6 +38,7 @@ private:
 void task_start(int taskId);
 void task_raise_signal(const char *signal);
 void tasks_update(float elapsed);
+void tasks_get_debug();
 
 extern list<ScriptTask> current_tasks;
 

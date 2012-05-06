@@ -7,7 +7,7 @@ newclass("Animation",
             size = bmp.size / vector(xframes, yframes),
             
             elapsed = 0,
-            frame = 1,
+            frame = 0,
             frames = xframes * yframes,
             frame_duration = 1 / fps,
             
@@ -16,7 +16,6 @@ newclass("Animation",
             
             xframes = xframes,
             
-            tracks = { },
             events = { }
         }
     end
@@ -52,6 +51,11 @@ function Animation:update(elapsed)
         end
     
         self.frame = self.frame + 1
+        
+        if self.events[self.frame] then
+            tasks.raise(self.events[self.frame])
+        end
+        
         self.elapsed = 0
     end
 end

@@ -41,3 +41,16 @@ Download the [win32 binary package](https://github.com/Paamayim/adventure/downlo
 
 Unzip the zipball, and then unzip the binary package into the same directory. 
 Now running adventure.exe should (hopefully) initialize the game.
+
+
+
+Debugging with SciTE
+====================
+To enable debugging integration with SciTE, add the following to your SciTE user properties:
+
+```adventure.path=/path/to/adventure
+ext.lua.startup.script=$(adventure.path)/scite.lua
+ext.lua.auto.reload=1
+```
+
+This will allow you to set breakpoints with F9.

@@ -48,8 +48,9 @@ Debugging with SciTE
 ====================
 To enable debugging integration with SciTE, add the following to your SciTE user properties:
 
-```adventure.path=/path/to/adventure
-ext.lua.startup.script=$(adventure.path)/scite.lua
+```
+adventure.path=/path/to/adventure
+ext.lua.startup.script=$(adventure.path)/utils/scite.lua
 ext.lua.auto.reload=1
 ```
 

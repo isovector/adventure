@@ -44,4 +44,8 @@ extern list<ScriptTask> current_tasks;
 
 #define MAX_EXECUTION 20000
 
+#ifndef TASKS_LINE_OFFSET
+#define TASKS_LINE_OFFSET 0
+#endif
+
 #endif

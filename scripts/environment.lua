@@ -12,6 +12,7 @@ setmetatable(_G, { __index = readonly.locks, __newindex = readonly.indexer })
 
 load = { }
 function load.script(file)
+    file = "obj/" .. file .. "c"
     --print(file)
     return dofile(file)
 end

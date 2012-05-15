@@ -15,19 +15,35 @@ objects =  $(addprefix $(OBJDIR)/, $(c_files) $(wrappers))
 srcheaders = $(addprefix src/, $(headers))
 
 art = $(patsubst art/%.sifz, $(COSTDIR)/%.png, $(shell find art/ -type f -name '*.sifz'))
+extensions = $(shell find extensions/ -type f -name '*.mlua')
+scripts = $(patsubst ./%.lua, $(OBJDIR)/%.luac, $(shell find . -type f -name '*.lua'))
+
+extprebuild = $(OBJDIR)/extensions
 
 #########################################################
 
-adventure : $(OBJDIR) $(objects)
+adventure : $(OBJDIR) $(scripts) $(objects)
 	g++ $(BUILD_FLAGS) -o adventure $(LINK_FLAGS) $(objects)
     
 src/%_wrap.cc : src/exports/%.i $(srcheaders)
 	swig -c++ -lua -o $@ $<
-	sed -i 's/"lua.h"/<lua.h>/g' $@
+	@sed -i 's/"lua.h"/<lua.h>/g' $@
 
 $(OBJDIR)/%.o : src/%.cc $(srcheaders)
-	g++ $(BUILD_FLAGS) -c $< -o $@
+	g++ $(BUILD_FLAGS) -D TASKS_LINE_OFFSET=`wc $(extprebuild) | awk '{print $$1}'` -c $< -o $@
 
+
+#########################################################
+
+$(extprebuild) : $(extensions)
+	cat $(extensions) > $(extprebuild)
+
+$(OBJDIR)/%.luac : %.lua $(extprebuild)
+	@mkdir -p $(dir $@)
+	@cat $(extprebuild) $< > $@
+	@metalua -o $@ $@
+	@echo metalua -o $@ $<
+	
 #########################################################
 
 art : $(OBJDIR) $(art) $(COSTDIR)/costumes.lua
@@ -37,9 +53,9 @@ $(COSTDIR)/costumes.lua : utils/build_costume.py
 
 $(COSTDIR)/%.png : art/%.sifz
 	synfig -t png -o $(OBJDIR)/build.png $<
-	mkdir -p $(dir $@)
+	@mkdir -p $(dir $@)
 	montage $(OBJDIR)/*.png -geometry 50%x50%+0+0 -tile x1 -background none $@
-	rm $(OBJDIR)/*.png
+	@rm $(OBJDIR)/*.png
 
 #########################################################
 
@@ -53,9 +69,13 @@ profile : $(OBJDIR) $(objects)
 $(OBJDIR) : 
 	mkdir $(OBJDIR)
 
-clean : 
-	rm adventure $(objects) obj/test.tmp
-	rmdir $(OBJDIR)
+clean : clean_scripts
+	rm adventure $(objects)
+	rm $(extprebuild)
+	find $(OBJDIR) -depth -type d -empty -exec rmdir {} \;
+
+clean_scripts : 
+	rm $(scripts)
 
 clean_all : clean
 	rm -r game/costumes/

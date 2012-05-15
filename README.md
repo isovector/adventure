@@ -5,6 +5,7 @@ Make sure you install the prerequisites before attempting to compile on linux:
 
 * lua 5.1.4
 * luarocks
+* metalua 0.5
 * sdl 1.2
 * sdl_gfx 2.0
 * sdl_image 1.2
@@ -37,10 +38,12 @@ With luck, the host has been compiled and can be run as
 Running on Windows
 ==================
 
-Download the [win32 binary package](https://github.com/Paamayim/adventure/downloads), and the [source zipball](https://github.com/Paamayim/adventure/zipball/master).
+Download the [win32 binary package and script files](https://github.com/Paamayim/adventure/downloads).
 
-Unzip the zipball, and then unzip the binary package into the same directory. 
+Unzip the scripts, and then unzip the binary package into the same directory. 
 Now running adventure.exe should (hopefully) initialize the game.
+
+*WARNING* This is probably broken on 32-bit until I find a nice way to build multi-architecture luac files.
 
 
 

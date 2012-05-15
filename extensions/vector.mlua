@@ -1,0 +1,6 @@
+-{ block:
+
+    -- [x, y] vector syntax
+    mlp.expr:add{ "[", mlp.expr, ",", mlp.expr, "]", 
+        builder = |x| +{ vector(-{x[1]}, -{x[2]}) } }
+}

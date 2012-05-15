@@ -51,7 +51,7 @@ newclass("Actor",
         actors[id] = self
         
         self.events.tick.sub(function(...)
-            self:update(unpack(arg))
+            self:update(...)
         end)
         
         return self

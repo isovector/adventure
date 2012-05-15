@@ -8,17 +8,17 @@ game = {
 
     cursors = {
         offsets = {
-            vector(16, 16),
-            vector(3, 27),
-            vector(16, 29),
-            vector(29, 27),
-            vector(3, 16),
-            vector(16, 16),
-            vector(29, 16),
-            vector(3, 5),
-            vector(16, 3),
-            vector(29, 5),
-            vector(16, 16)
+            [1]  = [16, 16],
+            [2]  = [3,27],
+            [3]  = [16,29],
+            [4]  = [29,27],
+            [5]  = [3,16],
+            [6]  = [16,16],
+            [7]  = [29,16],
+            [8]  = [3,5],
+            [9]  = [16,3],
+            [10] = [29,5],
+            [11] = [16,16]
         }
     },
     
@@ -31,7 +31,7 @@ game = {
     verbs = { }
 }
 
-game.inventory_rect = rect.create(vector(270, 210), game.resources.inventory.size)
+game.inventory_rect = rect.create([270,210], game.resources.inventory.size)
 
 function game.register_actor_updates()
     load.script("scripts/costume.lua")
@@ -111,7 +111,7 @@ function game.make_walkspot(actor)
         end)
     end
     
-    if not actor then return vector(0) end
+    if not actor then return [0, 0] end
     
     if actor.walkspot then
         return vector(actor.walkspot.x, actor.walkspot.y)
@@ -137,7 +137,7 @@ function game.make_walkspot(actor)
             local ay = math.sin(degree) * dist
             
             if room:is_walkable(x + ax, y + ay) then
-                return vector(x + ax, y + ay)
+                return [x + ax, y + ay]
             end
         end
     end

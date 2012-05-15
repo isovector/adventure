@@ -6,7 +6,7 @@ newclass("Actor",
             id = id,
             name = name,
             
-            pos = vector(0),
+            pos = [0, 0],
             ignore_ui = false,
             flipped = false,
             speed = 150,
@@ -19,9 +19,9 @@ newclass("Actor",
             goals = { },
             inventory = { },
             
-            size = vector(0),
-            origin = vector(0),
-            pathsize = vector(0),
+            size = [0, 0],
+            origin = [0, 0],
+            pathsize = [0, 0],
             
             events = {
                 goal = event.create(),

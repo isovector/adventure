@@ -163,6 +163,10 @@ function Actor:say(message)
     sleep(msg.duration)
 end
 
+function Actor:stream(data)
+    self:say_async(table.concat(data, " "))
+end
+
 function Actor:update(sender, target, elapsed)
     local name = self.id
 

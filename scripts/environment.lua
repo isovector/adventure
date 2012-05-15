@@ -31,6 +31,23 @@ function load.dir(dir, func)
     end
 end
 
+function stream_operator(lhs, rhs)
+    if type(rhs) ~= "table" then
+        rhs = { rhs }
+    end
+    
+    if type(lhs) == "table" then
+        if lhs.stream and type(lhs.stream) == "function" then
+            lhs:stream(rhs)
+        else
+            error("left-most stream operation must have a stream() method")
+        end
+    else
+        table.insert(rhs, 1, lhs)
+        return rhs
+    end
+end
+
 load.image = drawing.load
 vector = geometry.Vector
 

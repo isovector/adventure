@@ -31,6 +31,8 @@ rooms["outside"]:switch()
 pathfinding.enable_path(17)
 player = actors.santino
 
+player << "hello" << "world" << "look at my stream operator"
+
 --[[player.events.tick.sub(function(elapsed)
     local xoffset = math.clamp(player.pos.x - screen_width / 2, 0, room_width - screen_width)
     local yoffset = math.clamp(player.pos.y - screen_height / 2, 0, room_height - screen_height)

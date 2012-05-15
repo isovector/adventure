@@ -1,0 +1,10 @@
+-{ block:
+
+    local function builder(lhs, _, rhs)
+        return +{ stream_operator(-{lhs}, -{rhs}) }
+    end
+
+    mlp.lexer:add "<<"
+    mlp.expr.infix:add{ "<<", prec=20, assoc="right", builder = builder }
+
+}

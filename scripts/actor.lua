@@ -154,17 +154,54 @@ function Actor:queue(func, ...)
     end)
 end
 
-function Actor:say_async(message)
-    tasks.start(function() self:say(message) end)
-end
-
 function Actor:say(message)
     msg = conversation.say(message, self.pos - vector(0, self.origin.y + 20), self.color)
     sleep(msg.duration)
 end
 
-function Actor:stream(data)
-    self:say_async(table.concat(data, " "))
+function Actor:raw_say(message, position, wait)
+    msg = conversation.say(message, self.pos - [0, self.origin.y + 20], self.color)
+    
+    if wait ~= -1 then
+        msg.duration = wait
+    end
+    
+    if position ~= [-1, -1] then
+        msg.pos = position
+        msg.aligned = true
+    end
+    
+    sleep(msg.duration)
+end
+
+function Actor:__stream(data)
+    local message = ""
+    local position = [-1, -1]
+    local wait = -1
+    
+    function throw(dontflush)
+        if #message ~= 0 then
+            self:raw_say(message, position, wait)
+                
+            if not dontflush then
+                message = ""
+                position = [-1, -1]
+            end
+            
+            wait = -1
+        end
+    end
+    
+    for pos, val in ipairs(data) do
+        if type(val) == "userdata" then
+            throw()
+            position = val
+        else
+            message = message .. val .. " "
+        end
+    end
+    
+    throw()
 end
 
 function Actor:update(sender, target, elapsed)

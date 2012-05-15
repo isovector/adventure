@@ -162,11 +162,11 @@ function game.dispatch(callback_type, object, method)
     
     if callback_type == "hotspot" then
         if room.hotspots[object] and room.hotspots[object].events[method] then
-            tasks.start(function()
+            @{
                 --enable_input(false)
                 room.hotspots[object].events[method](player, room.hotspots[object], item_type)
                 --enable_input(true)
-            end)
+            }
         end
 
     elseif callback_type == "object" then
@@ -175,22 +175,22 @@ function game.dispatch(callback_type, object, method)
         end)
 
         if obj.events and obj.events[method] then
-            tasks.start(function()
+            @{
                 --enable_input(false)
                 obj.events[method](player, obj, item_type)
                 --enable_input(true)
-            end)
+            }
         end
         
     elseif callback_type == "item" then
         local obj = items[object]
         
         if obj and obj.events and obj.events[method] then
-            tasks.start(function()
+            @{
                 --enable_input(false)
                 obj.events[method](player, obj, item_type)
                 --enable_input(true)
-            end)
+            }
         end
     end
 end

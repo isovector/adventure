@@ -35,7 +35,11 @@ engine.events.draw.sub(function()
     drawing.blit(game.resources.cursors, input.mouse.pos - game.cursors.offsets[input.mouse.cursor + 1], false, [32 * input.mouse.cursor, 0], [32, 32])
     
     for _, msg in ipairs(conversation.words) do
-        drawing.text_center(msg.pos, msg.color, msg.outline, msg.message)
+        if not msg.aligned then
+            drawing.text_center(msg.pos, msg.color, msg.outline, msg.message)
+        else
+            drawing.text(msg.pos, msg.color, msg.outline, msg.message)
+        end
     end
 
     local i = 0

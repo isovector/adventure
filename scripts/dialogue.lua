@@ -110,7 +110,8 @@ function conversation.say(message, pos, col, duration)
         color = col,
         outline = color.black,
         pos = pos,
-        duration = duration
+        duration = duration,
+        aligned = false
     }
 
     table.insert(conversation.words, msg)
@@ -134,10 +135,6 @@ function conversation.pump_words()
             table.remove(conversation.words, key)
         end
     end
-end
-
-function say_ex(actor, message)
-    actor.say_async(message)
 end
 
 function say(actor, message)

@@ -1,0 +1,6 @@
+-{ block:
+
+    mlp.lexer:add "@{"
+    mlp.stat:add{ "@{", mlp.block, "}",
+        builder = |x| +{ tasks.start(function() -{ x[1] } end) } }
+}

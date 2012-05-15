@@ -41,8 +41,8 @@ $(extprebuild) : $(extensions)
 $(OBJDIR)/%.luac : %.lua $(extprebuild)
 	@mkdir -p $(dir $@)
 	@cat $(extprebuild) $< > $@
-	@metalua -o $@ $@
 	@echo metalua -o $@ $<
+	@metalua -o $@ $@
 	
 #########################################################
 

@@ -28,6 +28,7 @@ void tasks_update(float elapsed) {
         
         if (task.IsComplete()) {
             it = current_tasks.erase(it);
+            task_map.erase(task);
             --it;
         }
     }

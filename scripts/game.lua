@@ -31,7 +31,7 @@ game = {
     verbs = { }
 }
 
-game.inventory_rect = rect.create([270,210], game.resources.inventory.size)
+game.inventory_rect = rect([270,210], game.resources.inventory.size)
 
 function game.register_actor_updates()
     load.script("scripts/costume.lua")

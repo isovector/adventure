@@ -29,7 +29,7 @@ local draw = function()
     local start = vector(400, 600)
     local size = vector(480, 30)
     
-    drawing.rect(rect.create(start, size), color.black)
+    drawing.rect(rect(start, size), color.black)
     drawing.text_center(start + vector(0, size.y + 15), color.black, "0")
     
     if table.getn(kframes) ~= 0 then

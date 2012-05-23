@@ -27,7 +27,7 @@ function engine.dialogue_state()
         for _, str in ipairs(conversation.options) do
             local y =  695 - 14 * (top - i)
         
-            if rect.create([0, y], [1280, 14]).contains(input.mouse.pos) then
+            if rect([0, y], [1280, 14]).contains(input.mouse.pos) then
                 conversation.continue(i + 1)
                 return
             end
@@ -87,7 +87,7 @@ function engine.game_state()
     local found = false
     for _, actor in ipairs(room.scene) do
         if actor.origin and not actor.ignore_ui then -- flush out foreground elements
-            local hitbox = rect.create(actor.pos - actor.origin, actor.size)
+            local hitbox = rect(actor.pos - actor.origin, actor.size)
             if hitbox.contains(mouse.pos) then
                 --[[or pixel perfect]]
                 found = 1
@@ -152,7 +152,7 @@ function engine.game_state()
             
             action.hitboxes = { }
             for verb, data in pairs(game.verbs) do
-                action.hitboxes[verb] = rect.create(action.pos + data.offset, data.size)
+                action.hitboxes[verb] = rect(action.pos + data.offset, data.size)
             end
         end
     elseif mouse.is_click("right") then
@@ -175,7 +175,7 @@ function engine.inventory_state()
 
     local i = 0
     for key, item in pairs(player.inventory) do
-        if rect.create([270 + 75 * (i % 10), 215 + 75 * math.floor(i / 10)], [64, 64]).contains(mouse.pos) then
+        if rect([270 + 75 * (i % 10), 215 + 75 * math.floor(i / 10)], [64, 64]).contains(mouse.pos) then
             game.hovertext = item.name
             mouse.cursor = 5
             
@@ -211,7 +211,7 @@ function engine.inventory_state()
             
             action.hitboxes = { }
             for verb, data in pairs(game.verbs) do
-                action.hitboxes[verb] = rect.create(action.pos + data.offset, data.size)
+                action.hitboxes[verb] = rect(action.pos + data.offset, data.size)
             end
         end
     elseif input.mouse.is_click("right") then

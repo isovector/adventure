@@ -27,7 +27,7 @@ function engine.dialogue_state()
         for _, str in ipairs(conversation.options) do
             local y =  695 - 14 * (top - i)
         
-            if rect([0, y], [1280, 14]).contains(input.mouse.pos) then
+            if rect([0, y], [1280, 14]):Contains(input.mouse.pos) then
                 conversation.continue(i + 1)
                 return
             end
@@ -46,7 +46,7 @@ function engine.action_state()
 
     action.method = ""
     for htype, hitbox in pairs(action.hitboxes) do
-        if hitbox.contains(mouse.pos) then
+        if hitbox:Contains(mouse.pos) then
             mouse.cursor = 5
             action.method = htype
             game.hovertext = game.verbs[htype].use:format(action.name)
@@ -88,7 +88,7 @@ function engine.game_state()
     for _, actor in ipairs(room.scene) do
         if actor.origin and not actor.ignore_ui then -- flush out foreground elements
             local hitbox = rect(actor.pos - actor.origin, actor.size)
-            if hitbox.contains(mouse.pos) then
+            if hitbox:Contains(mouse.pos) then
                 --[[or pixel perfect]]
                 found = 1
                 mouse.cursor = 5
@@ -175,7 +175,7 @@ function engine.inventory_state()
 
     local i = 0
     for key, item in pairs(player.inventory) do
-        if rect([270 + 75 * (i % 10), 215 + 75 * math.floor(i / 10)], [64, 64]).contains(mouse.pos) then
+        if rect([270 + 75 * (i % 10), 215 + 75 * math.floor(i / 10)], [64, 64]):Contains(mouse.pos) then
             game.hovertext = item.name
             mouse.cursor = 5
             
@@ -200,7 +200,7 @@ function engine.inventory_state()
         i = i + 1
     end
 
-    if input.mouse.is_click("left") and not game.inventory_rect.contains(mouse.pos) then
+    if input.mouse.is_click("left") and not game.inventory_rect:Contains(mouse.pos) then
         engine.state = "game"
     end
     

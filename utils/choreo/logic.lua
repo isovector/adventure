@@ -34,7 +34,7 @@ local logic = function()
     end
     
     if input.mouse.is_click("left") then
-        if rect(bone_offset, bone.image.size).contains(input.mouse.pos) 
+        if rect(bone_offset, bone.image.size):Contains(input.mouse.pos) 
             and not moving then
             bone.image_offset = input.mouse.pos - bone_offset
         else

@@ -48,7 +48,7 @@ engine.events.draw.sub(function()
         local col = color.white
         local y =  695 - 14 * (top - i)
     
-        if rect([0, y], [1280, 14]).contains(input.mouse.pos) then
+        if rect([0, y], [1280, 14]):Contains(input.mouse.pos) then
             col = color.make(255, 0, 0)
         end
         

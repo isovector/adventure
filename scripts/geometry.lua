@@ -3,7 +3,7 @@ function rotate(v, rot)
     local cos = math.cos(rot)
     local sin = math.sin(rot)
     
-    return [cos * v.x - sin * v.y, sin * v.x + cos * v.y]
+    return vector(cos * v.x - sin * v.y, sin * v.x + cos * v.y)
 end
 
 function interp(errorval)

@@ -30,7 +30,7 @@ void load_room(SDL_Surface *hot) {
 void init_script() {
     script.Initialize(NULL);
     
-    if (luaL_dofile(script, "obj/scripts/environment.luac") != 0)
+    if (luaL_dofile(script, "scripts/environment.lua") != 0)
 		printf("%s\n", lua_tostring(script, -1));
 }
 
@@ -38,7 +38,7 @@ void boot_module(string module) {
     lua_pushstring(script, module.c_str());
     lua_setglobal(script, "module");
     
-    string initcode = "dofile(\"obj/\" .. module .. \"/boot.luac\")\n"
+    string initcode = "dofile(module .. \"/boot.lua\")\n"
                       "readonly.locks[\"module\"] = module";
     
     if (luaL_dostring(script, initcode.c_str()) != 0)

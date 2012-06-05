@@ -85,7 +85,7 @@ function Room:hotspot(shade, id, name)
         id = id,
         name = name,
         cursor = 5,
-        spot = [0, 0],
+        spot = vector(0),
         
         clickable = false,
         
@@ -159,7 +159,7 @@ end
 
 function Room:is_walkable(pos, y)
     if y then
-        pos = [pos, y]
+        pos = vector(pos, y)
     end
     
     return self.enabled_paths[pathfinding.is_walkable(self.hotmap, pos)]

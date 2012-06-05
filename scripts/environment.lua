@@ -12,7 +12,6 @@ setmetatable(_G, { __index = readonly.locks, __newindex = readonly.indexer })
 
 load = { }
 function load.script(file)
-    file = "obj/" .. file .. "c"
     --print(file)
     return dofile(file)
 end
@@ -39,7 +38,6 @@ sleep = tasks.sleep
 load.script("scripts/class.lua")
 load.script("scripts/event.lua")
 load.script("scripts/debug.lua")
-load.script("scripts/stream.lua")
 load.script("scripts/serialize.lua")
 
 load.script("scripts/library.lua")

@@ -4,7 +4,7 @@ newclass("Animation",
     function(bmp, xframes, yframes, fps)
         return { 
             image = bmp,
-            size = bmp.size / [xframes, yframes],
+            size = bmp.size / vector(xframes, yframes),
             
             elapsed = 0,
             frame = 0,

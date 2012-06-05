@@ -11,9 +11,9 @@ game.register_conversation()
 
 -- initialize verbs
 
-game.add_verb("talk", "Talk to %s", [0, 0], [48, 48])
-game.add_verb("look", "Look at %s", [48, 0], [48, 48])
-game.add_verb("touch", "Touch %s", [96, 0], [48, 48])
+game.add_verb("talk", "Talk to %s", vector(0), vector(48))
+game.add_verb("look", "Look at %s", vector(48, 0), vector(48))
+game.add_verb("touch", "Touch %s", vector(96, 0), vector(48))
 
 -- load content
 
@@ -30,7 +30,6 @@ end)
 rooms["outside"]:switch()
 pathfinding.enable_path(17)
 player = actors.santino
-
 
 --[[player.events.tick.sub(function(elapsed)
     local xoffset = math.clamp(player.pos.x - screen_width / 2, 0, room_width - screen_width)

@@ -27,7 +27,7 @@ function engine.dialogue_state()
         for _, str in ipairs(conversation.options) do
             local y =  695 - 14 * (top - i)
         
-            if rect([0, y], [1280, 14]):Contains(input.mouse.pos) then
+            if rect(vector(0, y), vector(1280, 14)):Contains(input.mouse.pos) then
                 conversation.continue(i + 1)
                 return
             end
@@ -175,7 +175,7 @@ function engine.inventory_state()
 
     local i = 0
     for key, item in pairs(player.inventory) do
-        if rect([270 + 75 * (i % 10), 215 + 75 * math.floor(i / 10)], [64, 64]):Contains(mouse.pos) then
+        if rect(vector(270 + 75 * (i % 10), 215 + 75 * math.floor(i / 10)), vector(64)):Contains(mouse.pos) then
             game.hovertext = item.name
             mouse.cursor = 5
             

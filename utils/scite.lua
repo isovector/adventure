@@ -17,7 +17,6 @@ function GetFile()
 	
 	if file:sub(0, #path) == path then
 		file = file:sub(#path + 1)
-		file = "/obj" .. file .. "c"
 	end
 	
 	if file:sub(1, 1) == "/" then

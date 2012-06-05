@@ -132,7 +132,7 @@ void ScriptTask::Raise(string signal) {
 
 void ScriptTask::Hook(lua_Debug *debug) {
     lua_getinfo(mState, "Sl", debug);
-    if (breakpoints.count(debug->source) && breakpoints[debug->source].count(debug->currentline - TASKS_LINE_OFFSET))
+    if (breakpoints.count(debug->source) && breakpoints[debug->source].count(debug->currentline))
         cerr << "BREAKPOINT at " << (debug->source + 1) << " on line #" << debug->currentline << endl;
     
     if (++mLinesExecuted == MAX_EXECUTION) {

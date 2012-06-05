@@ -8,17 +8,17 @@ game = {
 
     cursors = {
         offsets = {
-            [1]  = [16, 16],
-            [2]  = [3,27],
-            [3]  = [16,29],
-            [4]  = [29,27],
-            [5]  = [3,16],
-            [6]  = [16,16],
-            [7]  = [29,16],
-            [8]  = [3,5],
-            [9]  = [16,3],
-            [10] = [29,5],
-            [11] = [16,16]
+            vector(16, 16),
+            vector(3, 27),
+            vector(16, 29),
+            vector(29, 27),
+            vector(3, 16),
+            vector(16, 16),
+            vector(29, 16),
+            vector(3, 5),
+            vector(16, 3),
+            vector(29, 5),
+            vector(16, 16)
         }
     },
     
@@ -31,7 +31,7 @@ game = {
     verbs = { }
 }
 
-game.inventory_rect = rect([270,210], game.resources.inventory.size)
+game.inventory_rect = rect(vector(270, 210), game.resources.inventory.size)
 
 function game.register_actor_updates()
     load.script("scripts/costume.lua")
@@ -111,7 +111,7 @@ function game.make_walkspot(actor)
         end)
     end
     
-    if not actor then return [0, 0] end
+    if not actor then return vector(0) end
     
     if actor.walkspot then
         return vector(actor.walkspot.x, actor.walkspot.y)
@@ -137,7 +137,7 @@ function game.make_walkspot(actor)
             local ay = math.sin(degree) * dist
             
             if room:is_walkable(x + ax, y + ay) then
-                return [x + ax, y + ay]
+                return vector(x + ax, y + ay)
             end
         end
     end
@@ -162,11 +162,11 @@ function game.dispatch(callback_type, object, method)
     
     if callback_type == "hotspot" then
         if room.hotspots[object] and room.hotspots[object].events[method] then
-            @{
+            tasks.start(function()
                 --enable_input(false)
                 room.hotspots[object].events[method](player, room.hotspots[object], item_type)
                 --enable_input(true)
-            }
+            end)
         end
 
     elseif callback_type == "object" then
@@ -175,22 +175,22 @@ function game.dispatch(callback_type, object, method)
         end)
 
         if obj.events and obj.events[method] then
-            @{
+            tasks.start(function()
                 --enable_input(false)
                 obj.events[method](player, obj, item_type)
                 --enable_input(true)
-            }
+            end)
         end
         
     elseif callback_type == "item" then
         local obj = items[object]
         
         if obj and obj.events and obj.events[method] then
-            @{
+            tasks.start(function()
                 --enable_input(false)
                 obj.events[method](player, obj, item_type)
                 --enable_input(true)
-            }
+            end)
         end
     end
 end

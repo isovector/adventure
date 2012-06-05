@@ -1,6 +1,6 @@
 engine.events.draw.sub(function()
     if room and room.artwork then
-        drawing.blit(room.artwork, [0, 0])
+        drawing.blit(room.artwork, vector(0))
         
         for _, actor in ipairs(room.scene) do
             if actor.costume then
@@ -10,16 +10,16 @@ engine.events.draw.sub(function()
         end
     else
         drawing.clear(color.black)
-        drawing.text([32, 32], color.make(255, 200, 0), -1, "Room failed to load")
-        drawing.text([32, 46], color.make(255, 200, 0), -1, "This is generally indicative of a big lua problem")
+        drawing.text(vector(32, 32), color.make(255, 200, 0), -1, "Room failed to load")
+        drawing.text(vector(32, 46), color.make(255, 200, 0), -1, "This is generally indicative of a big lua problem")
     end
     
     if engine.state == "inventory" then
-        drawing.blit(game.resources.inventory, [270, 210])
+        drawing.blit(game.resources.inventory, vector(270, 210))
         
         local i = 0
         for _, item in pairs(player.inventory) do
-            drawing.blit(item.image, [270 + 75 * (i % 10), 215 + 75 * math.floor(i / 10)])
+            drawing.blit(item.image, vector(270 + 75 * (i % 10), 215 + 75 * math.floor(i / 10)))
             i = i + 1
         end
     end
@@ -32,14 +32,10 @@ engine.events.draw.sub(function()
         drawing.blit(engine.item.image, input.mouse.pos)
     end
     
-    drawing.blit(game.resources.cursors, input.mouse.pos - game.cursors.offsets[input.mouse.cursor + 1], false, [32 * input.mouse.cursor, 0], [32, 32])
+    drawing.blit(game.resources.cursors, input.mouse.pos - game.cursors.offsets[input.mouse.cursor + 1], false, vector(32 * input.mouse.cursor, 0), vector(32))
     
     for _, msg in ipairs(conversation.words) do
-        if not msg.aligned then
-            drawing.text_center(msg.pos, msg.color, msg.outline, msg.message)
-        else
-            drawing.text(msg.pos, msg.color, msg.outline, msg.message)
-        end
+        drawing.text_center(msg.pos, msg.color, msg.outline, msg.message)
     end
 
     local i = 0
@@ -48,14 +44,14 @@ engine.events.draw.sub(function()
         local col = color.white
         local y =  695 - 14 * (top - i)
     
-        if rect([0, y], [1280, 14]):Contains(input.mouse.pos) then
+        if rect(vector(0, y), vector(1280, 14)):Contains(input.mouse.pos) then
             col = color.make(255, 0, 0)
         end
         
-        drawing.text([25, y], col, -1, str)
+        drawing.text(vector(25, y), col, -1, str)
         i = i + 1
     end
     
-    drawing.text([32, 32], color.make(255, 255, 255), -1, game.hovertext)
-    drawing.text([screen_width - 50, 32], color.make(255, 0, 0), color.black, engine.fps)
+    drawing.text(vector(32), color.make(255, 255, 255), -1, game.hovertext)
+    drawing.text(vector(screen_width - 50, 32), color.make(255, 0, 0), color.black, engine.fps)
 end)

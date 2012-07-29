@@ -1,7 +1,10 @@
 #ifndef ADVENTURE_DRAWING_H
 #define ADVENTURE_DRAWING_H
 
-#include "adventure.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
+
+#include "geometry.h"
 
 int getpixel(SDL_Surface *surface, int x, int y);
 void putpixel(SDL_Surface *surface, int x, int y, int color);
@@ -25,6 +28,7 @@ void draw_text_center(SDL_Surface *target, Vector *pos, int fg, int bg, const ch
 void draw_clear(int color);
 void draw_clear(SDL_Surface *target, int color);
 
+#define OUTLINE_SIZE 2
 
 extern SDL_Surface *screen;
 extern TTF_Font *font, *font_outline;

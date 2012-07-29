@@ -1,6 +1,6 @@
 %module drawing
 %{
-#include "adventure.h"
+#include "drawing.h"
 %}
 
 %include "src/exports/geometry.i"
@@ -54,7 +54,6 @@ void SDL_FreeSurface(SDL_Surface *surface);
 %{
 int native_get_screen(lua_State *L) {
     lua_newtable(L);
-    int bpp = screen->format->BytesPerPixel;
     
     char *pixels = (char*)screen->pixels;
     int size = lua_tonumber(L, 1);

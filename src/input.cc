@@ -1,5 +1,12 @@
-#include "adventure.h"
+#include <map>
+#include <string>
+#include <algorithm>
 
+#include "input.h"
+#include "script.h"
+using namespace std;
+
+bool quit = false;
 bool text_mode = false;
 std::map<int, std::string> key_mappings;
 string input_string = "";
@@ -29,7 +36,7 @@ void process_text_input(const SDL_KeyboardEvent &event) {
 
     if (event.keysym.sym == SDLK_BACKSPACE && input_string.length() > 0)
         input_string.erase(input_string.size() - 1);
-    else if (c = event_to_char(event))
+    else if ((c = event_to_char(event)))
         input_string += c;
 }
 

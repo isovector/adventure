@@ -1,4 +1,7 @@
 #include "adventure.h"
+#include "drawing.h"
+#include "path.h"
+using namespace std;
 
 Vector *waypoints[MAX_WAYPOINTS];
 unsigned int waypoint_connections[MAX_WAYPOINTS] = {0};

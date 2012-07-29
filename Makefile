@@ -1,32 +1,25 @@
+CXX = g++ 			
+CXXFLAGS = -g3 -O0 -Wall -MMD $(addprefix -l, SDL SDL_image SDL_gfx SDL_ttf pthread m lua)
+OBJECTS = $(patsubst ./%.cc, %.o, $(shell find . -type f -name '*.cc'))
+DEPENDS = ${OBJECTS:.o=.d}
+EXEC = adventure
+
+
 OBJDIR = obj
 COSTDIR = game/costumes
-BUILD_FLAGS = -O0 -g3
-LINK_FLAGS = $(addprefix -l, SDL SDL_image SDL_gfx SDL_ttf pthread m lua)
 
 #########################################################
-
-c_files =  $(addsuffix .o, adventure drawing geometry input lua path tasks)
-headers =  $(addsuffix .h, adventure drawing geometry input lua path tasks)
-wrappers = $(addsuffix _wrap.o, geometry drawing pathfinding tasks)
-
-#########################################################
-
-objects =  $(addprefix $(OBJDIR)/, $(c_files) $(wrappers))
-srcheaders = $(addprefix src/, $(headers))
 
 art = $(patsubst art/%.sifz, $(COSTDIR)/%.png, $(shell find art/ -type f -name '*.sifz'))
 
 #########################################################
 
-adventure : $(OBJDIR) $(objects)
-	g++ $(BUILD_FLAGS) -o adventure $(LINK_FLAGS) $(objects)
-    
+${EXEC} : ${OBJDIR} ${OBJECTS}
+	${CXX} ${CXXFLAGS} ${OBJECTS} -o ${EXEC}
+
 src/%_wrap.cc : src/exports/%.i $(srcheaders)
 	swig -c++ -lua -o $@ $<
-	sed -i 's/"lua.h"/<lua.h>/g' $@
-
-$(OBJDIR)/%.o : src/%.cc $(srcheaders)
-	g++ $(BUILD_FLAGS) -c $< -o $@
+#	sed -i 's/"lua.h"/<lua.h>/g' $@
 
 #########################################################
 
@@ -54,8 +47,9 @@ $(OBJDIR) :
 	mkdir $(OBJDIR)
 
 clean : 
-	rm adventure $(objects) obj/test.tmp
-	rmdir $(OBJDIR)
+	rm -rf ${DEPENDS} ${OBJECTS} ${EXEC}
 
 clean_all : clean
 	rm -r game/costumes/
+	
+-include ${DEPENDS}

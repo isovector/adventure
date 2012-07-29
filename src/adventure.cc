@@ -1,8 +1,14 @@
+#include <semaphore.h>
+
 #include "adventure.h"
+#include "drawing.h"
+#include "input.h"
+#include "path.h"
+#include "script.h"
+using namespace std;
 
 SDL_Surface *room_hot = NULL;
 
-bool quit = false;
 bool in_console = false;
 
 // updates the regular game state

@@ -1,10 +1,14 @@
 %module pathfinding
 %{
-#include "adventure.h"
+#include <map>
 
-int script_map_out(map<int, int> *table) {
+#include "geometry.h"
+#include "path.h"
+#include "script.h"
+
+int script_map_out(std::map<int, int> *table) {
     lua_newtable(script);
-    for (map<int, int>::iterator it = table->begin(); it != table->end(); it++) {
+    for (std::map<int, int>::iterator it = table->begin(); it != table->end(); it++) {
         lua_pushnumber(script, it->first);
         lua_pushnumber(script, it->second);
         lua_settable(script, -3);
@@ -15,9 +19,9 @@ int script_map_out(map<int, int> *table) {
     return 1;
 }
 
-int script_map_out_vector(map<int, Vector*> *table) {
+int script_map_out_vector(std::map<int, Vector*> *table) {
     lua_newtable(script);
-    for (map<int, Vector*>::iterator it = table->begin(); it != table->end(); it++) {
+    for (std::map<int, Vector*>::iterator it = table->begin(); it != table->end(); it++) {
         lua_pushnumber(script, it->first);
         
         swig_module_info *module = SWIG_GetModule(script);
@@ -34,12 +38,12 @@ int script_map_out_vector(map<int, Vector*> *table) {
 }
 %}
 
-%typemap(ret, noblock=1) map<int, int>*
+%typemap(ret, noblock=1) std::map<int, int>*
 {
     return script_map_out($1);
 }
 
-%typemap(ret, noblock=1) map<int, Vector *>*
+%typemap(ret, noblock=1) std::map<int, Vector *>*
 {
     return script_map_out_vector($1);
 }
@@ -50,7 +54,7 @@ void load_room(SDL_Surface *hot);
 void build_waypoints();
 
 %rename(get_neighbors) script_get_neighbors;
-map<int, int> *script_get_neighbors(int node);
+std::map<int, int> *script_get_neighbors(int node);
 
 %rename(get_waypoint) script_get_waypoint;
 Vector *script_get_waypoint(int waypointId);
@@ -71,4 +75,4 @@ bool script_is_pathable(Vector *a, Vector *b);
 int script_which_hotspot(Vector *pixel);
 
 %rename(get_walkspots) script_get_walkspots;
-map<int, Vector*> *script_get_walkspots(SDL_Surface *bmp);
+std::map<int, Vector*> *script_get_walkspots(SDL_Surface *bmp);

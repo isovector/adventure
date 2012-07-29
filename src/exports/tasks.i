@@ -1,6 +1,6 @@
 %module tasks
 %{
-#include "adventure.h"
+#include "script.h"
 %}
 
 %rename(raw_start) task_start;

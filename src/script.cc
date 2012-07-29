@@ -1,4 +1,12 @@
+#include <cassert>
+#include <string>
+
 #include "adventure.h"
+#include "path.h"
+#include "script.h"
+
+using namespace std;
+
 
 ScriptTask script(0);
 

@@ -1,7 +1,13 @@
 #ifndef ADVENTURE_TASKS_H
 #define ADVENTURE_TASKS_H
 
-#include "adventure.h"
+#include <list>
+#include <string>
+
+extern "C" {
+#include <lua.h>
+}
+
 
 class ScriptTask {
 public:
@@ -10,7 +16,7 @@ public:
     
     void Initialize(lua_State* parent);
     void Update(float elapsed);
-    void Raise(string signal);
+    void Raise(std::string signal);
     void Hook(lua_Debug *debug);
     void SetHook(bool enabled);
     void ResetExecutedLines();
@@ -26,7 +32,7 @@ private:
 
     lua_State* mState;
 
-    string mNextExecutionSignal;
+    std::string mNextExecutionSignal;
     float  mNextExecutionTimer;
     int  mTaskId;
     bool mComplete;
@@ -40,7 +46,7 @@ void task_raise_signal(const char *signal);
 void tasks_update(float elapsed);
 void tasks_get_debug();
 
-extern list<ScriptTask> current_tasks;
+extern std::list<ScriptTask> current_tasks;
 
 #define MAX_EXECUTION 20000
 

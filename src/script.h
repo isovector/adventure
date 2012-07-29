@@ -1,16 +1,33 @@
 #ifndef ADVENTURE_LUA_H
 #define ADVENTURE_LUA_H
 
-#include "adventure.h"
+#include <string>
 
-class ScriptTask;
+#include <SDL/SDL.h>
+
+extern "C" {
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+}
+
+#include "tasks.h"
+
 extern ScriptTask script;
 
 void init_script();
-void boot_module(string module);
+void boot_module(std::string module);
 void load_room(SDL_Surface *hot);
 
 int script_panic(lua_State* L);
+
+extern "C" {
+    int luaopen_geometry(lua_State* L);
+    int luaopen_drawing(lua_State* L);
+    int luaopen_pathfinding(lua_State* L);
+    int luaopen_tasks(lua_State* L);
+}
+
 
 #define lua_getregister(L, s)  lua_getfield(L, LUA_REGISTRYINDEX, s)
 #define lua_setregister(L, s)  lua_setfield(L, LUA_REGISTRYINDEX, s)

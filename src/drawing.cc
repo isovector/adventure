@@ -1,4 +1,17 @@
-#include "adventure.h"
+#include <map>
+
+#include <SDL/SDL.h>
+#include <SDL/SDL_rotozoom.h>
+#include <SDL/SDL_gfxPrimitives.h>
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
+
+extern "C" {
+#include <lua.h>
+}
+
+#include "drawing.h"
+using namespace std;
 
 SDL_Surface *screen;
 TTF_Font *font;

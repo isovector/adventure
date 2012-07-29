@@ -1,12 +1,18 @@
 #ifndef ADVENTURE_INPUT_H
 #define ADVENTURE_INPUT_H
 
-#include "adventure.h"
+#include <SDL/SDL.h>
+
+extern "C" {
+#include <lua.h>
+}
 
 void init_keys();
 void process_input_event(const SDL_Event &event);
 void update_mouse();
 void update_key_state(int key, bool down);
+
+extern bool quit;
 
 #define lua_setkey(key) { \
                             std::string data = #key; \

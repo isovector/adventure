@@ -1,4 +1,21 @@
-#include "adventure.h"
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <set>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h> 
+
+extern "C" {
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+}
+
+
+#include "script.h"
+using namespace std;
 
 map<string, set<size_t> > breakpoints;
 map<lua_State*, ScriptTask*> task_map;
@@ -151,8 +168,6 @@ void ScriptTask::ResetExecutedLines() {
 }
 
 void ScriptTask::Continue() {
-    int top = lua_gettop(mState);
-    
     ResetExecutedLines();
     switch (lua_resume(mState, 0)) {
         case LUA_YIELD:

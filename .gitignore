@@ -2,6 +2,8 @@
 /adventure.dbg
 a.out
 obj
+src/*.o
+src/*.d
 .dropbox
 *_wrap.cc
 src/*_wrap.cc

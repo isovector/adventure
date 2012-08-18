@@ -2,6 +2,8 @@
 /adventure.dbg
 a.out
 obj
+moai/samples
+moai/gluthost
 src/*.o
 src/*.d
 .dropbox

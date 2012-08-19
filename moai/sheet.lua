@@ -51,7 +51,7 @@ end
 function Sheet:hoverCallback(x, y)
     local prop = self.partition:propForPoint(x, y)
     if prop then
-        return self.onHover and self:onHover(prop, x, y)
+        return not self.onHover or self:onHover(prop, x, y)
     end
     
     return prop
@@ -60,7 +60,7 @@ end
 function Sheet:clickCallback(x, y)
     local prop = self.partition:propForPoint(x, y)
     if prop then
-        return self.onClick and self:onClick(prop, x, y)
+        return not self.onClick or self:onClick(prop, x, y)
     end
     
     return prop

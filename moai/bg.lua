@@ -16,14 +16,17 @@ sheet:installHover(true)
 
 function sheet:onHover()
     textbox:setString("")
+    mouse.cursor = 0
     return true
 end
 
-function sheet:onClick(prop, x, y)
-    addVis(function()
-        MOAIGfxDevice.setPenColor(0, 0, 1)
-        MOAIDraw.fillRect(x - 8, y - 8, x + 8, y + 8)
-    end, 3)
+function sheet:onClick(prop, x, y, down)
+    if down then
+        addVis(function()
+            MOAIGfxDevice.setPenColor(0, 0, 1)
+            MOAIDraw.fillRect(x - 8, y - 8, x + 8, y + 8)
+        end, 3)
+    end
         
     return true
 end

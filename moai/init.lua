@@ -7,13 +7,13 @@ viewport:setSize(1280, 720)
 viewport:setScale(1280, -720)
 viewport:setOffset(-1, 1)
 
+mouse = { x = 0, y = 0, cursor = 5 }
+
 dofile("sheet.lua")
 dofile("bg.lua")
 dofile("fg.lua")
 dofile("vis.lua")
 dofile("hud.lua")
-
-local mouse = { x = 0, y = 0 }
 
 local function keyCallback(key, down)
     if down and key == 27 then
@@ -25,13 +25,18 @@ local function pointerCallback(x, y)
     mouse.x = x
     mouse.y = y
     
+    if mouse.prop then
+        mouse.prop:setIndex(mouse.cursor + 1)
+        mouse.prop:setLoc(x, y)
+    end
+    
     Sheet.hover(x, y)
 end
 
 local function clickCallback(down)
-    if down then
-        Sheet.click(mouse.x, mouse.y)
-    end
+    --if down then
+        Sheet.click(mouse.x, mouse.y, down)
+    --end
 end
 
 MOAIInputMgr.device.pointer:setCallback(pointerCallback)

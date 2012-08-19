@@ -15,5 +15,6 @@ sheet:installHover(true)
 
 function sheet:onHover(prop, x, y)
     textbox:setString("hello")
+    mouse.cursor = 5
     return prop
 end

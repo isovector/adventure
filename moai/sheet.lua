@@ -36,11 +36,11 @@ function Sheet.hover(x, y)
     return false
 end
 
-function Sheet.click(x, y)
+function Sheet.click(x, y, down)
     for n = #Sheet.sheets, 1, -1 do
         local sheet = Sheet.sheets[n]
     
-        if sheet.click_installed and sheet:clickCallback(x, y) then
+        if sheet.click_installed and sheet:clickCallback(x, y, down) then
             return sheet
         end
     end
@@ -57,10 +57,10 @@ function Sheet:hoverCallback(x, y)
     return prop
 end
 
-function Sheet:clickCallback(x, y)
+function Sheet:clickCallback(x, y, down)
     local prop = self.partition:propForPoint(x, y)
     if prop then
-        return not self.onClick or self:onClick(prop, x, y)
+        return not self.onClick or self:onClick(prop, x, y, down)
     end
     
     return prop

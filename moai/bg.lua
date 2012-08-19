@@ -1,37 +1,29 @@
-local viewport = viewport
+local sheet = Sheet.new("background")
+local quad = MOAIGfxQuad2D.new()
+quad:setTexture("../game/rooms/outside/art.png")
+quad:setRect(0, 0, SIZE.x, SIZE.y)
+quad:setUVRect(0, 0, 1, 1)
 
-bgLayer = MOAILayer2D.new()
-bgLayer:setViewport(viewport)
-MOAISim.pushRenderPass(bgLayer)
+local prop = MOAIProp2D.new()
+prop:setDeck(quad)
 
-bgQuad = MOAIGfxQuad2D.new()
-bgQuad:setTexture("../game/rooms/outside/art.png")
-bgQuad:setRect(0, 0, SIZE.x, SIZE.y)
-bgQuad:setUVRect(0, 0, 1, 1)
+sheet:insertProp(prop)
+sheet:pushRenderPass()
 
-bgProp = MOAIProp2D.new()
-bgProp:setDeck(bgQuad)
-bgLayer:insertProp(bgProp)
+sheet:installClick(true)
+sheet:installHover(true)
 
 
-local mouse = { x = 0, y = 0 }
-
-local function pointerCallback(x, y)
-    mouse.x = x
-    mouse.y = y
+function sheet:onHover()
+    textbox:setString("")
+    return true
 end
 
-local function clickCallback(down)
-    if down then
-        local x = mouse.x
-        local y = mouse.y
-    
-        addVis(function()
-            MOAIGfxDevice.setPenColor(0, 0, 1)
-            MOAIDraw.fillRect(x - 8, y - 8, x + 8, y + 8)
-        end)
-    end
+function sheet:onClick(prop, x, y)
+    addVis(function()
+        MOAIGfxDevice.setPenColor(0, 0, 1)
+        MOAIDraw.fillRect(x - 8, y - 8, x + 8, y + 8)
+    end, 3)
+        
+    return true
 end
-
-MOAIInputMgr.device.pointer:setCallback(pointerCallback)
-MOAIInputMgr.device.mouseLeft:setCallback(clickCallback)

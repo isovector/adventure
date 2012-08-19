@@ -3,9 +3,8 @@ local freq = 0.25
 
 local vises = { }
 
-visLayer = MOAILayer2D.new()
-visLayer:setViewport(viewport)
-MOAISim.pushRenderPass(visLayer)
+local sheet = Sheet.new("visualization")
+sheet:pushRenderPass()
 
 local function onDraw()
     for call in pairs(vises) do
@@ -13,15 +12,15 @@ local function onDraw()
     end
 end
 
-scriptDeck = MOAIScriptDeck.new()
+local scriptDeck = MOAIScriptDeck.new()
 scriptDeck:setRect(0, 0, SIZE.x, SIZE.y)
 scriptDeck:setDrawCallback(onDraw)
 
-visProp = MOAIProp2D.new()
-visProp:setDeck(scriptDeck)
-visLayer:insertProp(visProp)
+local prop = MOAIProp2D.new()
+prop:setDeck(scriptDeck)
+sheet:insertProp(prop)
 
-local function callback()
+local function timerCallback()
     for call, time in pairs(vises) do
         if time ~= "forever" then
             if time < 0 then
@@ -33,9 +32,9 @@ local function callback()
     end
 end
 
-timer = MOAITimer.new()
+local timer = MOAITimer.new()
 timer:setMode(MOAITimer.LOOP)
-timer:setListener(MOAITimer.EVENT_TIMER_LOOP, callback)
+timer:setListener(MOAITimer.EVENT_TIMER_LOOP, timerCallback)
 timer:setSpan(freq)
 timer:start()
 

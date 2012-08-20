@@ -10,27 +10,30 @@
 
 
 require 'lib/lua-astar/astar'
-require 'lib/lua-astar/tiledmaphandler'
+require 'lib/lua-astar/volumehandler'
 
 
-local handler = TiledMapHandler()
+local handler = VolumeHandler()
 local astar = AStar(handler)
 
-print 'Beginning...'
+handler:setSize(2, 2)
+print(handler.width)
 
-   local start = {
-     x = math.random(1, 23),
-     y = math.random(1, 23)
-   }
+local start = {
+ x = 2,
+ y = 2
+}
 
-   local goal = {
-      x = math.random(1, 23),
-      y = math.random(1, 23)
-   }
-   
-   print(string.format('Testing: (%i, %i) (%i, %i)', start.x, start.y, goal.x, goal.y))
-   
-   local path = astar:findPath(start, goal)
+local goal = {
+  x = 22,
+  y = 22
+}
+
+local path = astar:findPath(start, goal)
+
+for _, node in pairs(path:getNodes()) do
+    print("path ", node.location.x, node.location.y)
+end
 
 
 

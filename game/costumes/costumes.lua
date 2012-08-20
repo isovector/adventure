@@ -11,11 +11,6 @@ cost.poses = {
 	walk = { },
 	nil
 }
-deck = MOAITileDeck2D.new()
-deck:setTexture("../game/costumes/santino/idle.png")
-deck:setSize(24, 1)
-deck:setRect(-40, 60, 40, -60)
-
 curve = MOAIAnimCurve.new()
 curve:reserveKeys(24)
 curve:setKey(1, 0.000000, 1, MOAIEaseType.FLAT)
@@ -43,14 +38,9 @@ curve:setKey(22, 0.875000, 22, MOAIEaseType.FLAT)
 curve:setKey(23, 0.916667, 23, MOAIEaseType.FLAT)
 curve:setKey(24, 1, 1, MOAIEaseType.FLAT)
 
-anim = Animation.new(deck, curve)
+anim = Animation.new("../game/costumes/santino/idle.png", 24, 40, 60, curve)
 anim.loops = true
 cost.poses.idle[5] = anim
-deck = MOAITileDeck2D.new()
-deck:setTexture("../game/costumes/santino/walk8.png")
-deck:setSize(24, 1)
-deck:setRect(-40, 60, 40, -60)
-
 curve = MOAIAnimCurve.new()
 curve:reserveKeys(24)
 curve:setKey(1, 0.000000, 1, MOAIEaseType.FLAT)
@@ -78,14 +68,9 @@ curve:setKey(22, 0.875000, 22, MOAIEaseType.FLAT)
 curve:setKey(23, 0.916667, 23, MOAIEaseType.FLAT)
 curve:setKey(24, 1, 1, MOAIEaseType.FLAT)
 
-anim = Animation.new(deck, curve)
+anim = Animation.new("../game/costumes/santino/walk8.png", 24, 40, 60, curve)
 anim.loops = true
 cost.poses.walk[8] = anim
-deck = MOAITileDeck2D.new()
-deck:setTexture("../game/costumes/santino/walk2.png")
-deck:setSize(24, 1)
-deck:setRect(-40, 60, 40, -60)
-
 curve = MOAIAnimCurve.new()
 curve:reserveKeys(24)
 curve:setKey(1, 0.000000, 1, MOAIEaseType.FLAT)
@@ -113,14 +98,9 @@ curve:setKey(22, 0.875000, 22, MOAIEaseType.FLAT)
 curve:setKey(23, 0.916667, 23, MOAIEaseType.FLAT)
 curve:setKey(24, 1, 1, MOAIEaseType.FLAT)
 
-anim = Animation.new(deck, curve)
+anim = Animation.new("../game/costumes/santino/walk2.png", 24, 40, 60, curve)
 anim.loops = true
 cost.poses.walk[2] = anim
-deck = MOAITileDeck2D.new()
-deck:setTexture("../game/costumes/santino/walk4.png")
-deck:setSize(24, 1)
-deck:setRect(-40, 60, 40, -60)
-
 curve = MOAIAnimCurve.new()
 curve:reserveKeys(24)
 curve:setKey(1, 0.000000, 1, MOAIEaseType.FLAT)
@@ -148,14 +128,9 @@ curve:setKey(22, 0.875000, 22, MOAIEaseType.FLAT)
 curve:setKey(23, 0.916667, 23, MOAIEaseType.FLAT)
 curve:setKey(24, 1, 1, MOAIEaseType.FLAT)
 
-anim = Animation.new(deck, curve)
+anim = Animation.new("../game/costumes/santino/walk4.png", 24, 40, 60, curve)
 anim.loops = true
 cost.poses.walk[4] = anim
-deck = MOAITileDeck2D.new()
-deck:setTexture("../game/costumes/santino/walk6.png")
-deck:setSize(24, 1)
-deck:setRect(-40, 60, 40, -60)
-
 curve = MOAIAnimCurve.new()
 curve:reserveKeys(24)
 curve:setKey(1, 0.000000, 1, MOAIEaseType.FLAT)
@@ -183,7 +158,7 @@ curve:setKey(22, 0.875000, 22, MOAIEaseType.FLAT)
 curve:setKey(23, 0.916667, 23, MOAIEaseType.FLAT)
 curve:setKey(24, 1, 1, MOAIEaseType.FLAT)
 
-anim = Animation.new(deck, curve)
+anim = Animation.new("../game/costumes/santino/walk6.png", 24, 40, 60, curve)
 anim.loops = true
 cost.poses.walk[6] = anim
 costumes.santino = cost

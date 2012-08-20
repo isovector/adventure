@@ -83,15 +83,7 @@ for path in glob.iglob(sys.argv[1] + "/*"):
 
         for name, pose in poses.items():
             for dir, data in pose.items():
-                print("deck = MOAITileDeck2D.new()")
-                firstpass = "deck:setTexture(\"../%s\")" % data["file"]
-                print(firstpass % anim)
-                print("deck:setSize(%d, 1)" % data["frames"])
-                print("deck:setRect(-%(w)d, %(h)d, %(w)d, -%(h)d)" % {'w': data["width"] / 4, 'h': data["height"] / 4})
-                
-                print()
                 print("curve = MOAIAnimCurve.new()")
-                
                 print("curve:reserveKeys(%d)" % data["frames"])
                 
                 for i in range(1, data["frames"]):
@@ -99,7 +91,8 @@ for path in glob.iglob(sys.argv[1] + "/*"):
                 print("curve:setKey(%d, 1, 1, MOAIEaseType.FLAT)" % data["frames"])
 
                 print()
-                print("anim = Animation.new(deck, curve)")
+                firstpass = "anim = Animation.new(\"../%s\", %d, %d, %d, curve)" % (data["file"], data["frames"], data["width"] / 4, data["height"] / 4)
+                print(firstpass % anim)
                 
                 #for time, event in data["events"].items():
                     #print("anim.events[%s] = \"%s\"" % (time, event))

@@ -1,10 +1,19 @@
 costumes = { }
 
 newclass("Animation", 
-    function(deck, curve)
+    function(path, frames, w, h, curve)
+        local img = MOAIImageTexture.new()
+        img:load(path, MOAIImage.TRUECOLOR + MOAIImage.PREMULTIPLY_ALPHA)
+    
+        deck = MOAITileDeck2D.new()
+        deck:setTexture(img)
+        deck:setSize(frames, 1)
+        deck:setRect(-w, h, w, -h)
+    
         return {
             deck = deck,
             curve = curve,
+            texture = img,
             loops = false,
             anim = MOAIAnim.new()
         }
@@ -27,10 +36,29 @@ function Animation:start(prop)
     anim:start()
     
     self.anim = anim
+    
+    prop.anim = self
 end
 
 function Animation:stop()
     self.anim:detach()
+end
+
+function Animation:hitTest(prop, x, y)
+    local rx, rh, rw, ry = prop:getRect()
+    local lx, ly = prop:getLoc()
+    
+    local x0 = rx + lx
+    local y0 = ry + ly
+    
+    local width = math.max(rx, rw) - math.min(rx, rw)
+    
+    -- get local space coords
+    x = x - x0 + (prop:getIndex() - 1) * width
+    y = y - y0
+
+    local _, _, _, a = self.texture:getRGBA(x, y)
+    return a ~= 0
 end
 
 newclass("Costume",

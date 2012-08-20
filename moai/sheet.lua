@@ -50,20 +50,20 @@ end
 
 function Sheet:hoverCallback(x, y)
     local prop = self.partition:propForPoint(x, y)
-    if prop then
+    if prop and (not prop.anim or prop.anim:hitTest(prop, x, y)) then
         return not self.onHover or self:onHover(prop, x, y)
     end
     
-    return prop
+    return false
 end
 
 function Sheet:clickCallback(x, y, down)
     local prop = self.partition:propForPoint(x, y)
-    if prop then
+    if prop and (not prop.anim or prop.anim:hitTest(prop, x, y)) then
         return not self.onClick or self:onClick(prop, x, y, down)
     end
     
-    return prop
+    return false
 end
 
 function Sheet:installClick(enabled)

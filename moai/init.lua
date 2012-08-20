@@ -10,10 +10,13 @@ viewport:setOffset(-1, 1)
 mouse = { x = 0, y = 0, cursor = 5 }
 
 dofile("sheet.lua")
+dofile("costume.lua")
+dofile("../game/costumes/costumes.lua")
 dofile("bg.lua")
 dofile("fg.lua")
 dofile("vis.lua")
 dofile("hud.lua")
+
 
 local function keyCallback(key, down)
     if down and key == 27 then

@@ -10,6 +10,7 @@ viewport:setOffset(-1, 1)
 mouse = { x = 0, y = 0, cursor = 5 }
 
 dofile("sheet.lua")
+dofile("pixelperfect.lua")
 dofile("costume.lua")
 dofile("../game/costumes/costumes.lua")
 dofile("bg.lua")

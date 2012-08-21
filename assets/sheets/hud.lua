@@ -1,11 +1,13 @@
-dofile("../scripts/library.lua")
+require "classes/sheet"
+require "classes/timer"
+require "classes/legacy/library"
 
 local sheet = Sheet.new("hud")
 sheet:pushRenderPass()
 
 local charcodes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,:;!?()&/-'
 local font = MOAIFont.new()
-font:loadFromTTF('arial-rounded.TTF', charcodes, 7.5, 163)
+font:loadFromTTF('assets/static/arial-rounded.TTF', charcodes, 7.5, 163)
 
 textbox = MOAITextBox.new()
 textbox:setFont(font)
@@ -23,7 +25,7 @@ fps:setAlignment(MOAITextBox.RIGHT_JUSTIFY)
 sheet:insertProp(fps)
 
 local tileLib = MOAITileDeck2D.new()
-tileLib:setTexture("../game/resources/cursors.png")
+tileLib:setTexture("assets/static/cursors.png")
 tileLib:setSize(11, 1)
 tileLib:setRect(-16, -16, 16, 16)
 
@@ -38,8 +40,4 @@ local function timerCallback()
     fps:setString(tostring(math.round(MOAISim.getPerformance())))
 end
 
-local timer = MOAITimer.new()
-timer:setMode(MOAITimer.LOOP)
-timer:setListener(MOAITimer.EVENT_TIMER_LOOP, timerCallback)
-timer:setSpan(1)
-timer:start()
+local timer = Timer.new(1, timerCallback)

@@ -1,3 +1,6 @@
+require "classes/sheet"
+require "classes/timer"
+
 local viewport = viewport
 local freq = 0.25
 

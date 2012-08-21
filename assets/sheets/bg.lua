@@ -1,6 +1,8 @@
+require "classes/sheet"
+
 local sheet = Sheet.new("background")
 local quad = MOAIGfxQuad2D.new()
-quad:setTexture("../game/rooms/outside/art.png")
+quad:setTexture("assets/rooms/outside/art.png")
 quad:setRect(0, 0, SIZE.x, SIZE.y)
 quad:setUVRect(0, 0, 1, 1)
 

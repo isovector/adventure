@@ -1,3 +1,5 @@
+require "classes/class"
+
 newclass("Timer", function(time, callback)
         local timer = MOAITimer.new()
         timer:setMode(MOAITimer.LOOP)

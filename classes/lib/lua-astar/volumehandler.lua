@@ -6,7 +6,7 @@
 --    Copyright 2011 GloryFish.org. All rights reserved.
 -- 
 
-require 'lib/lua-astar/middleclass'
+require 'classes/lib/lua-astar/middleclass'
 
 VolumeHandler = class('VolumeHandler')
 

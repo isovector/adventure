@@ -3,21 +3,14 @@ SIZE = { x = 1280, y = 720 }
 MOAISim.openWindow("Earnest Money", 1280, 720)
 
 viewport = MOAIViewport.new()
-viewport:setSize(1280, 720)
+viewport:setSize(SIZE.x, SIZE.y)
 viewport:setScale(1280, -720)
 viewport:setOffset(-1, 1)
 
 mouse = { x = 0, y = 0, cursor = 5 }
 
-dofile("sheet.lua")
-dofile("timer.lua")
-dofile("costume.lua")
-dofile("../game/costumes/costumes.lua")
-dofile("bg.lua")
-dofile("fg.lua")
-dofile("vis.lua")
-dofile("hud.lua")
-
+require "assets/costumes/costumes"
+require "assets/sheets/_layout"
 
 local function keyCallback(key, down)
     if down and key == 27 then

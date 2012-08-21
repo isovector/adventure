@@ -9,8 +9,8 @@
 --
 
 
-require 'lib/lua-astar/astar'
-require 'lib/lua-astar/volumehandler'
+require 'classes/lib/lua-astar/astar'
+require 'classes/lib/lua-astar/volumehandler'
 
 
 local handler = VolumeHandler()

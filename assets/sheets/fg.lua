@@ -1,7 +1,10 @@
+require "classes/costume"
+require "classes/sheet"
+
 local sheet = Sheet.new("foreground")
 
 local quad = MOAIGfxQuad2D.new()
-quad:setTexture("numbers.png")
+quad:setTexture("assets/static/numbers.png")
 quad:setRect(0, 0, 256, 256)
 quad:setUVRect(0, 0, 1, 1)
 

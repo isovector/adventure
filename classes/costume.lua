@@ -1,3 +1,5 @@
+require "classes/class"
+
 costumes = { }
 
 newclass("Animation", 

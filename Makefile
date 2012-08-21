@@ -1,25 +1,9 @@
-CXX = g++ 			
-CXXFLAGS = -g3 -O0 -Wall -MMD $(addprefix -l, SDL SDL_image SDL_gfx SDL_ttf pthread m lua)
-OBJECTS = $(patsubst ./%.cc, %.o, $(shell find . -type f -name '*.cc'))
-DEPENDS = ${OBJECTS:.o=.d}
-EXEC = adventure
-
-
-OBJDIR = obj
-COSTDIR = game/costumes
+OBJDIR = art/obj
+COSTDIR = assets/costumes
 
 #########################################################
 
 art = $(patsubst art/%.sifz, $(COSTDIR)/%.png, $(shell find art/ -type f -name '*.sifz'))
-
-#########################################################
-
-${EXEC} : ${OBJDIR} ${OBJECTS}
-	${CXX} ${CXXFLAGS} ${OBJECTS} -o ${EXEC}
-
-src/%_wrap.cc : src/exports/%.i $(srcheaders)
-	swig -c++ -lua -o $@ $<
-#	sed -i 's/"lua.h"/<lua.h>/g' $@
 
 #########################################################
 
@@ -36,20 +20,11 @@ $(COSTDIR)/%.png : art/%.sifz
 
 #########################################################
 
-.PHONY : all clean profile art clean_all
-
-all : art adventure
-
-profile : $(OBJDIR) $(objects)
-	g++ $(BUILD_FLAGS) -p -o adventure $(LINK_FLAGS) $(objects)
+.PHONY : clean art
 
 $(OBJDIR) : 
+	mkdir -p $(COSTDIR)
 	mkdir $(OBJDIR)
 
 clean : 
-	rm -rf ${DEPENDS} ${OBJECTS} ${EXEC}
-
-clean_all : clean
-	rm -r game/costumes/
-	
--include ${DEPENDS}
+	rm -r $(COSTDIR) $(OBJDIR)

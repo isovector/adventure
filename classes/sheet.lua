@@ -1,6 +1,6 @@
-local viewport = viewport
+require "classes/class"
 
-dofile("../scripts/class.lua")
+local viewport = viewport
 
 newclass("Sheet",
     function(id)

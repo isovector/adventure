@@ -10,7 +10,7 @@ viewport:setOffset(-1, 1)
 mouse = { x = 0, y = 0, cursor = 5 }
 
 dofile("sheet.lua")
-dofile("pixelperfect.lua")
+dofile("timer.lua")
 dofile("costume.lua")
 dofile("../game/costumes/costumes.lua")
 dofile("bg.lua")
@@ -33,8 +33,14 @@ local function pointerCallback(x, y)
         mouse.prop:setIndex(mouse.cursor + 1)
         mouse.prop:setLoc(x, y)
     end
+end
+
+local function hoverCallback()
+    Sheet.hover(mouse.x, mouse.y)
     
-    Sheet.hover(x, y)
+    if mouse.prop then
+        mouse.prop:setIndex(mouse.cursor + 1)
+    end
 end
 
 local function clickCallback(down)
@@ -42,6 +48,8 @@ local function clickCallback(down)
         Sheet.click(mouse.x, mouse.y, down)
     --end
 end
+
+local hoverTimer = Timer.new(1 / 60, hoverCallback)
 
 MOAIInputMgr.device.pointer:setCallback(pointerCallback)
 MOAIInputMgr.device.mouseLeft:setCallback(clickCallback)

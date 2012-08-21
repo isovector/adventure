@@ -32,11 +32,7 @@ local function timerCallback()
     end
 end
 
-local timer = MOAITimer.new()
-timer:setMode(MOAITimer.LOOP)
-timer:setListener(MOAITimer.EVENT_TIMER_LOOP, timerCallback)
-timer:setSpan(freq)
-timer:start()
+local timer = Timer.new(freq, timerCallback)
 
 function addVis(call, time)
     vises[call] = time or "forever"

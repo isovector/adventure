@@ -9,6 +9,7 @@ viewport:setOffset(-1, 1)
 
 mouse = { x = 0, y = 0, cursor = 5 }
 
+require "classes/timer"
 require "assets/costumes/costumes"
 require "assets/sheets/_layout"
 

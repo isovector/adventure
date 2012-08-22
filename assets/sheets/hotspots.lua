@@ -1,3 +1,4 @@
+require "classes/game"
 require "classes/hotspot"
 require "classes/sheet"
 
@@ -14,6 +15,12 @@ local hotspots = {
     )
 }
 
+local function setHotspots(t)
+    hotspots = t
+end
+
+game.export("setHotspots", setHotspots)
+
 local sheet = Sheet.new("hotspots")
 sheet:pushRenderPass()
 
@@ -22,8 +29,8 @@ sheet:installHover(true)
 function sheet:hoverCallback(x, y)
     for _, hotspot in pairs(hotspots) do
         if hotspot:hitTest(x, y) then
-            textbox:setString(hotspot.name)
-            mouse.cursor = hotspot.cursor
+            game.setHoverText(hotspot.name)
+            game.setCursor(hotspot.cursor)
             return true
         end
     end

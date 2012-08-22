@@ -1,13 +1,9 @@
-SIZE = { x = 1280, y = 720 }
-
 MOAISim.openWindow("Earnest Money", 1280, 720)
 
 viewport = MOAIViewport.new()
-viewport:setSize(SIZE.x, SIZE.y)
+viewport:setSize(1280, 720)
 viewport:setScale(1280, -720)
 viewport:setOffset(-1, 1)
-
-mouse = { x = 0, y = 0, cursor = 5 }
 
 require "classes/timer"
 require "assets/costumes/costumes"
@@ -19,28 +15,20 @@ local function keyCallback(key, down)
     end
 end
 
+local mouse = { x = 0, y = 0 }
+
 local function pointerCallback(x, y)
     mouse.x = x
     mouse.y = y
-    
-    if mouse.prop then
-        mouse.prop:setIndex(mouse.cursor + 1)
-        mouse.prop:setLoc(x, y)
-    end
+    game.setCursorPos(x, y)
 end
 
 local function hoverCallback()
     Sheet.hover(mouse.x, mouse.y)
-    
-    if mouse.prop then
-        mouse.prop:setIndex(mouse.cursor + 1)
-    end
 end
 
 local function clickCallback(down)
-    --if down then
-        Sheet.click(mouse.x, mouse.y, down)
-    --end
+    Sheet.click(mouse.x, mouse.y, down)
 end
 
 local hoverTimer = Timer.new(1 / 60, hoverCallback)

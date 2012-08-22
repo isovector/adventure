@@ -1,3 +1,4 @@
+require "classes/game"
 require "classes/sheet"
 require "classes/timer"
 require "classes/legacy/library"
@@ -9,7 +10,7 @@ local charcodes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345678
 local font = MOAIFont.new()
 font:loadFromTTF('assets/static/arial-rounded.TTF', charcodes, 7.5, 163)
 
-textbox = MOAITextBox.new()
+local textbox = MOAITextBox.new()
 textbox:setFont(font)
 textbox:setTextSize(7.5, 163)
 textbox:setRect(15, 15, 150, 50)
@@ -34,7 +35,19 @@ prop:setDeck(tileLib)
 prop:setLoc(640, 480)
 sheet:insertProp(prop)
 
-mouse.prop = prop
+local function setCursor(cur)
+    prop:setIndex(cur + 1)
+end
+
+local function setCursorPos(x, y)
+    prop:setLoc(x, y)
+end
+
+local function setHoverText(str)
+    textbox:setString(str)
+end
+
+game.export({ setHoverText = setHoverText, setCursor = setCursor, setCursorPos = setCursorPos })
 
 local function timerCallback()
     fps:setString(tostring(math.round(MOAISim.getPerformance())))

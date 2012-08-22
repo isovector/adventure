@@ -1,3 +1,4 @@
+require "classes/game"
 require "classes/costume"
 require "classes/sheet"
 
@@ -24,8 +25,8 @@ sheet:pushRenderPass()
 sheet:installHover(true)
 
 function sheet:onHover(prop, x, y)
-    textbox:setString("hello")
-    mouse.cursor = 5
-        
+    game.setHoverText("hello")
+    game.setCursor(5)
+
     return true
 end

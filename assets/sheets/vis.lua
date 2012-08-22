@@ -16,7 +16,7 @@ local function onDraw()
 end
 
 local scriptDeck = MOAIScriptDeck.new()
-scriptDeck:setRect(0, 0, SIZE.x, SIZE.y)
+scriptDeck:setRect(0, 0, 1280, 720)
 scriptDeck:setDrawCallback(onDraw)
 
 local prop = MOAIProp2D.new()
@@ -37,6 +37,8 @@ end
 
 local timer = Timer.new(freq, timerCallback)
 
-function addVis(call, time)
+local function addVis(call, time)
     vises[call] = time or "forever"
 end
+
+game.export("addVisualization", addVis)

@@ -15,7 +15,7 @@ $(COSTDIR)/costumes.lua : utils/build_costume.py
 $(COSTDIR)/%.png : art/%.sifz
 	synfig -t png -o $(OBJDIR)/build.png $<
 	mkdir -p $(dir $@)
-	montage $(OBJDIR)/*.png -geometry 50%x50%+0+0 -tile x1 -background none $@
+	montage $(OBJDIR)/*.png -geometry 50%x50%+0+0 -tile x1 -background transparent -format png32 -type TruecolorMatte $@
 	rm $(OBJDIR)/*.png
 
 #########################################################

@@ -1,3 +1,4 @@
+#!./gluthost
 MOAISim.openWindow("Earnest Money", 1280, 720)
 
 viewport = MOAIViewport.new()

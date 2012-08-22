@@ -20,9 +20,9 @@ costumes.santino:bind(santino)
 costumes.santino:refresh_anim()
 
 sheet:insertProp(prop)
-sheet:pushRenderPass()
+sheet:install()
 
-sheet:installHover(true)
+sheet:allowHover(true)
 
 function sheet:onHover(prop, x, y)
     game.setHoverText("hello")

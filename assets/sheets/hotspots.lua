@@ -22,9 +22,10 @@ end
 game.export("setHotspots", setHotspots)
 
 local sheet = Sheet.new("hotspots")
-sheet:pushRenderPass()
 
-sheet:installHover(true)
+sheet:allowHover(true)
+sheet:allowGraphics(false)
+sheet:install()
 
 function sheet:hoverCallback(x, y)
     for _, hotspot in pairs(hotspots) do

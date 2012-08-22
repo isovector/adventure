@@ -10,6 +10,13 @@ require "assets/costumes/costumes"
 require "assets/sheets/_layout"
 
 local function keyCallback(key, down)
+    local sheets = Sheet.getSheets()
+    local layer = key - 48
+
+    if down and (layer >= 1 and layer < 1 + #sheets)  then
+        sheets[layer]:enable(not sheets[layer].enabled)
+    end
+    
     if down and key == 27 then
         MOAISim.crash()
     end

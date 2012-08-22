@@ -7,7 +7,7 @@ local freq = 0.25
 local vises = { }
 
 local sheet = Sheet.new("visualization")
-sheet:pushRenderPass()
+sheet:install()
 
 local function onDraw()
     for call in pairs(vises) do

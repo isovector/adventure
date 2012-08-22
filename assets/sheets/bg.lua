@@ -11,10 +11,10 @@ local prop = MOAIProp2D.new()
 prop:setDeck(quad)
 
 sheet:insertProp(prop)
-sheet:pushRenderPass()
+sheet:install()
 
-sheet:installClick(true)
-sheet:installHover(true)
+sheet:allowClick(true)
+sheet:allowHover(true)
 
 
 function sheet:onHover()

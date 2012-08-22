@@ -4,7 +4,7 @@ require "classes/timer"
 require "classes/legacy/library"
 
 local sheet = Sheet.new("hud")
-sheet:pushRenderPass()
+sheet:install()
 
 local charcodes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,:;!?()&/-'
 local font = MOAIFont.new()

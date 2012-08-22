@@ -14,21 +14,35 @@ newclass("Sheet",
             id = id,
             layer = layer,
             partition = partition,
-            click_installed = false,
-            hover_installed = false
+            click_allowed = false,
+            hover_allowed = false,
+            gfx_allowed = true,
+            enabled = true
         }
         
         return self
     end
 )
 
-Sheet.sheets = { }
+local sheets = { }
+
+local function rebuild_sheet_table()
+    local render = { }
+    
+    for _, sheet in ipairs(sheets) do
+        if sheet.enabled and sheet.gfx_allowed then
+            table.insert(render, sheet.layer)
+        end
+    end
+    
+    MOAIRenderMgr.setRenderTable(render)
+end
 
 function Sheet.hover(x, y)
-    for n = #Sheet.sheets, 1, -1 do
-        local sheet = Sheet.sheets[n]
+    for n = #sheets, 1, -1 do
+        local sheet = sheets[n]
     
-        if sheet.hover_installed and sheet:hoverCallback(x, y) then
+        if sheet.enabled and sheet.hover_allowed and sheet:hoverCallback(x, y) then
             return sheet
         end
     end
@@ -37,15 +51,19 @@ function Sheet.hover(x, y)
 end
 
 function Sheet.click(x, y, down)
-    for n = #Sheet.sheets, 1, -1 do
-        local sheet = Sheet.sheets[n]
+    for n = #sheets, 1, -1 do
+        local sheet = sheets[n]
     
-        if sheet.click_installed and sheet:clickCallback(x, y, down) then
+        if sheet.enabled and sheet.click_allowed and sheet:clickCallback(x, y, down) then
             return sheet
         end
     end
     
     return false
+end
+
+function Sheet.getSheets()
+    return sheets
 end
 
 function Sheet:hoverCallback(x, y)
@@ -66,17 +84,29 @@ function Sheet:clickCallback(x, y, down)
     return false
 end
 
-function Sheet:installClick(enabled)
-    self.click_installed = enabled
+function Sheet:enable(enabled)
+    self.enabled = enabled
+    rebuild_sheet_table()
 end
 
-function Sheet:installHover(enabled)
-    self.hover_installed = enabled
+function Sheet:allowClick(enabled)
+    self.click_allowed = enabled
 end
 
-function Sheet:pushRenderPass()
-    MOAISim.pushRenderPass(self.layer)
-    table.insert(Sheet.sheets, self)
+function Sheet:allowHover(enabled)
+    self.hover_allowed = enabled
+end
+
+function Sheet:allowGraphics(enabled)
+    self.gfx_allowed = enabled
+end
+
+function Sheet:install()
+    table.insert(sheets, self)
+    
+    if self.gfx_allowed then
+        rebuild_sheet_table()
+    end
 end
 
 function Sheet:insertProp(prop)

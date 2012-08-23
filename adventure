@@ -6,7 +6,6 @@ viewport:setSize(1280, 720)
 viewport:setScale(1280, -720)
 viewport:setOffset(-1, 1)
 
-require "classes/timer"
 require "assets/costumes/costumes"
 require "assets/sheets/_layout"
 require "assets/rooms/outside/outside"
@@ -22,7 +21,7 @@ local function keyCallback(key, down)
     end
     
     if down and key == 27 then
-        MOAISim.crash()
+        os.exit()
     end
 end
 
@@ -35,14 +34,21 @@ local function pointerCallback(x, y)
 end
 
 local function hoverCallback()
-    Sheet.hover(mouse.x, mouse.y)
+    while true do
+        Sheet.hover(mouse.x, mouse.y)
+        
+        Sheet.beforeDraw()
+        coroutine.yield()
+        Sheet.afterDraw()
+    end
 end
 
 local function clickCallback(down)
     Sheet.click(mouse.x, mouse.y, down)
 end
 
-local hoverTimer = Timer.new(1 / 60, hoverCallback)
+local routine = MOAICoroutine.new()
+routine:run(hoverCallback)
 
 MOAIInputMgr.device.pointer:setCallback(pointerCallback)
 MOAIInputMgr.device.mouseLeft:setCallback(clickCallback)

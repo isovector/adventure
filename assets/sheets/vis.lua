@@ -10,8 +10,8 @@ local sheet = Sheet.new("visualization")
 sheet:install()
 
 local function onDraw()
-    for call in pairs(vises) do
-        call()
+    for _, entry in ipairs(vises) do
+        entry.call()
     end
 end
 
@@ -24,12 +24,12 @@ prop:setDeck(scriptDeck)
 sheet:insertProp(prop)
 
 local function timerCallback()
-    for call, time in pairs(vises) do
-        if time ~= "forever" then
-            if time < 0 then
-                vises[call] = nil
+    for key, entry in ipairs(vises) do
+        if entry.time ~= "forever" then
+            if entry.time < 0 then
+                table.remove(vises, key)
             else
-                vises[call] = time - freq
+                entry.time = entry.time - freq
             end
         end
     end
@@ -38,7 +38,11 @@ end
 local timer = Timer.new(freq, timerCallback)
 
 local function addVis(call, time)
-    vises[call] = time or "forever"
+    table.insert(vises, 
+        { 
+            time = time or "forever",
+            call = call
+        })
 end
 
 game.export("addVisualization", addVis)

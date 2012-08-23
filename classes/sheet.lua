@@ -38,6 +38,28 @@ local function rebuild_sheet_table()
     MOAIRenderMgr.setRenderTable(render)
 end
 
+function Sheet.beforeDraw(self)
+    -- this is a static and an instance method
+    if self then return end
+
+    for i = 1, #sheets do
+        if sheets[i].enabled then
+            sheets[i]:beforeDraw()
+        end
+    end
+end
+
+function Sheet.afterDraw(self)
+    -- this is a static and an instance method
+    if self then return end
+
+    for i = 1, #sheets do
+        if sheets[i].enabled then
+            sheets[i]:afterDraw()
+        end
+    end
+end
+
 function Sheet.hover(x, y)
     for n = #sheets, 1, -1 do
         local sheet = sheets[n]

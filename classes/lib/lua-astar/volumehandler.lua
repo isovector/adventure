@@ -11,36 +11,11 @@ require 'classes/lib/lua-astar/middleclass'
 VolumeHandler = class('VolumeHandler')
 
 
-function VolumeHandler:initialize()
+function VolumeHandler:initialize(tiles)
     self.width = 1
     self.height = 1
 
-    self.tiles = {
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-        {1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,1,1,1,1,1,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,1,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,1,0,1,1,1,1,1,1,1,1,1,1},
-        {1,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-    }
+    self.tiles = tiles
 end
 
 function VolumeHandler:setSize(w, h)
@@ -89,7 +64,7 @@ function VolumeHandler:getNode(location)
         end
     end
 
-    return Node(location, 10, location.y * #self.tiles + location.x)
+    return Node(location, 1, location.y * #self.tiles[1] + location.x)
 end
 
 
@@ -126,6 +101,9 @@ function VolumeHandler:_handleNode(x, y, fromnode, destx, desty)
         y = y
     }
     
+    local diag_bias = math.abs(x - fromnode.location.x) +
+                        math.abs(y - fromnode.location.y)
+    
     local n = self:getNode(loc)
     
     if n ~= nil then
@@ -134,7 +112,7 @@ function VolumeHandler:_handleNode(x, y, fromnode, destx, desty)
         local emCost = dx + dy
         
         n.mCost = n.mCost + fromnode.mCost
-        n.score = n.mCost + emCost
+        n.score = n.mCost + emCost + diag_bias * 3
         n.parent = fromnode
         
         return n

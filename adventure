@@ -9,6 +9,9 @@ viewport:setOffset(-1, 1)
 require "classes/timer"
 require "assets/costumes/costumes"
 require "assets/sheets/_layout"
+require "assets/rooms/outside/outside"
+
+Room.getRoom("outside"):load()
 
 local function keyCallback(key, down)
     local sheets = Sheet.getSheets()

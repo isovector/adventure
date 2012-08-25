@@ -125,12 +125,16 @@ function Costume:setDirection(newdir, without_turning)
         local x, y = unpack(newdir)
         
         if math.abs(x) > math.abs(y) then
+            if x == y then return end
+            
             if x > 0 then
                 dir = 6
             else
                 dir = 4
             end
         else
+            if x == y then return end
+        
             if y > 0 then
                 dir = 2
             else

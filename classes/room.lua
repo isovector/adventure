@@ -38,16 +38,40 @@ function Room:addHotspot(hotspot)
     table.insert(self.hotspots, hotspot)
 end
 
-function Room:getPath(from, to, size)
+function Room:locToPos(x, y)
+    local res = self.astar.resolution
+    return { x = math.floor(x / res) + 1, y = math.floor(y / res) + 1 }
+end
+
+function Room:nodeToLoc(node)
+    if not node then return 0, 0 end
+    
+    local loc = node.location
+    local res = self.astar.resolution
+    
+    return loc.x * res - res / 2, loc.y * res - res / 2
+end
+
+function Room:getPath(sx, sy, dx, dy, w, h)
     if not self.astar then return nil end
 
-    size = size or { w = 1, h = 1 }
+    local src = self:locToPos(sx, sy)
+    local dst = self:locToPos(dx, dy)
     
-    self.handler:setSize(size.w, size.h)
-    path = self.astar:findPath(from, to)
+    w = w or 1
+    h = h or 1
+    
+    self.handler:setSize(w, h)
+    path = self.astar:findPath(src, dst)
     
     if not path then return { } end
-    return path:getNodes()
+    
+    local result = { }
+    for _, node in ipairs(path:getNodes()) do
+        table.insert(result, { self:nodeToLoc(node) } )
+    end
+    
+    return result
 end
 
 function Room:load()
@@ -59,7 +83,7 @@ function Room:load()
         local actor = entry.actor
         
         actor:joinScene()
-        actor:move(entry.x, entry.y)
+        actor:teleport(entry.x, entry.y)
     end
 end
 

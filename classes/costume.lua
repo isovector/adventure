@@ -106,7 +106,7 @@ function Costume:refresh_anim()
     self.anim:start(self.prop)
 end
 
-function Costume:set_pose(pose)
+function Costume:setPose(pose)
     if pose == self.pose then return end
     
     self.last_pose = self.pose
@@ -119,25 +119,26 @@ function Costume:set_pose(pose)
     end
 end
 
-function Costume:set_direction(newdir, without_turning)
-    if type(newdir) == "userdata" then
+function Costume:setDirection(newdir, without_turning)
+    if type(newdir) == "table" then
         local dir = 5
+        local x, y = unpack(newdir)
         
-        if math.abs(newdir.x) > math.abs(newdir.y) then
-            if newdir.x > 0 then
+        if math.abs(x) > math.abs(y) then
+            if x > 0 then
                 dir = 6
             else
                 dir = 4
             end
         else
-            if newdir.y > 0 then
+            if y > 0 then
                 dir = 2
             else
                 dir = 8
             end
         end
         
-        self:set_direction(dir, without_turning)
+        self:setDirection(dir, without_turning)
         return
     end
 
@@ -160,9 +161,9 @@ end
     
     if self.anim:getTimesExecuted() >= 1 and not self.anim.loops then
         if self.pose == "turn" then
-            self:set_direction(self.direction % 10, true)
+            self:setDirection(self.direction % 10, true)
         end
         
-        self:set_pose(self.last_pose)
+        self:setPose(self.last_pose)
     end
 end]]

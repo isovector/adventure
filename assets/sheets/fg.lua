@@ -1,21 +1,33 @@
+require "classes/actor"
 require "classes/game"
 require "classes/costume"
 require "classes/sheet"
 
 local sheet = Sheet.new("foreground")
 
-local santino = MOAIProp2D.new()
-santino:setLoc(400, 400)
-sheet:insertProp(santino)
-costumes.santino:bind(santino)
-costumes.santino:refresh_anim()
+local function makeProp()
+    local prop = MOAIProp2D.new()
+    sheet:insertProp(prop)
+    return prop
+end
+
+local function destroyProp(prop)
+    sheet:removeProp(prop)
+end
+
+game.export("makeProp", makeProp)
+game.export("destroyProp", destroyProp)
 
 sheet:install()
 
 sheet:allowHover(true)
-
 function sheet:onHover(prop, x, y)
-    game.setHoverText("hello")
+    if prop.actor then
+        game.setHoverText(prop.actor.name)
+    else
+        game.setHoverText("Unknown")
+    end
+    
     game.setCursor(5)
 
     return true

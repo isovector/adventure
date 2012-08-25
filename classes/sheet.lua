@@ -135,3 +135,8 @@ function Sheet:insertProp(prop)
     self.layer:insertProp(prop)
     self.partition:insertProp(prop)
 end
+
+function Sheet:removeProp(prop)
+    self.layer:removeProp(prop)
+    self.partition:removeProp(prop)
+end

@@ -1,3 +1,4 @@
+require "assets/actors/actors"
 require "classes/room"
 
 local room = Room.new("outside", "assets/rooms/outside/art.png")
@@ -17,3 +18,5 @@ room:addHotspot(Hotspot.new("stop", 5, "Stop!",
     536, 440, 
     538, 415
 ))
+
+room:addActor(Actor.getActor("santino"), 700, 400)

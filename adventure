@@ -8,7 +8,7 @@ viewport:setOffset(-1, 1)
 
 require "assets/costumes/costumes"
 require "assets/sheets/_layout"
-require "assets/rooms/outside/outside"
+require "assets/rooms/rooms"
 
 Room.getRoom("outside"):load()
 
@@ -18,6 +18,20 @@ local function keyCallback(key, down)
 
     if down and (layer >= 1 and layer < 1 + #sheets)  then
         sheets[layer]:enable(not sheets[layer].enabled)
+    end
+    
+    if down and key == 113 then
+        local last = "outside"
+        if room then
+            last = room.id
+            room:unload()
+        end
+        
+        if last == "outside" then
+            Room.getRoom("inside"):load()
+        else
+            Room.getRoom("outside"):load()
+        end
     end
     
     if down and key == 27 then

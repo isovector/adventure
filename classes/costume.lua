@@ -76,7 +76,8 @@ newclass("Costume",
     end
 )
 
-function Costume:bind(prop)
+-- TODO(sandy): this is super ugly
+function Costume:setProp(prop)
     self.prop = prop
 end
 
@@ -154,7 +155,7 @@ function Costume:set_direction(newdir, without_turning)
     end
 end
 
-function Costume:update(elapsed)
+--[[function Costume:update(elapsed)
     self.anim:update(elapsed)
     
     if self.anim:getTimesExecuted() >= 1 and not self.anim.loops then
@@ -164,4 +165,4 @@ function Costume:update(elapsed)
         
         self:set_pose(self.last_pose)
     end
-end
+end]]

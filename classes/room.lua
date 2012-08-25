@@ -10,7 +10,8 @@ newclass("Room", function(id, path)
         local room = { 
             id = id, 
             img_path = path,
-            hotspots = { }
+            hotspots = { },
+            scene = { }
         }
         
         rooms[id] = room
@@ -53,4 +54,25 @@ function Room:load()
     room = self
     game.setBackground(self.img_path)
     game.setHotspots(self.hotspots)
+    
+    for _, entry in pairs(self.scene) do
+        local actor = entry.actor
+        
+        actor:joinScene()
+        actor:move(entry.x, entry.y)
+    end
+end
+
+function Room:unload()
+    room = nil
+    game.setHotspots({ })
+
+    for _, entry in pairs(self.scene) do
+        entry.actor:leaveScene()
+    end
+end
+
+function Room:addActor(actor, x, y)
+    local entry = { actor = actor, x = x, y = y }
+    self.scene[actor.id] = entry
 end

@@ -61,9 +61,14 @@ local function clickCallback(down)
     Sheet.dispatchClick(mouse.x, mouse.y, down)
 end
 
+local function rClickCallback(down)
+    Sheet.dispatchRClick(mouse.x, mouse.y, down)
+end
+
 local routine = MOAICoroutine.new()
 routine:run(hoverCallback)
 
 MOAIInputMgr.device.pointer:setCallback(pointerCallback)
 MOAIInputMgr.device.mouseLeft:setCallback(clickCallback)
+MOAIInputMgr.device.mouseRight:setCallback(rClickCallback)
 MOAIInputMgr.device.keyboard:setCallback(keyCallback)

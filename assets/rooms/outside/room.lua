@@ -1,11 +1,13 @@
+local name = "outside"
+local path = "assets/rooms/" .. name
+
 require "assets/actors/actors"
 require "classes/room"
 
-local room = Room.new("outside", "assets/rooms/outside/art.png")
-local pathing = require "assets/rooms/outside/pathfinding"
+local room = Room.new(name, path .. "/art.png")
+room.directory = path
 
-print(#pathing.map[1], #pathing.map)
-
+local pathing = require(path .. "/pathfinding")
 room:installPathing(pathing)
 
 room:addHotspot(Hotspot.new("stop", 5, "Stop!", 

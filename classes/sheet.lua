@@ -19,6 +19,7 @@ newclass("Sheet",
             
             -- Handlers which determine if the sheet should handle an event
             clickAcceptor = nil,
+            rClickAcceptor = nil,
             hoverAcceptor = nil
         }
         
@@ -82,6 +83,18 @@ function Sheet.dispatchClick(x, y, down)
     return nil
 end
 
+function Sheet.dispatchRClick(x, y, down)
+    for n = #sheets, 1, -1 do
+        local sheet = sheets[n]
+    
+        if sheet.enabled and sheet.rClickAcceptor and sheet:rClickAcceptor(sheet.onRClick, x, y, down) then
+            return sheet
+        end
+    end
+    
+    return nil
+end
+
 function Sheet.getSheets()
     return sheets
 end
@@ -108,6 +121,10 @@ function Sheet:setClickAcceptor(acceptor)
     self.clickAcceptor = acceptor
 end
 
+function Sheet:setRClickAcceptor(acceptor)
+    self.rClickAcceptor = acceptor
+end
+
 function Sheet:setHoverAcceptor(acceptor)
     self.hoverAcceptor = acceptor
 end
@@ -119,7 +136,7 @@ end
 function Sheet:install()
     table.insert(sheets, self)
     
-    if self.needs_draw then
+    if self.needs_draw and self.enabled then
         rebuild_sheet_table()
     end
 end

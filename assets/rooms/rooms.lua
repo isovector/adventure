@@ -1,2 +1,2 @@
-require "assets/rooms/outside/outside"
-require "assets/rooms/inside/inside"
+require "assets/rooms/outside/room"
+require "assets/rooms/inside/room"

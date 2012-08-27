@@ -28,6 +28,13 @@ function Room.getRoom(id)
     return rooms[id]
 end
 
+function Room.change(id)
+    if rooms[id] then
+        room:unload()
+        rooms[id]:load()
+    end
+end
+
 function Room:installPathing(polys)
     local res = 16
     

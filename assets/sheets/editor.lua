@@ -14,15 +14,6 @@ local points = { }
 
 local curroom = room
 
-local deck = MOAITileDeck2D.new()
-deck:setTexture("assets/static/numbers.png")
-deck:setSize(8, 8)
-deck:setRect(32, 32)
-
-local savebutton = MOAIProp.new()
-savebutton:setDeck(deck)
-savebutton:setPriority(100)
-sheet:insertProp(savebutton)
 
 local function onDraw()
     if room ~= curroom then
@@ -48,11 +39,11 @@ end
 
 
 function sheet:onHover(prop)
-    if not prop or prop == scriptprop then
+    --if not prop or prop == scriptprop then
         game.setCursor(10)
-    else
+    --[[else
         game.setCursor(5)
-    end
+    end]]
 
     return true
 end
@@ -72,13 +63,10 @@ end
 function sheet:onClick(prop, x, y, down)
     if not down then return true end
     
-    if prop == savebutton then
-        save()
-        return true
+    if prop == scriptprop then
+        table.insert(points, x)
+        table.insert(points, y)
     end
-
-    table.insert(points, x)
-    table.insert(points, y)
 
     return true
 end
@@ -91,3 +79,8 @@ function sheet:onRClick(prop, x, y, down)
     
     return true
 end
+
+vim:createMode("editor", function() sheet:enable(true) end, function() sheet:enable(false) end)
+
+vim:buf("", "^E$", function() vim:setMode("editor") end)
+vim:buf("editor", "^ZZ$", save)

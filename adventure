@@ -6,6 +6,10 @@ viewport:setSize(1280, 720)
 viewport:setScale(1280, -720)
 viewport:setOffset(-1, 1)
 
+require "classes/vim"
+
+vim = Vim.new()
+
 require "assets/costumes/costumes"
 require "assets/sheets/_layout"
 require "assets/rooms/rooms"
@@ -13,31 +17,23 @@ require "assets/rooms/rooms"
 Room.getRoom("outside"):load()
 
 local function keyCallback(key, down)
-    local sheets = Sheet.getSheets()
-    local layer = key - 48
+    if not down then return end
 
-    if down and (layer >= 1 and layer < 1 + #sheets)  then
-        sheets[layer]:enable(not sheets[layer].enabled)
+    if key == 27 then
+        vim:clear()
+    elseif key == 13 then
+        vim:send()
+    elseif key == 8 then
+        vim:backspace()
+    else
+        vim:addChar(string.char(key))
     end
     
-    if down and key == 113 then
-        local last = "outside"
-        if room then
-            last = room.id
-            room:unload()
-        end
-        
-        if last == "outside" then
-            Room.getRoom("inside"):load()
-        else
-            Room.getRoom("outside"):load()
-        end
-    end
-    
-    if down and key == 27 then
-        os.exit()
-    end
+    game.updateBuffer(vim:getBufferText())
 end
+
+vim:buf("", "^q$", function() os.exit() end)
+vim:cmd("", ":load ", Room.change)
 
 local mouse = { x = 0, y = 0 }
 

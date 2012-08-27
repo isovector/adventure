@@ -33,6 +33,15 @@ pos_text:setRect(1115, 680, 1265, 705)
 pos_text:setAlignment(MOAITextBox.RIGHT_JUSTIFY)
 sheet:insertProp(pos_text)
 
+local buffer_text = MOAITextBox.new()
+buffer_text:setFont(font)
+buffer_text:setColor(1, 1, 1)
+buffer_text:setString("--NORMAL--")
+buffer_text:setTextSize(7.5, 163)
+buffer_text:setRect(15, 680, 150, 705)
+buffer_text:setAlignment(MOAITextBox.LEFT_JUSTIFY)
+sheet:insertProp(buffer_text)
+
 local cursor_deck = MOAITileDeck2D.new()
 cursor_deck:setTexture("assets/static/cursors.png")
 cursor_deck:setSize(11, 1)
@@ -57,7 +66,11 @@ local function setHoverText(str)
     hover_text:setString(str)
 end
 
-game.export({ setHoverText = setHoverText, setCursor = setCursor, setCursorPos = setCursorPos })
+local function updateBuffer(str)
+    buffer_text:setString(str)
+end
+
+game.export({ setHoverText = setHoverText, setCursor = setCursor, setCursorPos = setCursorPos, updateBuffer = updateBuffer })
 
 local function timerCallback()
     fps_text:setString(tostring(math.round(MOAISim.getPerformance())))

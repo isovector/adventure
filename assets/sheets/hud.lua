@@ -38,7 +38,7 @@ buffer_text:setFont(font)
 buffer_text:setColor(1, 1, 1)
 buffer_text:setString("--NORMAL--")
 buffer_text:setTextSize(7.5, 163)
-buffer_text:setRect(15, 680, 150, 705)
+buffer_text:setRect(15, 680, 1100, 705)
 buffer_text:setAlignment(MOAITextBox.LEFT_JUSTIFY)
 sheet:insertProp(buffer_text)
 

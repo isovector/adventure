@@ -127,6 +127,27 @@ function Room:unload()
 end
 
 function Room:addActor(actor, x, y)
-    local entry = { actor = actor, x = x, y = y }
-    self.scene[actor.id] = entry
+    if not self.scene[actor.id] then
+        local entry = { actor = actor, x = x, y = y }
+        self.scene[actor.id] = entry
+        
+        if room == self then
+            actor:joinScene()
+            actor:teleport(x, y)
+        end
+    else
+        local entry = self.scene[actor.id]
+    
+        entry.x = x
+        entry.y = y
+        entry.actor:teleport(x, y)
+    end
+end
+
+function Room:removeActor(actor)
+    self.scene[actor.id] = nil
+    
+    if room == self then
+        actor:leaveScene()
+    end
 end

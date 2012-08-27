@@ -5,8 +5,6 @@ local sheet = Sheet.new("editor")
 sheet:install()
 sheet:enable(false)
 
-sheet:setClickAcceptor(Sheet.all_acceptor)
-sheet:setRClickAcceptor(Sheet.all_acceptor)
 sheet:setHoverAcceptor(Sheet.all_acceptor)
 
 local color = { 0, 1, 0 }
@@ -49,38 +47,81 @@ function sheet:onHover(prop)
 end
 
 local function save()
+    -- Write out pathfinding
     local f = io.open(room.directory .. "/pathfinding.lua", "w")
-
     f:write("return {\n")
     for i = 1, #points, 2 do
         f:write("\t" .. points[i] ..  ", " .. points[i + 1] .. ",\n")
     end
     f:write("}\n")
-    
     f:close()
-end
-
-function sheet:onClick(prop, x, y, down)
-    if not down then return true end
     
-    if prop == scriptprop then
-        table.insert(points, x)
-        table.insert(points, y)
+    room:installPathing(points)
+    
+    -- Write out actors
+    f = io.open(room.directory .. "/actors.lua", "w")
+    f:write("return function(room)\n")
+    for key, entry in pairs(room.scene) do
+        f:write("\troom:addActor(Actor.getActor(\"" .. key ..  "\"), " .. entry.x .. ", " .. entry.y .. ")\n")
     end
-
-    return true
+    f:write("end\n")
+    f:close()
+    
+    color = { 0, 1, 0 }
 end
 
-function sheet:onRClick(prop, x, y, down)
-    if not down then return true end
+local function invalidate()
+    color = { 1, 0, 0 }
+end
 
+local function add_point()
+    local x, y = game.getMouse()
+    
+    table.insert(points, x)
+    table.insert(points, y)
+
+    invalidate()
+end
+
+local function remove_point()
     table.remove(points, #points)
     table.remove(points, #points)
     
-    return true
+    invalidate()
 end
 
-vim:createMode("editor", function() sheet:enable(true) end, function() sheet:enable(false) end)
+local function place(id)
+    local actor = Actor.getActor(id)
+    local x, y = game.getMouse()
+    
+    if actor then
+        invalidate()
+        room:addActor(actor, x, y)
+    end
+end
 
-vim:buf("", "^E$", function() vim:setMode("editor") end)
-vim:buf("editor", "^ZZ$", save)
+local function remove(id)
+    local actor = Actor.getActor(id)
+    
+    if actor then
+        invalidate()
+        room:removeActor(actor)
+    end
+end
+
+vim:createMode("editor", 
+    function(old) 
+        if old == "" then sheet:enable(true) end 
+    end, 
+    
+    function(new) 
+        if new == "" then sheet:enable(false) end 
+    end
+)
+
+vim:buf("",         "^E$",      function() vim:setMode("editor") end)
+vim:buf("editor",   "^ZZ$",     save)
+vim:buf("editor",   "^a$",      add_point)
+vim:buf("editor",   "^x$",      remove_point)
+vim:cmd("editor",   ":place ",  place)
+vim:cmd("editor",   ":remove ", remove)

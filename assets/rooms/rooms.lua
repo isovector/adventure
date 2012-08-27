@@ -1,2 +1,4 @@
-require "assets/rooms/outside/room"
-require "assets/rooms/inside/room"
+require "assets/rooms/template"
+
+buildRoom("outside")
+buildRoom("inside")

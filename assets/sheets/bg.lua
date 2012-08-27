@@ -30,7 +30,10 @@ end
 function sheet:onClick(prop, x, y, down)
     if not down then return true end
     
-    Actor.getActor("santino"):setGoal(x, y)
+    local actor = Actor.getActor("santino")
+    if room.scene[actor.id] then
+        actor:setGoal(x, y)
+    end
     
     return true
 end

@@ -32,14 +32,15 @@ function Vim:backspace()
 end
 
 function Vim:setMode(mode)
-    if self.modes[self.mode].onExit then
-        self.modes[self.mode].onExit()
+    local old = self.mode
+    if self.modes[old].onExit then
+        self.modes[old].onExit(mode)
     end
 
     self.mode = mode
     
-    if self.modes[self.mode].onEnter then
-        self.modes[self.mode].onEnter()
+    if self.modes[mode].onEnter then
+        self.modes[mode].onEnter(old)
     end
 end
 

@@ -6,6 +6,7 @@ viewport:setSize(1280, 720)
 viewport:setScale(1280, -720)
 viewport:setOffset(-1, 1)
 
+require "classes/game"
 require "classes/vim"
 
 vim = Vim.new()
@@ -36,6 +37,7 @@ vim:buf("", "^q$", function() os.exit() end)
 vim:cmd("", ":load ", Room.change)
 
 local mouse = { x = 0, y = 0 }
+game.export("getMouse", function() return mouse.x, mouse.y end )
 
 local function pointerCallback(x, y)
     mouse.x = x

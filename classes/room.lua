@@ -11,7 +11,10 @@ newclass("Room", function(id, path)
             id = id, 
             img_path = path,
             hotspots = { },
-            scene = { }
+            scene = { },
+            
+            handler = nil,
+            astar = nil
         }
         
         rooms[id] = room
@@ -25,10 +28,30 @@ function Room.getRoom(id)
     return rooms[id]
 end
 
-function Room:installPathing(map)
-    local handler = VolumeHandler(map.map)
+function Room:installPathing(polys)
+    local res = 16
+    
+    local hs = Hotspot.new(nil, nil, nil, unpack(polys))
+    local map = { }
+    
+    for y = 1, 720 / res do
+        local row = { }
+        for x = 1, 1280 / res do
+            local sx, sy = x * res - res / 2, y * res - res / 2
+            
+            if hs:hitTest(sx, sy) then
+                row[x] = 0
+            else
+                row[x] = 1
+            end
+        end
+        map[y] = row
+    end
+
+    local handler = VolumeHandler(map)
     local astar = AStar(handler)
-    astar.resolution = map.resolution
+    astar.resolution = res
+    astar.polys = polys
     
     self.handler = handler
     self.astar = astar

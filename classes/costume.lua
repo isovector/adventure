@@ -7,7 +7,7 @@ newclass("Animation",
         local img = MOAIImageTexture.new()
         img:load(path, MOAIImage.TRUECOLOR + MOAIImage.PREMULTIPLY_ALPHA)
     
-        deck = MOAITileDeck2D.new()
+        local deck = MOAITileDeck2D.new()
         deck:setTexture(img)
         deck:setSize(frames, 1)
         deck:setRect(-w, h, w, -h)

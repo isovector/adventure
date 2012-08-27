@@ -109,6 +109,11 @@ function Sheet:prop_acceptor(callback, x, y, ...)
 end
 
 function Sheet:all_acceptor(callback, x, y, ...)
+    local prop = self.partition:propForPoint(x, y)
+    if prop and (not prop.anim or prop.anim:hitTest(prop, x, y)) then
+        return not callback or callback(self, prop, x, y, ...)
+    end
+    
     return not callback or callback(self, nil, x, y, ...)
 end
 

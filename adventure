@@ -49,16 +49,16 @@ end
 
 local function hoverCallback()
     while true do
-        Sheet.hover(mouse.x, mouse.y)
+        Sheet.dispatchHover(mouse.x, mouse.y)
         
-        Sheet.beforeDraw()
+        Sheet.dispatchBeforeDraw()
         coroutine.yield()
-        Sheet.afterDraw()
+        Sheet.dispatchAfterDraw()
     end
 end
 
 local function clickCallback(down)
-    Sheet.click(mouse.x, mouse.y, down)
+    Sheet.dispatchClick(mouse.x, mouse.y, down)
 end
 
 local routine = MOAICoroutine.new()

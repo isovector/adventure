@@ -12,8 +12,8 @@ prop:setDeck(quad)
 sheet:insertProp(prop)
 sheet:install()
 
-sheet:allowClick(true)
-sheet:allowHover(true)
+sheet:setClickAcceptor(Sheet.all_acceptor)
+sheet:setHoverAcceptor(Sheet.all_acceptor)
 
 local function setBackground(path)
     quad:setTexture(path)

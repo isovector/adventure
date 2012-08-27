@@ -14,10 +14,12 @@ newclass("Sheet",
             id = id,
             layer = layer,
             partition = partition,
-            click_allowed = false,
-            hover_allowed = false,
-            gfx_allowed = true,
-            enabled = true
+            needs_draw = true,
+            enabled = true,
+            
+            -- Handlers which determine if the sheet should handle an event
+            clickAcceptor = nil,
+            hoverAcceptor = nil
         }
         
         return self
@@ -30,7 +32,7 @@ local function rebuild_sheet_table()
     local render = { }
     
     for _, sheet in ipairs(sheets) do
-        if sheet.enabled and sheet.gfx_allowed then
+        if sheet.enabled and sheet.needs_draw then
             table.insert(render, sheet.layer)
         end
     end
@@ -38,72 +40,63 @@ local function rebuild_sheet_table()
     MOAIRenderMgr.setRenderTable(render)
 end
 
-function Sheet.beforeDraw(self)
-    -- this is a static and an instance method
-    if self then return end
-
+function Sheet.dispatchBeforeDraw()
     for i = 1, #sheets do
-        if sheets[i].enabled then
-            sheets[i]:beforeDraw()
+        local method = sheets[i].onBeforeDraw
+        if sheets[i].enabled and method then
+            method(sheets[i])
         end
     end
 end
 
-function Sheet.afterDraw(self)
-    -- this is a static and an instance method
-    if self then return end
-
+function Sheet.dispatchAfterDraw()
     for i = 1, #sheets do
-        if sheets[i].enabled then
-            sheets[i]:afterDraw()
+        local method = sheets[i].onAfterDraw
+        if sheets[i].enabled and method then
+            method(sheets[i])
         end
     end
 end
 
-function Sheet.hover(x, y)
+function Sheet.dispatchHover(x, y)
     for n = #sheets, 1, -1 do
         local sheet = sheets[n]
     
-        if sheet.enabled and sheet.hover_allowed and sheet:hoverCallback(x, y) then
+        if sheet.enabled and sheet.hoverAcceptor and sheet:hoverAcceptor(sheet.onHover, x, y) then
             return sheet
         end
     end
     
-    return false
+    return nil
 end
 
-function Sheet.click(x, y, down)
+function Sheet.dispatchClick(x, y, down)
     for n = #sheets, 1, -1 do
         local sheet = sheets[n]
     
-        if sheet.enabled and sheet.click_allowed and sheet:clickCallback(x, y, down) then
+        if sheet.enabled and sheet.clickAcceptor and sheet:clickAcceptor(sheet.onClick, x, y, down) then
             return sheet
         end
     end
     
-    return false
+    return nil
 end
 
 function Sheet.getSheets()
     return sheets
 end
 
-function Sheet:hoverCallback(x, y)
+function Sheet:prop_acceptor(callback, x, y, ...)
     local prop = self.partition:propForPoint(x, y)
     if prop and (not prop.anim or prop.anim:hitTest(prop, x, y)) then
-        return not self.onHover or self:onHover(prop, x, y)
+        return not callback or callback(self, prop, x, y, ...)
     end
     
     return false
 end
 
-function Sheet:clickCallback(x, y, down)
-    local prop = self.partition:propForPoint(x, y)
-    if prop and (not prop.anim or prop.anim:hitTest(prop, x, y)) then
-        return not self.onClick or self:onClick(prop, x, y, down)
-    end
-    
-    return false
+function Sheet:all_acceptor(callback, x, y, ...)
+    return not callback or callback(self, nil, x, y, ...)
 end
 
 function Sheet:enable(enabled)
@@ -111,22 +104,22 @@ function Sheet:enable(enabled)
     rebuild_sheet_table()
 end
 
-function Sheet:allowClick(enabled)
-    self.click_allowed = enabled
+function Sheet:setClickAcceptor(acceptor)
+    self.clickAcceptor = acceptor
 end
 
-function Sheet:allowHover(enabled)
-    self.hover_allowed = enabled
+function Sheet:setHoverAcceptor(acceptor)
+    self.hoverAcceptor = acceptor
 end
 
-function Sheet:allowGraphics(enabled)
-    self.gfx_allowed = enabled
+function Sheet:needsDraw(enabled)
+    self.needs_draw = enabled
 end
 
 function Sheet:install()
     table.insert(sheets, self)
     
-    if self.gfx_allowed then
+    if self.needs_draw then
         rebuild_sheet_table()
     end
 end

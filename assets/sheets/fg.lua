@@ -20,7 +20,8 @@ game.export("destroyProp", destroyProp)
 
 sheet:install()
 
-sheet:allowHover(true)
+sheet:setHoverAcceptor(Sheet.prop_acceptor)
+
 function sheet:onHover(prop, x, y)
     if prop.actor then
         game.setHoverText(prop.actor.name)

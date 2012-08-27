@@ -12,11 +12,12 @@ game.export("setHotspots", setHotspots)
 
 local sheet = Sheet.new("hotspots")
 
-sheet:allowHover(true)
-sheet:allowGraphics(false)
+sheet:needsDraw(false)
 sheet:install()
 
-function sheet:hoverCallback(x, y)
+sheet:setHoverAcceptor(Sheet.all_acceptor)
+
+function sheet:onHover(prop, x, y)
     for _, hotspot in pairs(hotspots) do
         if hotspot:hitTest(x, y) then
             game.setHoverText(hotspot.name)

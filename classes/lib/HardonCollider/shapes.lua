@@ -121,8 +121,16 @@ function ConvexPolygonShape:contains(x,y)
 	return self._polygon:contains(x,y)
 end
 
+function ConvexPolygonShape:getBBox()
+    return self._polygon:getBBox()
+end
+
 function ConcavePolygonShape:contains(x,y)
 	return self._polygon:contains(x,y)
+end
+
+function ConcavePolygonShape:getBBox()
+    return self._polygon:getBBox()
 end
 
 function CircleShape:contains(x,y)

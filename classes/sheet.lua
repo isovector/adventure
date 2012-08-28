@@ -99,6 +99,16 @@ function Sheet.getSheets()
     return sheets
 end
 
+function Sheet.getSheet(id)
+    for i = 1, #sheets do
+        if sheets[i].id == id then
+            return sheets[i]
+        end
+    end
+    
+    return nil
+end
+
 function Sheet:prop_acceptor(callback, x, y, ...)
     local prop = self.partition:propForPoint(x, y)
     if prop and (not prop.anim or prop.anim:hitTest(prop, x, y)) then

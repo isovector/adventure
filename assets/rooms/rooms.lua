@@ -12,6 +12,8 @@ local function buildRoom(name)
 
     local actors = require(path .. "/actors")
     actors(room)
+    
+    room.onLoad = require(path .. "/script")
 end
 
 for _, room in ipairs(MOAIFileSystem.listDirectories("assets/rooms")) do

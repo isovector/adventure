@@ -109,6 +109,9 @@ end
 function Actor:mainLoop()
     while self.prop do
         coroutine.yield()
+        
+        local _, y = self:location()
+        self.prop:setPriority(y)
     
         if self.goal then
             local goal = self.goal

@@ -14,7 +14,9 @@ newclass("Room", function(id, path)
             scene = { },
             
             handler = nil,
-            astar = nil
+            astar = nil,
+            
+            onLoad = nil
         }
         
         rooms[id] = room
@@ -114,6 +116,10 @@ function Room:load()
         
         actor:joinScene()
         actor:teleport(entry.x, entry.y)
+    end
+    
+    if self.onLoad then
+        self:onLoad()
     end
 end
 

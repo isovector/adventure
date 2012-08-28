@@ -10,7 +10,7 @@ newclass("Animation",
         local deck = MOAITileDeck2D.new()
         deck:setTexture(img)
         deck:setSize(frames, 1)
-        deck:setRect(-w, h, w, -h)
+        deck:setRect(-w, 0, w, -h * 2)
     
         return {
             deck = deck,

@@ -4,7 +4,7 @@ newclass("Vim",
     function()
         return {
             buffer = "",
-            mode = "",
+            mode = "normal",
             modes = { }
         }
     end
@@ -12,11 +12,7 @@ newclass("Vim",
 
 function Vim:getBufferText()
     if self.buffer == "" then
-        if self.mode ~= "" then
-            return "-- " .. string.upper(self.mode) .. " --"
-        end
-        
-        return "-- NORMAL --"
+        return "-- " .. string.upper(self.mode) .. " --"
     end
     
     return self.buffer
@@ -44,24 +40,51 @@ function Vim:setMode(mode)
     end
 end
 
-function Vim:clear()
-    if self.buffer == "" then
-        self:setMode("")
+function Vim:clear(change_mode)
+    if self.buffer == "" and change_mode then
+        self:setMode("normal")
     else
         self.buffer = ""
     end
 end
 
-function Vim:send()
-    local buffer = self.buffer
-    for _, cmd in ipairs(self.modes[self.mode].commands) do
-        if #buffer >= #cmd.cmd and buffer:sub(1, #cmd.cmd) == cmd.cmd then
-            cmd.action(buffer:sub(#cmd.cmd + 1), unpack(cmd.args))
+function Vim:checkModeCmd(mode, cmd, args)
+    for _, entry in ipairs(self.modes[mode].commands) do
+        if cmd == entry.cmd then
+            entry.action(unpack(args))
             self:clear()
-            return
+            return true
         end
     end
     
+    return false
+end
+
+function Vim:send()
+    local buffer = self.buffer
+    
+    if #buffer == 0 or buffer:sub(1, 1) ~= ":" then
+        self:clear()
+        return
+    end
+    
+    buffer = buffer:sub(2)
+    
+    local args = { }
+    local cmd = nil
+    for token in buffer:gmatch("[^%s]+") do
+        if not cmd then 
+            cmd = token
+        else
+            table.insert(args, token)
+        end
+    end
+    
+    if self:checkModeCmd(self.mode, cmd, args) then
+        return
+    end
+    
+    self:checkModeCmd("global", cmd, args)
     self:clear()
 end
 
@@ -69,8 +92,11 @@ function Vim:check()
     local buffer = self.buffer
     for _, bind in ipairs(self.modes[self.mode].buffs) do
         if buffer:match(bind.cmd) ~= nil then
-            bind.action(buffer, unpack(bind.args))
-            self:clear()
+            bind.action(buffer)
+            
+            if bind.cmd:sub(-1) == "$" then
+                self:clear()
+            end
             return
         end
     end
@@ -82,14 +108,25 @@ function Vim:createMode(mode, enter, exit)
     end
 end
 
-function Vim:buf(mode, cmd, action, ...)
+function Vim:buf(mode, cmd, action)
     self:createMode(mode)
 
-    table.insert(self.modes[mode].buffs, { cmd = cmd, action = action, args = { ... } })
+    table.insert(self.modes[mode].buffs, { cmd = cmd, action = action })
 end
 
-function Vim:cmd(mode, cmd, action, ...)
+local function build_command(t, cmd, action)
+    local first, last = cmd:match("(%w+)|(%w+)")
+    
+    if first then
+        table.insert(t, { cmd = first .. last, action = action })
+        cmd = first or cmd
+    end
+    
+    table.insert(t, { cmd = cmd, action = action })
+end
+
+function Vim:cmd(mode, cmd, action)
     self:createMode(mode)
 
-    table.insert(self.modes[mode].commands, { cmd = cmd, action = action, args = { ... } })
+    build_command(self.modes[mode].commands, cmd, action)
 end

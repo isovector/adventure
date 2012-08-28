@@ -21,7 +21,7 @@ local function keyCallback(key, down)
     if not down then return end
 
     if key == 27 then
-        vim:clear()
+        vim:clear(true)
     elseif key == 13 then
         vim:send()
     elseif key == 8 then
@@ -33,8 +33,9 @@ local function keyCallback(key, down)
     game.updateBuffer(vim:getBufferText())
 end
 
-vim:buf("", "^q$", function() os.exit() end)
-vim:cmd("", ":load ", Room.change)
+vim:buf("normal", "^q$", function() os.exit() end)
+vim:cmd("global", "l|oad", Room.change)
+vim:cmd("global", "q|uit", os.exit)
 
 local mouse = { x = 0, y = 0 }
 game.export("getMouse", function() return mouse.x, mouse.y end )

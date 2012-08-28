@@ -111,17 +111,17 @@ end
 
 vim:createMode("editor", 
     function(old) 
-        if old == "" then sheet:enable(true) end 
+        if old == "normal" then sheet:enable(true) end 
     end, 
     
     function(new) 
-        if new == "" then sheet:enable(false) end 
+        if new == "normal" then sheet:enable(false) end 
     end
 )
 
-vim:buf("",         "^E$",      function() vim:setMode("editor") end)
+vim:buf("normal",   "^E$",      function() vim:setMode("editor") end)
 vim:buf("editor",   "^ZZ$",     save)
 vim:buf("editor",   "^a$",      add_point)
 vim:buf("editor",   "^x$",      remove_point)
-vim:cmd("editor",   ":place ",  place)
-vim:cmd("editor",   ":remove ", remove)
+vim:cmd("editor",   "p|lace",   place)
+vim:cmd("editor",   "r|emove",  remove)

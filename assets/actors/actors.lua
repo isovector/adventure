@@ -1,2 +1,5 @@
 require "assets/costumes/costumes"
-require "assets/actors/santino/santino"
+
+for _, path in ipairs(MOAIFileSystem.listDirectories("assets/actors")) do
+    require(path .. "/actor")
+end

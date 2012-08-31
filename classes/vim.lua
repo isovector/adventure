@@ -5,7 +5,8 @@ newclass("Vim",
         return {
             buffer = "",
             mode = "normal",
-            modes = { }
+            modes = { },
+            mode_stack = { }
         }
     end
 )
@@ -27,8 +28,12 @@ function Vim:backspace()
     self.buffer = self.buffer:sub(1, #self.buffer - 1)
 end
 
-function Vim:setMode(mode)
+function Vim:setMode(mode, no_history)
     local old = self.mode
+    if not no_history then
+        table.insert(self.mode_stack, old)
+    end
+
     if self.modes[old].onExit then
         self.modes[old].onExit(mode)
     end
@@ -40,9 +45,21 @@ function Vim:setMode(mode)
     end
 end
 
+function Vim:popNode()
+    local idx = #self.mode_stack
+    
+    if idx == 0 then
+        self:setMode("normal", true)
+        return
+    end
+    
+    self:setMode(self.mode_stack[idx], true)
+    table.remove(self.mode_stack, idx)
+end
+
 function Vim:clear(change_mode)
     if self.buffer == "" and change_mode then
-        self:setMode("normal")
+        self:popNode()
     else
         self.buffer = ""
     end
@@ -105,6 +122,14 @@ end
 function Vim:createMode(mode, enter, exit)
     if not self.modes[mode] then
         self.modes[mode] = { commands = { }, buffs = { }, onEnter = enter, onExit = exit }
+    else
+        if enter then
+            self.modes[mode].onEnter = enter
+        end
+        
+        if exit then
+            self.modes[mode].onExit = exit
+        end
     end
 end
 

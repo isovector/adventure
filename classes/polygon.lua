@@ -21,13 +21,13 @@ newclass("Polygon",
 function Polygon:addPoint(x, y)
     table.insert(self.points, x)
     table.insert(self.points, y)
-    invalidate()
+    self:invalidate()
 end
 
 function Polygon:removePoint()
     table.remove(self.points, #self.points)
     table.remove(self.points, #self.points)
-    invalidate()
+    self:invalidate()
 end
 
 function Polygon:size()

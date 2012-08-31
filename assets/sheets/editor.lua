@@ -1,4 +1,5 @@
 require "classes/game"
+require "classes/polygon"
 require "classes/sheet"
 
 local sheet = Sheet.new("editor")
@@ -8,25 +9,29 @@ sheet:enable(false)
 sheet:setHoverAcceptor(Sheet.all_acceptor)
 
 local color = { 0, 1, 0 }
-local points = { }
+local poly = { }
 
 local curroom = room
 
+
+local function drawPolygon(poly)
+    MOAIDraw.drawLine(poly.points)
+    MOAIDraw.drawLine(poly.points[1], poly.points[2], poly.points[#poly.points - 1], poly.points[#poly.points])
+end
 
 local function onDraw()
     if room ~= curroom then
         curroom = room
         
         if room and room.astar then
-            points = room.astar.polys
+            poly = Polygon.new(room.astar.polys)
         else
-            points = { }
+            poly = Polygon.new()
         end
     end
 
     MOAIGfxDevice.setPenColor(unpack(color))
-    MOAIDraw.drawLine(points)
-    MOAIDraw.drawLine(points[1], points[2], points[#points - 1], points[#points])
+    drawPolygon(poly)
 end
     local scriptDeck = MOAIScriptDeck.new()
     scriptDeck:setRect(0, 0, 1280, 720)
@@ -49,6 +54,7 @@ end
 local function save()
     -- Write out pathfinding
     local f = io.open(room.directory .. "/pathfinding.lua", "w")
+    local points = poly.points
     f:write("return {\n")
     for i = 1, #points, 2 do
         f:write("\t" .. points[i] ..  ", " .. points[i + 1] .. ",\n")
@@ -73,26 +79,21 @@ local function invalidate()
 end
 
 local function update_pathing()
-    if #points >= 6 then
-        print(#points)
-        room:installPathing(points)
-    end
+    room:installPathing(poly.points)
 end
 
 local function add_point()
     local x, y = game.getMouse()
     
-    table.insert(points, x)
-    table.insert(points, y)
+    poly:addPoint(x, y)
 
     invalidate()
     update_pathing()
 end
 
 local function remove_point()
-    table.remove(points, #points)
-    table.remove(points, #points)
-    
+    poly:removePoint()
+
     invalidate()
     update_pathing()
 end
@@ -116,6 +117,19 @@ local function remove(id)
     end
 end
 
+local function setPolygon(...)
+    poly = Polygon.new(...)
+end
+
+vim:createMode("polygon",
+    function(old)
+    end,
+    
+    function(new)
+        --poly = Polygon.new()
+    end
+)
+
 vim:createMode("editor", 
     function(old) 
         if old == "normal" then sheet:enable(true) end 
@@ -127,9 +141,10 @@ vim:createMode("editor",
 )
 
 vim:buf("normal",   "^E$",      function() vim:setMode("editor") end)
+vim:buf("editor",   "^w$",      function() --[[setPolygon(room.astar.polys)]] vim:setMode("polygon") end)
 vim:buf("editor",   "^ZZ$",     save)
-vim:buf("editor",   "^a$",      add_point)
-vim:buf("editor",   "^x$",      remove_point)
 vim:cmd("editor",   "desc|ribe", function() print(unpack(points)) end)
 vim:cmd("editor",   "p|lace",   place)
 vim:cmd("editor",   "r|emove",  remove)
+vim:buf("polygon",   "^a$",      add_point)
+vim:buf("polygon",   "^x$",      remove_point)

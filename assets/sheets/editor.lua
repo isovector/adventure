@@ -56,8 +56,6 @@ local function save()
     f:write("}\n")
     f:close()
     
-    room:installPathing(points)
-    
     -- Write out actors
     f = io.open(room.directory .. "/actors.lua", "w")
     f:write("return function(room)\n")
@@ -74,6 +72,13 @@ local function invalidate()
     color = { 1, 0, 0 }
 end
 
+local function update_pathing()
+    if #points >= 6 then
+        print(#points)
+        room:installPathing(points)
+    end
+end
+
 local function add_point()
     local x, y = game.getMouse()
     
@@ -81,6 +86,7 @@ local function add_point()
     table.insert(points, y)
 
     invalidate()
+    update_pathing()
 end
 
 local function remove_point()
@@ -88,6 +94,7 @@ local function remove_point()
     table.remove(points, #points)
     
     invalidate()
+    update_pathing()
 end
 
 local function place(id)

@@ -1,16 +1,16 @@
 require "classes/class"
-local Shapes = require "classes/lib/HardonCollider/shapes"
+require "classes/polygon"
 
-newclass("Hotspot", function(id, cursor, name, ...)
+newclass("Hotspot", function(id, cursor, name, poly)
         return {
             id = id,
             cursor = cursor,
             name = name,
-            shape = Shapes.newPolygonShape(...)
+            polygon = poly
         }
     end
 )
 
 function Hotspot:hitTest(x, y)
-    return self.shape:contains(x, y)
+    return self.polygon:contains(x, y)
 end

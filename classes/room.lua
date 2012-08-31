@@ -1,5 +1,6 @@
 require "classes/class"
 require "classes/hotspot"
+require "classes/polygon"
 require 'classes/lib/lua-astar/astar'
 require 'classes/lib/lua-astar/volumehandler'
 
@@ -40,7 +41,7 @@ end
 function Room:installPathing(polys)
     local res = 16
     
-    local hs = Hotspot.new(nil, nil, nil, unpack(polys))
+    local hs = Polygon.new(unpack(polys))
     local map = { }
     
     for y = 1, 720 / res do

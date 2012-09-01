@@ -9,6 +9,9 @@ local function buildRoom(name)
 
     local pathing = require(path .. "/pathfinding")
     room:installPathing(pathing)
+    
+    local hotspots = require(path .. "/hotspots")
+    hotspots(room)
 
     local actors = require(path .. "/actors")
     actors(room)

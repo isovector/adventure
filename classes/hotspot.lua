@@ -12,5 +12,5 @@ newclass("Hotspot", function(id, cursor, name, poly)
 )
 
 function Hotspot:hitTest(x, y)
-    return self.polygon:contains(x, y)
+    return self.polygon:hitTest(x, y)
 end

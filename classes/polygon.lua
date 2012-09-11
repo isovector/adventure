@@ -39,7 +39,7 @@ function Polygon:invalidate()
 end
 
 function Polygon:rebuildCollision()
-    if self.shape then return end
+    if self.shape or #self.points < 6 then return end
     
     self.shape = Shapes.newPolygonShape(unpack(self.points))
 end
@@ -47,11 +47,19 @@ end
 function Polygon:hitTest(x, y)
     self:rebuildCollision()
     
-    return self.shape:contains(x, y)
+    if self.shape then
+        return self.shape:contains(x, y)
+    end
+    
+    return false
 end
 
 function Polygon:getBox()
     self:rebuildCollision()
 
-    return self.shape:getBBox()
+    if self.shape then
+        return self.shape:getBBox()
+    end
+    
+    return 0, 0, 0, 0
 end

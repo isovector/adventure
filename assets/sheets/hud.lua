@@ -9,7 +9,7 @@ sheet:install()
 local labeler = sheet:getLabeler()
 
 local hover_text = labeler:addLabel("", 0, 0)
-hover_text:setRect(15, 15, 150, 50)
+hover_text:setRect(15, 15, 500, 50)
 hover_text:setAlignment(MOAITextBox.LEFT_JUSTIFY)
 
 local fps_text = labeler:addLabel("", 0, 0)
@@ -27,7 +27,7 @@ buffer_text:setAlignment(MOAITextBox.LEFT_JUSTIFY)
 local cursor_deck = MOAITileDeck2D.new()
 cursor_deck:setTexture("assets/static/cursors.png")
 cursor_deck:setSize(11, 1)
-cursor_deck:setRect(-16, -16, 16, 16)
+cursor_deck:setRect(-16, 16, 16, -16)
 
 local cursor = MOAIProp2D.new()
 cursor:setDeck(cursor_deck)

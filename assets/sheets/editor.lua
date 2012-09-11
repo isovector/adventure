@@ -22,7 +22,7 @@ local function showLabels()
     if labeler:size() ~= 0 then return end
     
     for i = 1, #polies do
-        local x, y = polies[i].points[1], polies[i].points[2]
+        local x, y = polies[i].points[1] or 10, polies[i].points[2] or 14 * i
         
         local str = tostring(i - 1)
         if i == 1 then
@@ -48,7 +48,9 @@ local function reloadRoom()
     poly = walking
     
     for _, hs in pairs(room.hotspots) do
-        table.insert(polies, hs.polygon)
+        local p = hs.polygon
+        p.hotspot = hs
+        table.insert(polies, p)
     end
 end
 
@@ -189,14 +191,13 @@ vim:cmd("editor",   "r|emove",  function(id)
                                     end
                                 end)
 
--- this will fail when working with real hotspots
-local newname = 1
 vim:buf("editor",   "^ah$", 
                                 function()
-                                    local hotspot = Hotspot.new("new" .. newname, 5, "New Hotspot", Polygon.new())
-                                    newname = newname + 1
+                                    local newname = #polies
+                                    local hotspot = Hotspot.new("new" .. newname, 5, "New Hotspot " .. newname, Polygon.new())
                                     
                                     poly = hotspot.polygon
+                                    poly.hotspot = hotspot
                                     table.insert(polies, poly)
                                     
                                     room:addHotspot(hotspot)
@@ -223,6 +224,30 @@ vim:buf("editor",   "^e[0-9]+",
                                         vim:clear()
                                     end
                                 end)
+                                
+vim:buf("editor",   "^d",       function()
+                                    showLabels()
+                                    vim:addChangeCallback(hideLabels)
+                                end)
+    
+vim:buf("editor",   "^d[0-9]+",
+                                function(input)
+                                    input = tonumber(input:sub(2)) + 1
+                                    if input == 1 then vim:clear(); return end
+                                    
+                                    if polies[input] then
+                                        if poly == polies[input] then
+                                            poly = polies[1]
+                                        end
+                                        
+                                        local hs = polies[input].hotspot
+                                        room:removeHotspot(hs.id)
+                                        
+                                        table.remove(polies, input)
+                                        
+                                        vim:clear()
+                                    end
+                                end)
 
 vim:buf("polygon",   "^a$", 
                                 function()
@@ -240,4 +265,22 @@ vim:buf("polygon",   "^x$",
 
                                     invalidate()
                                     update_pathing()
+                                end)
+
+vim:cmd("polygon",  "id",     function(id)
+                                    if poly.hotspot then
+                                        poly.hotspot.id = id
+                                    end
+                                end)
+                                
+vim:cmd("polygon",  "name",     function(name)
+                                    if poly.hotspot then
+                                        poly.hotspot.name = name
+                                    end
+                                end)
+                                
+vim:cmd("polygon",  "cur|sor",  function(cursor)
+                                    if poly.hotspot then
+                                        poly.hotspot.cursor = tonumber(cursor) or 5
+                                    end
                                 end)

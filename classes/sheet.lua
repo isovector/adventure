@@ -1,4 +1,5 @@
 require "classes/class"
+require "classes/labeler"
 
 local viewport = viewport
 
@@ -20,7 +21,9 @@ newclass("Sheet",
             -- Handlers which determine if the sheet should handle an event
             clickAcceptor = nil,
             rClickAcceptor = nil,
-            hoverAcceptor = nil
+            hoverAcceptor = nil,
+            
+            labeler = nil
         }
         
         return self
@@ -164,4 +167,12 @@ end
 function Sheet:removeProp(prop)
     self.layer:removeProp(prop)
     self.partition:removeProp(prop)
+end
+
+function Sheet:getLabeler()
+    if not self.labeler then
+        self.labeler = Labeler.new(self.layer, "assets/static/arial-rounded.TTF")
+    end
+    
+    return self.labeler
 end

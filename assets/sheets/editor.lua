@@ -16,6 +16,27 @@ local walking = { }
 local curroom = room
 
 
+local function showLabels()
+    local labeler = sheet:getLabeler()
+    
+    if labeler:size() ~= 0 then return end
+    
+    for i = 1, #polies do
+        local x, y = polies[i].points[1], polies[i].points[2]
+        
+        local str = tostring(i - 1)
+        if i == 1 then
+            str = "w"
+        end
+        
+        labeler:addLabel(str, x, y, 0, 1, 0)
+    end
+end
+
+local function hideLabels()
+    sheet:getLabeler():clearLabels()
+end
+
 local function reloadRoom()
     if room and room.astar then
         walking = Polygon.new(room.astar.polys)
@@ -181,6 +202,11 @@ vim:buf("editor",   "^ah$",
                                     room:addHotspot(hotspot)
                                     vim:setMode("polygon")
                                 end)
+
+vim:buf("editor",   "^e",       function()
+                                    showLabels()
+                                    vim:addChangeCallback(hideLabels)
+                                end)
     
 vim:buf("editor",   "^ew$",
                                 function()
@@ -190,9 +216,12 @@ vim:buf("editor",   "^ew$",
     
 vim:buf("editor",   "^e[0-9]+",
                                 function(input)
-                                    input = input:sub(2)
-                                    print(input)
-                                    vim:clear()
+                                    input = tonumber(input:sub(2)) + 1
+                                    if polies[input] then
+                                        poly = polies[input]
+                                        vim:setMode("polygon")
+                                        vim:clear()
+                                    end
                                 end)
 
 vim:buf("polygon",   "^a$", 

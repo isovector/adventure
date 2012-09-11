@@ -35,5 +35,5 @@ return function(room)
     prop:setLoc(sx, sy + h)
     prop:setPriority(sy + h)
 
-    Sheet.getSheet("foreground"):insertProp(prop)
+    --Sheet.getSheet("foreground"):insertProp(prop)
 end

@@ -15,7 +15,7 @@ require "assets/costumes/costumes"
 require "assets/sheets/_layout"
 require "assets/rooms/rooms"
 
-Room.getRoom("outside"):load()
+Room.getRoom("inside"):load()
 
 local function keyCallback(key, down)
     if not down then return end

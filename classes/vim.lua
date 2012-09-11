@@ -6,7 +6,8 @@ newclass("Vim",
             buffer = "",
             mode = "normal",
             modes = { },
-            mode_stack = { }
+            mode_stack = { },
+            change_callbacks  = { }
         }
     end
 )
@@ -21,11 +22,27 @@ end
 
 function Vim:addChar(char)
     self.buffer = self.buffer .. char
+    self:change()
     self:check()
 end
 
 function Vim:backspace()
     self.buffer = self.buffer:sub(1, #self.buffer - 1)
+    self:change()
+end
+
+function Vim:change()
+    if #self.change_callbacks == 0 then return end
+
+    for i = 1, #self.change_callbacks do
+        self.change_callbacks[i]()
+    end
+    
+    self.change_callbacks = { }
+end
+
+function Vim:addChangeCallback(callback)
+    table.insert(self.change_callbacks, callback)
 end
 
 function Vim:setMode(mode, no_history)
@@ -58,6 +75,7 @@ function Vim:popNode()
 end
 
 function Vim:clear(change_mode)
+    self:change()
     if self.buffer == "" and change_mode then
         self:popNode()
     else
@@ -107,15 +125,19 @@ end
 
 function Vim:check()
     local buffer = self.buffer
+    local cleared = false
     for _, bind in ipairs(self.modes[self.mode].buffs) do
         if buffer:match(bind.cmd) ~= nil then
             bind.action(buffer)
             
             if bind.cmd:sub(-1) == "$" then
-                self:clear()
+                cleared = true
             end
-            return
         end
+    end
+    
+    if cleared then
+        self:clear()
     end
 end
 

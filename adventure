@@ -71,3 +71,15 @@ MOAIInputMgr.device.pointer:setCallback(pointerCallback)
 MOAIInputMgr.device.mouseLeft:setCallback(clickCallback)
 MOAIInputMgr.device.mouseRight:setCallback(rClickCallback)
 MOAIInputMgr.device.keyboard:setCallback(keyCallback)
+
+while io.read(0) do
+    local char = io.read(1)
+    
+    if char == "\n" then
+        vim:send()
+    else
+        vim:addChar(char)
+    end
+end
+
+game.updateBuffer(vim:getBufferText())

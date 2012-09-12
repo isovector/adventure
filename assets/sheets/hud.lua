@@ -1,7 +1,6 @@
 require "classes/game"
 require "classes/sheet"
 require "classes/timer"
-require "classes/legacy/library"
 
 local sheet = Sheet.new("hud")
 sheet:install()
@@ -55,7 +54,7 @@ end
 game.export({ setHoverText = setHoverText, setCursor = setCursor, setCursorPos = setCursorPos, updateBuffer = updateBuffer })
 
 local function timerCallback()
-    fps_text:setString(tostring(math.round(MOAISim.getPerformance())))
+    fps_text:setString(string.format("%.1f", math.floor(MOAISim.getPerformance() * 10 + 0.5) / 10))
 end
 
 local timer = Timer.new(1, timerCallback)

@@ -266,7 +266,8 @@ vim:cmd("polygon",  "id",     function(id)
                                     end
                                 end)
                                 
-vim:cmd("polygon",  "name",     function(name)
+vim:cmd("polygon",  "name",     function(...)
+                                    name = table.concat({ ... }, " ")
                                     if poly.hotspot then
                                         poly.hotspot.name = name
                                     end

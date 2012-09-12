@@ -36,4 +36,10 @@ return function(room)
 		217, 508,
 		39, 517,
 	})))
+	room:addHotspot(Hotspot.new("dining_door", 8, "Dining Room", Polygon.new({
+		662, 503,
+		673, 303,
+		792, 300,
+		793, 504,
+	})))
 end

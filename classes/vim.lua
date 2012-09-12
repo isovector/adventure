@@ -127,8 +127,10 @@ function Vim:check()
     local buffer = self.buffer
     local cleared = false
     for _, bind in ipairs(self.modes[self.mode].buffs) do
-        if buffer:match(bind.cmd) ~= nil then
-            bind.action(buffer)
+        local result = { buffer:match(bind.cmd) }
+    
+        if #result ~= 0 then
+            bind.action(unpack(result))
             
             if bind.cmd:sub(-1) == "$" then
                 cleared = true

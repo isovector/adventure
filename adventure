@@ -33,9 +33,9 @@ local function keyCallback(key, down)
     game.updateBuffer(vim:getBufferText())
 end
 
-vim:buf("normal", "^q$", function() os.exit() end)
-vim:cmd("global", "l|oad", Room.change)
-vim:cmd("global", "q|uit", os.exit)
+vim:buf("normal", "^q$",    function() os.exit() end)
+vim:cmd("global", "l|oad",  Room.change)
+vim:cmd("global", "q|uit",  os.exit)
 
 local mouse = { x = 0, y = 0 }
 game.export("getMouse", function() return mouse.x, mouse.y end )
@@ -71,15 +71,5 @@ MOAIInputMgr.device.pointer:setCallback(pointerCallback)
 MOAIInputMgr.device.mouseLeft:setCallback(clickCallback)
 MOAIInputMgr.device.mouseRight:setCallback(rClickCallback)
 MOAIInputMgr.device.keyboard:setCallback(keyCallback)
-
-while io.read(0) do
-    local char = io.read(1)
-    
-    if char == "\n" then
-        vim:send()
-    else
-        vim:addChar(char)
-    end
-end
 
 game.updateBuffer(vim:getBufferText())

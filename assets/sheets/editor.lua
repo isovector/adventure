@@ -167,12 +167,11 @@ vim:createMode("editor",
 )
 
 vim:buf("normal",   "^E$",      function() vim:setMode("editor") end)
-vim:buf("editor",   "^w$",      function() --[[setPolygon(room.astar.polys)]] vim:setMode("polygon") end)
+vim:buf("editor",   "^w$",      function() vim:setMode("polygon") end)
 vim:buf("editor",   "^ZZ$",     save)
 vim:cmd("editor",   "desc|ribe", function() print(unpack(points)) end)
 
-vim:cmd("editor",   "p|lace",
-                                function(id)
+vim:cmd("editor",   "p|lace",   function(id)
                                     local actor = Actor.getActor(id)
                                     local x, y = game.getMouse()
                                     
@@ -191,8 +190,7 @@ vim:cmd("editor",   "r|emove",  function(id)
                                     end
                                 end)
 
-vim:buf("editor",   "^ah$", 
-                                function()
+vim:buf("editor",   "^ah$",     function()
                                     local newname = #polies
                                     local hotspot = Hotspot.new("new" .. newname, 5, "New Hotspot " .. newname, Polygon.new())
                                     
@@ -204,53 +202,49 @@ vim:buf("editor",   "^ah$",
                                     vim:setMode("polygon")
                                 end)
 
-vim:buf("editor",   "^e",       function()
-                                    showLabels()
-                                    vim:addChangeCallback(hideLabels)
-                                end)
-    
-vim:buf("editor",   "^ew$",
-                                function()
-                                    poly = polies[1]
-                                    vim:setMode("polygon")
-                                end)
-    
-vim:buf("editor",   "^e[0-9]+",
-                                function(input)
-                                    input = tonumber(input:sub(2)) + 1
-                                    if polies[input] then
-                                        poly = polies[input]
-                                        vim:setMode("polygon")
-                                        vim:clear()
-                                    end
-                                end)
-                                
-vim:buf("editor",   "^d",       function()
-                                    showLabels()
-                                    vim:addChangeCallback(hideLabels)
-                                end)
-    
-vim:buf("editor",   "^d[0-9]+",
-                                function(input)
-                                    input = tonumber(input:sub(2)) + 1
-                                    if input == 1 then vim:clear(); return end
-                                    
-                                    if polies[input] then
-                                        if poly == polies[input] then
+vim:buf("editor",   "^e(w?[0-9]*)",
+                                function(which)
+                                    local idx = tonumber(which)
+                                    if which == "w" or (idx and polies[idx + 1]) then
+                                        if idx then
+                                            poly = polies[idx + 1]
+                                        else
                                             poly = polies[1]
                                         end
                                         
-                                        local hs = polies[input].hotspot
+                                        vim:setMode("polygon")
+                                        vim:clear()
+                                        return
+                                    end
+                                    
+                                    showLabels()
+                                    vim:addChangeCallback(hideLabels)
+                                end)
+                                
+vim:buf("editor",   "^d([0-9]*)",
+                                function(which)
+                                    which = tonumber(which)
+                                    if which then which = which + 1 end
+                                    if which == 1 then vim:clear(); return end
+                                    
+                                    if polies[which] then
+                                        if poly == polies[which] then
+                                            poly = polies[1]
+                                        end
+                                        
+                                        local hs = polies[which].hotspot
                                         room:removeHotspot(hs.id)
                                         
-                                        table.remove(polies, input)
+                                        table.remove(polies, which)
                                         
                                         vim:clear()
                                     end
+                                    
+                                    showLabels()
+                                    vim:addChangeCallback(hideLabels)
                                 end)
 
-vim:buf("polygon",   "^a$", 
-                                function()
+vim:buf("polygon",   "^a$",     function()
                                     local x, y = game.getMouse()
                                     
                                     poly:addPoint(x, y)
@@ -259,8 +253,7 @@ vim:buf("polygon",   "^a$",
                                     update_pathing()
                                 end)
     
-vim:buf("polygon",   "^x$",
-                                function()
+vim:buf("polygon",   "^x$",     function()
                                     poly:removePoint()
 
                                     invalidate()

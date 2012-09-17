@@ -1,5 +1,6 @@
 require "classes/class"
 
+-- timer class appears to be borked
 newclass("Timer", function(time, callback)
         local timer = MOAITimer.new()
         timer:setMode(MOAITimer.LOOP)

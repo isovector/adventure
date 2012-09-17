@@ -54,10 +54,15 @@ function Animation:hitTest(prop, x, y)
     local y0 = ry + ly
     
     local width = math.max(rx, rw) - math.min(rx, rw)
+    local height = math.max(ry, rh) - math.min(ry, rh) 
     
     -- get local space coords
     x = x - x0 + (prop:getIndex() - 1) * width
     y = y - y0
+    
+    if y < 0 then
+        y = y + height
+    end
 
     local _, _, _, a = self.texture:getRGBA(x, y)
     return a ~= 0

@@ -73,3 +73,4 @@ MOAIInputMgr.device.mouseRight:setCallback(rClickCallback)
 MOAIInputMgr.device.keyboard:setCallback(keyCallback)
 
 game.updateBuffer(vim:getBufferText())
+

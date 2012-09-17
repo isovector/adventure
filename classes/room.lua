@@ -74,7 +74,6 @@ end
 function Room:removeHotspot(id)
     for i = 1, #self.hotspots do
         if self.hotspots[i].id == id then
-            print("removing", id)
             table.remove(self.hotspots, i)
             return
         end

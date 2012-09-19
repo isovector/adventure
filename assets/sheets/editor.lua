@@ -43,6 +43,8 @@ local function reloadRoom()
     else
         walking = Polygon.new()
     end
+    
+    polies = { }
 
     table.insert(polies, walking)
     poly = walking

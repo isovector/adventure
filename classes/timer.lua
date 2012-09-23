@@ -1,19 +1,25 @@
 require "classes/class"
 
--- timer class appears to be borked
-newclass("Timer", function(duration, callback)
+newclass("Timer", 
+    function(duration, rep, callback, deltacallback)
         local timer = { alive = true }
         
         local time
         local function timerCallback()
-            while timer.alive do
+            repeat
                 time = duration
-                while time > 0 do
+                while time > 0 and timer.alive do
                     time = time - coroutine.yield()
+                    
+                    if deltacallback then
+                        deltacallback(timer, time)
+                    end
                 end
                 
-                callback()
-            end
+                if timer.alive then
+                    callback(timer)
+                end
+            until not (rep and timer.alive)
         end
         
         local routine = MOAICoroutine.new()

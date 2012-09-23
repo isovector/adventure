@@ -35,7 +35,7 @@ local function timerCallback()
     end
 end
 
-local timer = Timer.new(freq, timerCallback)
+local timer = Timer.new(freq, true, timerCallback)
 
 local function addVis(call, time)
     table.insert(vises, 

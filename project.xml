@@ -1,0 +1,35 @@
+<root identifier="sciteproj project file">
+	<file>./adventure</file>
+	<group name='classes' expanded='TRUE'>
+		<file>./classes/actor.lua</file>
+		<file>./classes/class.lua</file>
+		<file>./classes/costume.lua</file>
+		<file>./classes/game.lua</file>
+		<file>./classes/hotspot.lua</file>
+		<file>./classes/labeler.lua</file>
+		<file>./classes/polygon.lua</file>
+		<file>./classes/room.lua</file>
+		<file>./classes/sheet.lua</file>
+		<file>./classes/timer.lua</file>
+		<file>./classes/vim.lua</file>
+	</group>
+	<group name='sheets' expanded='TRUE'>
+		<file>./assets/sheets/bg.lua</file>
+		<file>./assets/sheets/editor.lua</file>
+		<file>./assets/sheets/fg.lua</file>
+		<file>./assets/sheets/hotspots.lua</file>
+		<file>./assets/sheets/hud.lua</file>
+		<file>./assets/sheets/_layout.lua</file>
+		<file>./assets/sheets/vis.lua</file>
+		<file>./assets/sheets/verbs.lua</file>
+	</group>
+	<group name='misc' expanded='FALSE'>
+		<file>./assets/actors/actors.lua</file>
+		<file>./assets/rooms/rooms.lua</file>
+	</group>
+	<group name='utils' expanded='FALSE'>
+		<file>./utils/build_costume.py</file>
+		<file>./utils/build_pathfinding.py</file>
+		<file>./utils/parse_image.py</file>
+	</group>
+</root>

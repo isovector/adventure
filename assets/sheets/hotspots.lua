@@ -18,10 +18,14 @@ sheet:install()
 sheet:setClickAcceptor(Sheet.all_acceptor)
 sheet:setHoverAcceptor(Sheet.all_acceptor)
 
-function sheet:onClick(prop, x, y)
+function sheet:onClick(prop, x, y, down)
+
     for _, hotspot in ipairs(hotspots) do
         if hotspot:hitTest(x, y) then
-            return true
+            if down then
+                game.startVerbCountdown(x, y, print, hotspot.name)
+                return true
+            end
         end
     end
     

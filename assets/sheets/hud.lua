@@ -53,9 +53,8 @@ end
 
 game.export({ setHoverText = setHoverText, setCursor = setCursor, setCursorPos = setCursorPos, updateBuffer = updateBuffer })
 
-local time = 1
 local function timerCallback()
     fps_text:setString(string.format("%.1f", math.floor(MOAISim.getPerformance() * 10 + 0.5) / 10))
 end
 
-Timer.new(1, timerCallback)
+Timer.new(1, true, timerCallback)

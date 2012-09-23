@@ -1,6 +1,7 @@
 require "assets/sheets/bg"
 require "assets/sheets/hotspots"
 require "assets/sheets/fg"
+require "assets/sheets/verbs"
 require "assets/sheets/vis"
 require "assets/sheets/editor"
 require "assets/sheets/hud"

@@ -13,6 +13,7 @@ newclass("Room", function(id, path)
             img_path = path,
             hotspots = { },
             scene = { },
+            events = { },
             
             handler = nil,
             astar = nil,

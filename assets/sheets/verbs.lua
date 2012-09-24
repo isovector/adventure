@@ -21,9 +21,7 @@ sheet:insertProp(prop)
 
 --------------------------------------------------
 
-local callback = nil
-local args = { }
-local name = ""
+local object = nil
 
 local x0 = 0
 local y0 = 0
@@ -35,21 +33,27 @@ local function timerDelta(timer)
     end
 end
 
-local function show(cb, objname, ...)
+local function show()
     sheet:enable(true)
 end
 
-local function startVerbCountdown(x, y, cb, objname, ...)
+local function dispatchVerb(verb)
+    local id = object.id
+
+    if id and room.events[id] and room.events[id][verb] then
+        room.events[id][verb]()
+    end
+end
+
+local function startVerbCountdown(x, y, obj)
     x0 = x
     y0 = y
 
-    callback = cb
-    name = objname
-    args = { ... }
+    object = obj
     
     prop:setLoc(x0, y0)
 
-    timer = Timer.new(0.75, false, show, timerDelta)
+    timer = Timer.new(0.5, false, show, timerDelta)
 end
 
 game.export("startVerbCountdown", startVerbCountdown)
@@ -60,12 +64,12 @@ local function getVerb(prop, x, y)
     if not prop then return "..." end
     
     if x - x0 < -24 then
-        return "Talk"
+        return "talk"
     elseif x - x0 > 24 then
-        return "Touch"
+        return "touch"
     end
     
-    return "Look"
+    return "look"
 end
 
 --------------------------------------------------
@@ -77,7 +81,7 @@ function sheet:onHover(prop, x, y)
         game.setCursor(0)
     end
     
-    game.setHoverText(string.format("%s %s", getVerb(prop, x, y), name))
+    game.setHoverText(string.format("%s %s", getVerb(prop, x, y), object.name))
     return true
 end
 
@@ -89,7 +93,7 @@ function sheet:onClick(prop, x, y, down)
     self:enable(false)
     
     if prop then
-        callback(getVerb(prop, x, y), unpack(args))
+        dispatchVerb(getVerb(prop, x, y))
     end
     
     return true

@@ -12,6 +12,7 @@
 		<file>./classes/sheet.lua</file>
 		<file>./classes/timer.lua</file>
 		<file>./classes/vim.lua</file>
+		<file>./classes/sandbox.lua</file>
 	</group>
 	<group name='sheets' expanded='TRUE'>
 		<file>./assets/sheets/bg.lua</file>
@@ -23,7 +24,7 @@
 		<file>./assets/sheets/vis.lua</file>
 		<file>./assets/sheets/verbs.lua</file>
 	</group>
-	<group name='misc' expanded='FALSE'>
+	<group name='misc' expanded='TRUE'>
 		<file>./assets/actors/actors.lua</file>
 		<file>./assets/rooms/rooms.lua</file>
 	</group>

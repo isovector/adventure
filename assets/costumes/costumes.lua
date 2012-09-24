@@ -45,6 +45,7 @@ curve:setKey(22, 0.875000, 22, MOAIEaseType.FLAT)
 curve:setKey(23, 0.916667, 23, MOAIEaseType.FLAT)
 curve:setKey(24, 1, 1, MOAIEaseType.FLAT)
 
+
 anim = Animation.new("assets/costumes/santino/idle.png", 24, 40, 60, curve)
 anim.loops = true
 cost.poses.idle[5] = anim
@@ -74,6 +75,7 @@ curve:setKey(21, 0.833333, 21, MOAIEaseType.FLAT)
 curve:setKey(22, 0.875000, 22, MOAIEaseType.FLAT)
 curve:setKey(23, 0.916667, 23, MOAIEaseType.FLAT)
 curve:setKey(24, 1, 1, MOAIEaseType.FLAT)
+
 
 anim = Animation.new("assets/costumes/santino/walk8.png", 24, 40, 60, curve)
 anim.loops = true
@@ -105,6 +107,7 @@ curve:setKey(22, 0.875000, 22, MOAIEaseType.FLAT)
 curve:setKey(23, 0.916667, 23, MOAIEaseType.FLAT)
 curve:setKey(24, 1, 1, MOAIEaseType.FLAT)
 
+
 anim = Animation.new("assets/costumes/santino/walk2.png", 24, 40, 60, curve)
 anim.loops = true
 cost.poses.walk[2] = anim
@@ -134,6 +137,7 @@ curve:setKey(21, 0.833333, 21, MOAIEaseType.FLAT)
 curve:setKey(22, 0.875000, 22, MOAIEaseType.FLAT)
 curve:setKey(23, 0.916667, 23, MOAIEaseType.FLAT)
 curve:setKey(24, 1, 1, MOAIEaseType.FLAT)
+
 
 anim = Animation.new("assets/costumes/santino/walk4.png", 24, 40, 60, curve)
 anim.loops = true
@@ -165,8 +169,24 @@ curve:setKey(22, 0.875000, 22, MOAIEaseType.FLAT)
 curve:setKey(23, 0.916667, 23, MOAIEaseType.FLAT)
 curve:setKey(24, 1, 1, MOAIEaseType.FLAT)
 
+
 anim = Animation.new("assets/costumes/santino/walk6.png", 24, 40, 60, curve)
 anim.loops = true
 cost.poses.walk[6] = anim
 costumes.santino = cost
+
+cost = Costume.new()
+cost.poses = {
+	idle = { },
+	nil
+}
+curve = MOAIAnimCurve.new()
+curve:reserveKeys(1)
+curve:setKey(1, 1, 1, MOAIEaseType.FLAT)
+
+
+anim = Animation.new("assets/costumes/charles/idle.png", 1, 24, 52, curve)
+anim.loops = true
+cost.poses.idle[5] = anim
+costumes.charles = cost
 

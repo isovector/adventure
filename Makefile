@@ -3,14 +3,18 @@ COSTDIR = assets/costumes
 
 #########################################################
 
-art = $(patsubst art/%.sifz, $(COSTDIR)/%.png, $(shell find art/ -type f -name '*.sifz'))
+art = $(patsubst art/%.sifz, $(COSTDIR)/%.png, $(shell find art/ -type f -name '*.sifz')) $(patsubst art/%.png, $(COSTDIR)/%.png, $(shell find art/ -type f -name '*.png'))
 
 #########################################################
 
 art : $(OBJDIR) $(art) $(COSTDIR)/costumes.lua
 
 $(COSTDIR)/costumes.lua : utils/build_costume.py
-	python utils/build_costume.py art > $(COSTDIR)/costumes.lua
+	python2 utils/build_costume.py art > $(COSTDIR)/costumes.lua
+
+$(COSTDIR)/%.png : art/%.png
+	mkdir -p $(dir $@)
+	cp $< $@
 
 $(COSTDIR)/%.png : art/%.sifz
 	synfig -t png -o $(OBJDIR)/build.png $<

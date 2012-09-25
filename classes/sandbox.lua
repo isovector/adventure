@@ -8,6 +8,11 @@ local function sandboxLookup(t, k)
         return setmetatable({ }, {
             __index = self.values[k],
             __newindex = function(nt, nk, nv)
+                if type(nv) ~= "function" then
+                    self.values[k][nk] = nv
+                    return
+                end
+            
                 if not self.results[k] then
                     self.results[k] = { }
                 end

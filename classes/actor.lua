@@ -107,8 +107,6 @@ end
 
 function Actor:mainLoop()
     while self.prop do
-        coroutine.yield()
-        
         local _, y = self:location()
         self.prop:setPriority(y)
     
@@ -118,6 +116,8 @@ function Actor:mainLoop()
             self.stop = false
             self:walkTo(unpack(goal))
         end
+        
+        coroutine.yield()
     end
     
     self.loop = nil

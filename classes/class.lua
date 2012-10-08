@@ -15,8 +15,12 @@ function newclass(name, ctor)
         return instance
     end
     
-    function class.__tostring()
-        return "Object:" .. name
+    function class:__tostring()
+        if self.id then
+            return string.format("[%s::%s]", name, self.id)
+        else
+            return string.format("[%s]", name)
+        end
     end
     
     function class:is_a(b)

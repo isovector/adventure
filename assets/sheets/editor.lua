@@ -37,6 +37,16 @@ local function hideLabels()
     sheet:getLabeler():clearLabels()
 end
 
+local function status(...)
+    local str = ""
+    
+    for i, val in ipairs({...}) do
+        str = str .. tostring(val) .. " "
+    end
+    
+    game.setHoverText(str)
+end
+
 local function reloadRoom()
     if room and room.astar then
         walking = Polygon.new(room.astar.polys)
@@ -135,6 +145,8 @@ local function save()
     f:close()
     
     color = { 0, 1, 0 }
+    
+    status("Saved successfully")
 end
 
 local function invalidate()
@@ -180,6 +192,7 @@ vim:cmd("editor",   "p|lace",   function(id)
                                     if actor then
                                         invalidate()
                                         room:addActor(actor, x, y)
+                                        status("Placed", actor, "at", x, y)
                                     end
                                 end)
     
@@ -189,6 +202,7 @@ vim:cmd("editor",   "r|emove",  function(id)
                                     if actor then
                                         invalidate()
                                         room:removeActor(actor)
+                                        status("Removed", actor)
                                     end
                                 end)
 
@@ -199,6 +213,8 @@ vim:buf("editor",   "^ah$",     function()
                                     poly = hotspot.polygon
                                     poly.hotspot = hotspot
                                     table.insert(polies, poly)
+                                    
+                                    status("Added", hotspot)
                                     
                                     room:addHotspot(hotspot)
                                     vim:setMode("polygon")
@@ -212,6 +228,12 @@ vim:buf("editor",   "^e(w?[0-9]*)",
                                             poly = polies[idx + 1]
                                         else
                                             poly = polies[1]
+                                        end
+                                        
+                                        if poly.hotspot then
+                                            status("Editing", poly.hotspot)
+                                        else
+                                            status("Editing", "pathing map")
                                         end
                                         
                                         vim:setMode("polygon")
@@ -235,6 +257,8 @@ vim:buf("editor",   "^d([0-9]*)",
                                         end
                                         
                                         local hs = polies[which].hotspot
+                                        
+                                        status("Deleted", hs)
                                         room:removeHotspot(hs.id)
                                         
                                         table.remove(polies, which)
@@ -265,6 +289,7 @@ vim:buf("polygon",   "^x$",     function()
 vim:cmd("polygon",  "id",     function(id)
                                     if poly.hotspot then
                                         poly.hotspot.id = id
+                                        status("Editing", poly.hotspot)
                                     end
                                 end)
                                 
@@ -272,11 +297,13 @@ vim:cmd("polygon",  "name",     function(...)
                                     name = table.concat({ ... }, " ")
                                     if poly.hotspot then
                                         poly.hotspot.name = name
+                                        status("Set", poly.hotspot, "name to", name)
                                     end
                                 end)
                                 
 vim:cmd("polygon",  "cur|sor",  function(cursor)
                                     if poly.hotspot then
                                         poly.hotspot.cursor = tonumber(cursor) or 5
+                                        status("Set", poly.hotspot, "cursor to", cursor)
                                     end
                                 end)

@@ -2,94 +2,46 @@ require "classes/class"
 
 costumes = { }
 
-newclass("Animation", 
-    function(path, frames, w, h, curve)
-        local img = MOAIImageTexture.new()
-        img:load(path, MOAIImage.TRUECOLOR + MOAIImage.PREMULTIPLY_ALPHA)
-    
-        local deck = MOAITileDeck2D.new()
-        deck:setTexture(img)
-        deck:setSize(frames, 1)
-        deck:setRect(-w, 0, w, -h * 2)
-    
-        return {
-            deck = deck,
-            curve = curve,
-            texture = img,
-            loops = false,
-            anim = MOAIAnim.new()
-        }
-    end
-)
-
-function Animation:start(prop)
-    prop:setDeck(self.deck)
-    prop:setIndex(1)
-    
-    if self.anim then
-        self.anim:detach()
-    end
-    
-    local anim = MOAIAnim.new()
-    anim:reserveLinks(1)
-    anim:setLink(1, self.curve, prop, MOAIProp2D.ATTR_INDEX)
-    
-    anim:setMode(self.loops and MOAITimer.LOOP or MOAITimer.NORMAL)
-    anim:start()
-    
-    self.anim = anim
-    
-    prop.anim = self
-end
-
-function Animation:stop()
-    self.anim:detach()
-end
-
-function Animation:hitTest(prop, x, y)
-    local rx, rh, rw, ry = prop:getRect()
-    local lx, ly = prop:getLoc()
-    
-    local x0 = rx + lx
-    local y0 = ry + ly
-    
-    local width = math.max(rx, rw) - math.min(rx, rw)
-    local height = math.max(ry, rh) - math.min(ry, rh) 
-    
-    -- get local space coords
-    x = x - x0 + (prop:getIndex() - 1) * width
-    y = y - y0
-    
-    if y < 0 then
-        y = y + height
-    end
-
-    local _, _, _, a = self.texture:getRGBA(x, y)
-    return a ~= 0
-end
+--------------------------------------------------
 
 newclass("Costume",
     function()
-        return {
-            direction = 2,
-            poses = { },
-            pose = "idle",
-            last_pose = "idle",
-            anim = nil,
-            prop = MOAIProp2D.new()
-        }
+        return { poses = { } }
     end
 )
 
--- TODO(sandy): this is super ugly
-function Costume:setProp(prop)
-    self.prop = prop
+function Costume:addPose(pose, dir, path, frames, w, h, loops)
+    loops = loops or false
+
+    local curve = MOAIAnimCurve.new()
+    curve:reserveKeys(frames)
+    
+    for i = 1, frames do
+        curve:setKey(i, (i - 1) / frames, i, MOAIEaseType.FLAT)
+    end
+    curve:setKey(frames, 1, 1, MOAIEaseType.FLAT)
+    
+    local img = MOAIImageTexture.new()
+    img:load(path, MOAIImage.TRUECOLOR + MOAIImage.PREMULTIPLY_ALPHA)
+
+    local deck = MOAITileDeck2D.new()
+    deck:setTexture(img)
+    deck:setSize(frames, 1)
+    deck:setRect(-w, 0, w, -h * 2)
+    
+    if not self.poses[pose] then
+        self.poses[pose] = { }
+    end
+    
+    self.poses[pose][dir] = {
+        deck = deck,
+        curve = curve,
+        texture = img,
+        loops = loops,
+    }
 end
 
-function Costume:get_anim()
-    local pose = self.pose
-    local direction = self.direction
-
+function Costume:getPose(pose, direction)
     if self.poses[pose] then
         if self.poses[pose][direction] then
             return self.poses[pose][direction]
@@ -106,25 +58,92 @@ function Costume:get_anim()
     return nil
 end
 
-function Costume:refresh_anim()
-    self.anim = self:get_anim()
-    self.anim:start(self.prop)
+--------------------------------------------------
+
+newclass("CostumeController",
+    function(costume)
+        return {
+            costume = costume,
+            direction = 2,
+            poses = { },
+            pose = "idle",
+            last_pose = "idle",
+            anim = nil,
+            prop = nil
+        }
+    end
+)
+
+function CostumeController:setProp(prop)
+    self.prop = prop
 end
 
-function Costume:setPose(pose)
-    if pose == self.pose then return end
+
+function CostumeController:start()
+    pose = self.costume:getPose(self.pose, self.direction)
+
+    self.prop:setDeck(pose.deck)
+    self.prop:setIndex(1)
+    
+    if self.anim then
+        self.anim:detach()
+    end
+    
+    local anim = MOAIAnim.new()
+    anim:reserveLinks(1)
+    anim:setLink(1, pose.curve, self.prop, MOAIProp2D.ATTR_INDEX)
+    
+    anim:setMode(pose.loops and MOAITimer.LOOP or MOAITimer.NORMAL)
+    anim:start()
+    
+    self.anim = anim
+end
+
+function CostumeController:stop()
+    self.anim:detach()
+end
+
+function CostumeController:refresh()
+    self:start()
+end
+
+function CostumeController:hitTest(x, y)
+    local rx, rh, rw, ry = self.prop:getRect()
+    local lx, ly = self.prop:getLoc()
+    
+    local x0 = rx + lx
+    local y0 = ry + ly
+    
+    local width = math.max(rx, rw) - math.min(rx, rw)
+    local height = math.max(ry, rh) - math.min(ry, rh) 
+    
+    -- get local space coords
+    x = x - x0 + (self.prop:getIndex() - 1) * width
+    y = y - y0
+    
+    if y < 0 then
+        y = y + height
+    end
+
+    local _, _, _, a = self.pose.texture:getRGBA(x, y)
+    return a ~= 0
+end
+
+function CostumeController:setPose(pose, dir)
+    dir = dir or self.direction
     
     self.last_pose = self.pose
+    self.direction = dir
+    self.pose = pose
 
-    if self.poses[pose] then
-        self.pose = pose
-        self:refresh_anim()
+    if self.costume.poses[pose] then
+        self:start(pose, dir)
     else
         print("Failed to set pose", pose)
     end
 end
 
-function Costume:setDirection(newdir, without_turning)
+function CostumeController:setDirection(newdir, without_turning)
     if type(newdir) == "table" then
         local dir = 5
         local x, y = unpack(newdir)
@@ -154,25 +173,10 @@ function Costume:setDirection(newdir, without_turning)
     if newdir == self.direction then return end
 
     local olddir = self.direction
-    local turndir = olddir * 10 + newdir
-
-    if self.poses.turn and self.poses.turn[turndir] and not without_turning then
-        self.direction = turndir
-        self:get_pose("turn")
+    
+    if self.costume.poses.turn and self.costume.poses.turn[turndir] and not without_turning then
+        self:setPose("turn", turndir)
     else
-        self.direction = newdir
-        self:refresh_anim()
+        self:setPose(self.pose, newdir)
     end
 end
-
---[[function Costume:update(elapsed)
-    self.anim:update(elapsed)
-    
-    if self.anim:getTimesExecuted() >= 1 and not self.anim.loops then
-        if self.pose == "turn" then
-            self:setDirection(self.direction % 10, true)
-        end
-        
-        self:setPose(self.last_pose)
-    end
-end]]

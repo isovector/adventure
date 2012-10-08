@@ -6,7 +6,7 @@ newclass("Actor",
         local actor = {
             id = id,
             name = name,
-            costume = costume,
+            costume = CostumeController.new(costume),
             speed = 150,
             inventory = { },
             goal = nil,
@@ -31,12 +31,11 @@ end
 
 function Actor:joinScene()
     local prop = game.makeProp()
-    --prop:setLoc(0, 0)
     prop.actor = self
     
     self.prop = prop
     self.costume:setProp(prop)
-    self.costume:refresh_anim()
+    self.costume:refresh()
     
     if not self.loop then
         self.loop = MOAIThread.new()

@@ -111,7 +111,7 @@ for path in glob.iglob(sys.argv[1] + "/*"):
         for name, pose in poses.items():
             for dir, data in pose.items():
                 loops = "false"
-                if name == "walk" or name == "idle":
+                if name == "walk" or name == "idle" or name == "talk":
                     loops = "true"
                 firstpass = "cost:addPose(\"%s\", %s, \"%s\", %d, %d, %d, %s)" % (name, dir, data["file"], data["frames"], data["width"] / data["ratio"] / 2, data["height"] / data["ratio"] / 2, loops)
                 print(firstpass % anim)

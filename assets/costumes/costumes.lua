@@ -10,6 +10,7 @@ local cost, anim, deck, curve
 
 cost = Costume.new()
 cost:addPose("idle", 5, "assets/costumes/santino/idle.png", 24, 40, 60, true)
+cost:addPose("talk", 5, "assets/costumes/santino/talk.png", 24, 40, 60, false)
 cost:addPose("walk", 8, "assets/costumes/santino/walk8.png", 24, 40, 60, true)
 cost:addPose("walk", 2, "assets/costumes/santino/walk2.png", 24, 40, 60, true)
 cost:addPose("walk", 4, "assets/costumes/santino/walk4.png", 24, 40, 60, true)

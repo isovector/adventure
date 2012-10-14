@@ -1,14 +1,17 @@
 require "classes/class"
+require "classes/dialogue"
+require "classes/library"
 
 local actors = { }
 newclass("Actor", 
-    function(id, name, costume)
+    function(id, name, costume, color)
         local actor = {
             id = id,
             name = name,
             costume = CostumeController.new(costume),
             speed = 150,
             inventory = { },
+            color = color,
             goal = nil,
             prop = nil,
             loop = nil,
@@ -66,6 +69,18 @@ function Actor:setGoal(x, y)
     self.goal = { x, y }
 end
 
+function Actor:say(msg)
+    local x, y = self:location()
+
+    self.costume:setPose("talk")
+    
+    local label = game.showMessage(msg, x, y, unpack(self.color))
+    sleep(Dialogue.time(msg))
+    game.hideMessage(label)
+    
+    self.costume:setPose("idle")
+end
+
 function Actor:walkTo(x, y)
     local sx, sy = self:location()
     local path = room:getPath(sx, sy, x, y, 1, 1)
@@ -73,7 +88,6 @@ function Actor:walkTo(x, y)
     local has_path = #path ~= 0
     
     if has_path then
-        self.costume:setProp(self.prop)
         self.costume:setPose("walk")
     end
     
@@ -86,7 +100,6 @@ function Actor:walkTo(x, y)
     end
     
     if has_path then
-        self.costume:setProp(self.prop)
         self.costume:setPose("idle")
     end
 end
@@ -98,7 +111,6 @@ function Actor:moveToXY(x, y)
         local dx, dy = x - sx, y - sy
         local dist = math.sqrt(dx * dx + dy * dy)
         
-        self.costume:setProp(self.prop)
         self.costume:setDirection({ dx, dy })
     
         MOAIThread.blockOnAction(self.prop:moveLoc(dx, dy, dist / self.speed, MOAIEaseType.LINEAR))

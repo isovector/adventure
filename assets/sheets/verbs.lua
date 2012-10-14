@@ -41,7 +41,8 @@ local function dispatchVerb(verb)
     local id = object.id
 
     if id and room.events[id] and room.events[id][verb] then
-        room.events[id][verb]()
+        local thread = MOAIThread.new()
+        thread:run(room.events[id][verb])
     end
 end
 

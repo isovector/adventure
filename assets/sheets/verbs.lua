@@ -1,5 +1,6 @@
 require "classes/game"
 require "classes/sheet"
+require "classes/library"
 
 local sheet = Sheet.new("verbs")
 
@@ -41,8 +42,7 @@ local function dispatchVerb(verb)
     local id = object.id
 
     if id and room.events[id] and room.events[id][verb] then
-        local thread = MOAIThread.new()
-        thread:run(room.events[id][verb])
+        start(room.events[id][verb])
     end
 end
 

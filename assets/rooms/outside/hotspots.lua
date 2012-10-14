@@ -1,11 +1,11 @@
 return function(room)
-	room:addHotspot(Hotspot.new("window", 5, "Window", Polygon.new({
+	room:addHotspot(Hotspot.new("window", 5, "Window", true, Polygon.new({
 		765, 156,
 		765, 50,
 		866, 62,
 		854, 219,
 	})))
-	room:addHotspot(Hotspot.new("door", 8, "Door", Polygon.new({
+	room:addHotspot(Hotspot.new("door", 8, "Door", true, Polygon.new({
 		1017, 566,
 		1016, 461,
 		1033, 394,

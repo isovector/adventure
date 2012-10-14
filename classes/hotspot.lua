@@ -1,11 +1,12 @@
 require "classes/class"
 require "classes/polygon"
 
-newclass("Hotspot", function(id, cursor, name, poly)
+newclass("Hotspot", function(id, cursor, name, interface, poly)
         return {
             id = id,
             cursor = cursor,
             name = name,
+            interface = interface,
             polygon = poly
         }
     end

@@ -15,7 +15,9 @@ newclass("Actor",
             goal = nil,
             prop = nil,
             loop = nil,
-            stop = false
+            stop = false,
+            
+            pressing = { }
         }
         
         actors[id] = actor
@@ -81,6 +83,11 @@ function Actor:say(msg)
     self.costume:setPose("idle")
 end
 
+function Actor:stopWalking()
+    self.stop = true
+    sleep(0.001)
+end
+
 function Actor:walkTo(x, y)
     local sx, sy = self:location()
     local path = room:getPath(sx, sy, x, y, 1, 1)
@@ -114,6 +121,30 @@ function Actor:moveToXY(x, y)
         self.costume:setDirection({ dx, dy })
     
         MOAIThread.blockOnAction(self.prop:moveLoc(dx, dy, dist / self.speed, MOAIEaseType.LINEAR))
+        sx, sy = self:location()
+        
+        -- do unpressing
+        for hotspot in pairs(self.pressing) do
+            if not hotspot:hitTest(sx, sy) then
+                local events = room.events[hotspot.id]
+                if events and events.unpress then
+                    start(events.unpress, self)
+                end
+                
+                self.pressing[hotspot] = nil
+            end
+        end
+        
+        -- do pressing
+        local hotspot = game.getHotspotAtXY(sx, sy)
+        if hotspot and not self.pressing[hotspot] then
+            local events = room.events[hotspot.id]
+            if events and events.press then
+                start(events.press, self)
+            end
+            
+            self.pressing[hotspot] = true
+        end
     end
 end
 

@@ -12,3 +12,8 @@ function sleep(time)
     timer:start()
     MOAIThread.blockOnAction(timer)
 end
+
+function start(callback, ...)
+    local thread = MOAIThread.new()
+    thread:run(callback, ...)
+end

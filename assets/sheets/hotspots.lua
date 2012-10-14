@@ -16,13 +16,22 @@ local function setHotspots(t)
     hotspots = t
 end
 
+local function getHotspotAtXY(x, y)
+    for _, hotspot in ipairs(hotspots) do
+        if hotspot:hitTest(x, y)  then
+            return hotspot
+        end
+    end
+end
+
 game.export("setHotspots", setHotspots)
+game.export("getHotspotAtXY", getHotspotAtXY)
 
 --------------------------------------------------
 
 function sheet:onClick(prop, x, y, down)
     for _, hotspot in ipairs(hotspots) do
-        if hotspot:hitTest(x, y) then
+        if hotspot:hitTest(x, y) and hotspot.interface then
             if down then
                 game.startVerbCountdown(x, y, hotspot)
                 return true
@@ -35,7 +44,7 @@ end
 
 function sheet:onHover(prop, x, y)
     for _, hotspot in ipairs(hotspots) do
-        if hotspot:hitTest(x, y) then
+        if hotspot:hitTest(x, y) and hotspot.interface then
             game.setHoverText(hotspot.name)
             game.setCursor(hotspot.cursor)
             return true

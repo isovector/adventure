@@ -29,6 +29,10 @@ local function showLabels()
             str = "w"
         end
         
+        if polies[i].hotspot and not polies[i].hotspot.interface then
+            str = "@" .. str
+        end
+        
         labeler:addLabel(str, x, y, 0, 1, 0)
     end
 end
@@ -110,7 +114,7 @@ local function write_points(f, points, prefix)
     prefix = prefix or "\t"
 
     for i = 1, #points, 2 do
-        f:write(prefix .. points[i] ..  ", " .. points[i + 1] .. ",\n")
+        f:write(string.format("%s%d, %d,\n", prefix, points[i], points[i + 1]))
     end
 end
 
@@ -127,7 +131,7 @@ local function save()
     f:write("return function(room)\n")
     
     for _, hotspot in pairs(room.hotspots) do
-        f:write("\troom:addHotspot(Hotspot.new(\"" .. hotspot.id .. "\", " .. hotspot.cursor .. ", \"" .. hotspot.name .. "\", Polygon.new({\n")
+        f:write(string.format("\troom:addHotspot(Hotspot.new(%q, %d, %q, %s, Polygon.new({\n", hotspot.id, hotspot.cursor, hotspot.name, tostring(hotspot.interface)))
         write_points(f, hotspot.polygon.points, "\t\t")
         f:write("\t})))\n")
     end
@@ -139,7 +143,7 @@ local function save()
     f = io.open(room.directory .. "/actors.lua", "w")
     f:write("return function(room)\n")
     for key, entry in pairs(room.scene) do
-        f:write("\troom:addActor(Actor.getActor(\"" .. key ..  "\"), " .. entry.x .. ", " .. entry.y .. ")\n")
+        f:write(string.format("\troom:addActor(Actor.getActor(%q), %d, %d)\n", key, entry.x, entry.y))
     end
     f:write("end\n")
     f:close()
@@ -208,7 +212,7 @@ vim:cmd("editor",   "r|emove",  function(id)
 
 vim:buf("editor",   "^ah$",     function()
                                     local newname = #polies
-                                    local hotspot = Hotspot.new("new" .. newname, 5, "New Hotspot " .. newname, Polygon.new())
+                                    local hotspot = Hotspot.new("new" .. newname, 5, "New Hotspot " .. newname, true, Polygon.new())
                                     
                                     poly = hotspot.polygon
                                     poly.hotspot = hotspot
@@ -305,5 +309,13 @@ vim:cmd("polygon",  "cur|sor",  function(cursor)
                                     if poly.hotspot then
                                         poly.hotspot.cursor = tonumber(cursor) or 5
                                         status("Set", poly.hotspot, "cursor to", cursor)
+                                    end
+                                end)
+                                
+vim:cmd("polygon",  "hide",     function(hide)
+                                    if poly.hotspot then
+                                        if hide == nil then hide = poly.hotspot.interface end
+                                        poly.hotspot.interface = not hide
+                                        status("Set", poly.hotspot, "hidden to", hide)
                                     end
                                 end)

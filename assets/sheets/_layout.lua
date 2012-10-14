@@ -1,6 +1,7 @@
 require "assets/sheets/bg"
 require "assets/sheets/hotspots"
 require "assets/sheets/fg"
+require "assets/sheets/dialogue"
 require "assets/sheets/talk"
 require "assets/sheets/verbs"
 require "assets/sheets/vis"

@@ -22,7 +22,7 @@ local function sandboxLookup(t, k)
         })
     end
     
-    return mt.globals[k]
+    return rawget(mt.globals, k)
 end
 
 newclass("Sandbox",

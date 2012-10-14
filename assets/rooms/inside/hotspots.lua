@@ -42,10 +42,4 @@ return function(room)
 		792, 300,
 		793, 504,
 	})))
-	room:addHotspot(Hotspot.new("carpet", 5, "Carpet", false, Polygon.new({
-		537, 514,
-		695, 516,
-		710, 715,
-		536, 715,
-	})))
 end

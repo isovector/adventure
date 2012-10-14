@@ -1,4 +1,5 @@
 require "classes/class"
+require "classes/library"
 
 newclass("Topic",
     function(id)
@@ -9,8 +10,14 @@ newclass("Topic",
     end
 )
 
-function Topic:addOptions(options)
-    for _, opt in ipairs(options) do
+function Topic:addOptions(...)
+    for _, opt in ipairs({ ... }) do
+        if opt.enabled == nil then
+            opt.enabled = true
+        end
+        
+        opt.flags = opt.flags or ""
+        
         table.insert(self.options, opt)
     end
 end
@@ -19,7 +26,7 @@ function Topic:getOptions()
     local ret = { }
 
     for id, opt in ipairs(self.options) do
-        if not opt.condition or opt.condition() then
+        if opt.enabled and (not opt.condition or opt.condition()) then
             table.insert(ret, { id = id, caption = opt.caption })
         end
     end
@@ -28,7 +35,29 @@ function Topic:getOptions()
 end
 
 function Topic:option(id)
+    print(id, #self.options)
+    local option = self.options[id]
     
+    if option.flags:match("o") then
+        option.enabled = false
+    end
+    
+    start(function()
+        if not option.flags:match("s") then
+            -- TODO(sandy): make this use the player
+            Actor.getActor("santino"):say(option.caption)
+        end
+
+        option.callback()
+        
+        if not option.flags:match("x") then
+            self:show()
+        end
+    end)
+end
+
+function Topic:show()
+    game.showTopic(self)
 end
 
 --------------------------------------------------

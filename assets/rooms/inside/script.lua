@@ -30,6 +30,6 @@ end
 function charles.look()
     player:say("it's charles")
     player:say("he's a cool cat")
-    sleep(1.5)
+    Task.sleep(1.5)
     player:say("i guess")
 end

@@ -1,5 +1,5 @@
 require "classes/class"
-require "classes/library"
+require "classes/task"
 
 newclass("Topic",
     function(id)
@@ -42,7 +42,7 @@ function Topic:option(id)
         option.enabled = false
     end
     
-    start(function()
+    Task.start(function()
         if not option.flags:match("s") then
             -- TODO(sandy): make this use the player
             Actor.getActor("santino"):say(option.caption)

@@ -1,4 +1,8 @@
-function sleep(time)
+require "classes/class"
+
+newclass("Task")
+
+function Task.sleep(time)
     local timer = MOAITimer.new()
     timer:setSpan(delay)
     timer:setListener(
@@ -13,7 +17,7 @@ function sleep(time)
     MOAIThread.blockOnAction(timer)
 end
 
-function start(callback, ...)
+function Task.start(callback, ...)
     local thread = MOAIThread.new()
     thread:run(callback, ...)
 end

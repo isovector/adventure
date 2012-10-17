@@ -1,6 +1,6 @@
 require "classes/game"
 require "classes/sheet"
-require "classes/library"
+require "classes/task"
 
 local sheet = Sheet.new("verbs")
 
@@ -42,7 +42,7 @@ local function dispatchVerb(verb)
     local id = object.id
 
     if id and room.events[id] and room.events[id][verb] then
-        start(room.events[id][verb])
+        Task.start(room.events[id][verb])
     end
 end
 

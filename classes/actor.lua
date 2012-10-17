@@ -1,6 +1,6 @@
 require "classes/class"
 require "classes/dialogue"
-require "classes/library"
+require "classes/task"
 
 local actors = { }
 newclass("Actor", 
@@ -77,7 +77,7 @@ function Actor:say(msg)
     self.costume:setPose("talk")
     
     local label = game.showMessage(msg, x, y, unpack(self.color))
-    sleep(Dialogue.time(msg))
+    Task.sleep(Dialogue.time(msg))
     game.hideMessage(label)
     
     self.costume:setPose("idle")
@@ -85,7 +85,7 @@ end
 
 function Actor:stopWalking()
     self.stop = true
-    sleep(0.001)
+    Task.sleep(0.001)
 end
 
 function Actor:walkTo(x, y)

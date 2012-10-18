@@ -6,6 +6,7 @@ viewport:setSize(1280, 720)
 viewport:setScale(1280, -720)
 viewport:setOffset(-1, 1)
 
+require "classes/compat"
 require "classes/game"
 require "classes/vim"
 

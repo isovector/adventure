@@ -119,6 +119,18 @@ local function write_points(f, points, prefix)
 end
 
 local function save()
+    if room.in_memory then
+        MOAIFileSystem.affirmPath(room.directory)
+        room.in_memory = nil
+    end
+    
+    if room.new_img_path then
+        local img_path = room.directory .. "/art.png"
+        MOAIFileSystem.copy(room.new_img_path, img_path)
+        room.img_path = img_path
+        room.new_img_path = nil
+    end
+
     -- Write out pathfinding
     local f = io.open(room.directory .. "/pathfinding.lua", "w")
     local points = walking.points
@@ -272,6 +284,24 @@ vim:buf("editor",   "^d([0-9]*)",
                                     
                                     showLabels()
                                     vim:addChangeCallback(hideLabels)
+                                end)
+                                
+vim:cmd("editor", "new-room",   function(id)
+                                    if not id or Room.getRoom(id) then return end
+                                    
+                                    local room = Room.new(id, "assets/static/newroom.png")
+                                    room.directory = "assets/rooms/" .. id
+                                    room.in_memory = true
+                                    room.new_img_path = "assets/static/newroom.png"
+                                    Room.change(id)
+                                end)
+                                
+vim:cmd("editor", "background", function(path)
+                                    if not MOAIFileSystem.checkFileExists(path) then return end
+                                    
+                                    room.img_path = path
+                                    room.new_img_path = path
+                                    game.setBackground(path)
                                 end)
 
 vim:buf("polygon",   "^a$",     function()

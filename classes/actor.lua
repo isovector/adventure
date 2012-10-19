@@ -1,5 +1,6 @@
 require "classes/class"
 require "classes/dialogue"
+require "classes/item"
 require "classes/task"
 
 local actors = { }
@@ -69,6 +70,18 @@ end
 function Actor:setGoal(x, y)
     self.stop = true
     self.goal = { x, y }
+end
+
+function Actor:addItem(id)
+    self.inventory[id] = Item.getItem(id)
+end
+
+function Actor:removeItem(id)
+    self.inventory[id] = nil
+end
+
+function Actor:hasItem(id)
+    return self.inventory[id]
 end
 
 function Actor:say(msg)

@@ -10,8 +10,12 @@ newclass("Item",
             ttags[token] = token
         end
         
+        local img = MOAIImageTexture.new()
+        img:load("assets/items/" .. id .. ".png", MOAIImage.TRUECOLOR + MOAIImage.PREMULTIPLY_ALPHA)
+        
         local item = {
             id = id,
+            img = img,
             name = name,
             tags = ttags
         }

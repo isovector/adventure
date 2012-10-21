@@ -6,17 +6,24 @@ viewport:setSize(1280, 720)
 viewport:setScale(1280, -720)
 viewport:setOffset(-1, 1)
 
+--------------------------------------------------
+
 require "classes/compat"
 require "classes/game"
 require "classes/vim"
+
+--------------------------------------------------
 
 vim = Vim.new()
 
 require "assets/costumes/costumes"
 require "assets/sheets/_layout"
+require "assets/items"
 require "assets/rooms/rooms"
 
 Room.getRoom("inside"):load()
+
+--------------------------------------------------
 
 local function keyCallback(key, down)
     if not down then return end
@@ -37,10 +44,15 @@ end
 vim:buf("normal", "^q$",    function() os.exit() end)
 vim:cmd("global", "l|oad",  Room.change)
 vim:cmd("global", "q|uit",  os.exit)
+vim:cmd("global", "give",   function(id) Actor.getActor("santino"):giveItem(id) end)
+    
+--------------------------------------------------
 
 local mouse = { x = 0, y = 0, down = false }
 game.export("getMouse", function() return mouse.x, mouse.y end)
 game.export("isMouseDown", function() return mouse.down end)
+
+--------------------------------------------------
 
 local function pointerCallback(x, y)
     mouse.x = x

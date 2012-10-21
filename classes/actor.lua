@@ -72,7 +72,7 @@ function Actor:setGoal(x, y)
     self.goal = { x, y }
 end
 
-function Actor:addItem(id)
+function Actor:giveItem(id)
     self.inventory[id] = Item.getItem(id)
 end
 

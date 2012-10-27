@@ -1,8 +1,6 @@
 require "classes/room"
 require "classes/game"
 require "classes/sandbox"
-require "assets/actors/actors"
-
 
 local function buildRoom(name)
     local path = "assets/rooms/" .. name

@@ -65,7 +65,6 @@ local function showInventory(actor)
     
     local i = 0
     for id, item in pairs(actor.inventory) do
-        print(id)
         local x = 1280 / 2 - 352 + 80 * (i % xnum) + 32
         local y = 720 / 2 - 132 + 76 * math.floor(i / xnum) + 32
         

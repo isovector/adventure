@@ -16,10 +16,7 @@ require "classes/vim"
 
 vim = Vim.new()
 
-require "assets/costumes/costumes"
-require "assets/sheets/_layout"
-require "assets/items"
-require "assets/rooms/rooms"
+require "assets/services"
 
 Room.getRoom("inside"):load()
 

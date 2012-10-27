@@ -13,7 +13,7 @@ art : $(OBJDIR) $(art) $(COSTDIR)/costumes.lua
 
 items : $(items)
 
-$(COSTDIR)/costumes.lua : utils/build_costume.py
+assets/services/build-costumes.lua : utils/build_costume.py
 	python2 utils/build_costume.py art > $(COSTDIR)/costumes.lua
 
 $(COSTDIR)/%.png : art/%.png

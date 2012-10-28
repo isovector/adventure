@@ -96,11 +96,11 @@ end
 
 function sheet:onHover(prop, x, y)
     if prop and prop.item then
+        game.setCurrentObject(prop.item)
         game.setCursor(5)
-        game.setHoverText(prop.item.name)
     else
+        game.setCurrentObject(nil)
         game.setCursor(0)
-        game.setHoverText("")
     end
     
     return true

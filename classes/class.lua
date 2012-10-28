@@ -27,5 +27,7 @@ function newclass(name, ctor)
         return self.__index == b.__index
     end
     
+    class.__type = name
+    
     return class
 end

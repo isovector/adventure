@@ -43,20 +43,22 @@ local currentVerb
 
 --------------------------------------------------
 
-local function updateHoverText()
-    local str = ""
-    
-    if currentItem then
-        str = currentItem.desc
-        str = str:gsub("{v}", currentItem.name)
-        str = str:gsub("{o}", currentObject or "...")
-    end
-end
-
---------------------------------------------------
-
 local function getCurrentItem()
     return currentItem
+end
+
+local function setHoverText(str)
+    hover_text:setString(str)
+end
+
+local function updateNarration()
+    local type = currentObject and currentObject.__type or nil
+    local tags = currentObject and currentObject.tags or { }
+    local name = currentObject and currentObject.name or nil
+    
+    local predicate = { verb = currentVerb, object = name, type = type, unpack(tags) }
+    
+    setHoverText(game.getNarration(predicate))
 end
 
 local function setCurrentItem(item)
@@ -69,15 +71,20 @@ local function setCurrentItem(item)
     
     item_deck:setTexture(item.img)
     cursor:setDeck(item_deck)
+    
+    updateNarration()
 end
 
 local function setCurrentVerb(verb)
+    currentVerb = verb
+    
+    updateNarration()
 end
 
-local function setCurrentObject(name)
-    currentObject = name
+local function setCurrentObject(obj)
+    currentObject = obj
     
-    hover_text:setString()
+    updateNarration()
 end
 
 local function setCursor(cur)
@@ -88,10 +95,6 @@ local function setCursorPos(x, y)
     cursor:setLoc(x, y)
 end
 
-local function setHoverText(str)
-    hover_text:setString(str)
-end
-
 local function updateBuffer(str)
     buffer_text:setString(str)
 end
@@ -99,6 +102,8 @@ end
 game.export({ 
     getCurrentItem = getCurrentItem,
     setCurrentItem = setCurrentItem,
+    setCurrentObject = setCurrentObject,
+    setCurrentVerb = setCurrentVerb,
     setHoverText = setHoverText, 
     setCursor = setCursor, 
     setCursorPos = setCursorPos, 

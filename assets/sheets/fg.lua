@@ -35,9 +35,9 @@ end
 
 function sheet:onHover(prop, x, y)
     if prop.actor then
-        game.setHoverText(prop.actor.name)
+        game.setCurrentObject(prop.actor)
     else
-        game.setHoverText("Unknown")
+        game.setCurrentObject(nil)
     end
     
     game.setCursor(5)

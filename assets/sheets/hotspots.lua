@@ -45,7 +45,7 @@ end
 function sheet:onHover(prop, x, y)
     for _, hotspot in ipairs(hotspots) do
         if hotspot:hitTest(x, y) and hotspot.interface then
-            game.setHoverText(hotspot.name)
+            game.setCurrentObject(hotspot)
             game.setCursor(hotspot.cursor)
             return true
         end

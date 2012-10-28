@@ -30,7 +30,7 @@ game.export("setBackground", setBackground)
 --------------------------------------------------
 
 function sheet:onHover()
-    game.setHoverText("")
+    game.setCurrentObject(nil)
     game.setCursor(0)
     return true
 end

@@ -14,11 +14,11 @@ nar:addRule("{object}", { "object" })
 --------------------------------------------------
 -- generic items
 nar:addRule("Use {item} on {object}", { "item" })
-nar:addRule("Show {item} to {object}", { "item", "actor", "convo-piece" })
+nar:addRule("Show {item} to {object}", { "item", type = "Actor", "convo-piece" })
 
 --------------------------------------------------
 -- talk
-nar:addRule("Talk to {object}", { verb = "talk", "actor" })
+nar:addRule("Talk to {object}", { verb = "talk", type = "Actor" })
 nar:addRule("Use mouth on {object}", { verb = "talk" })
 
 --------------------------------------------------

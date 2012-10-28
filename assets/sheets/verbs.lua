@@ -41,6 +41,8 @@ end
 local function dispatchVerb(verb)
     local id = object.id
 
+    game.setCurrentVerb(nil)
+    
     if id and room.events[id] and room.events[id][verb] then
         Task.start(room.events[id][verb])
     end
@@ -62,7 +64,7 @@ game.export("startVerbCountdown", startVerbCountdown)
 --------------------------------------------------
 
 local function getVerb(prop, x, y)
-    if not prop then return "..." end
+    if not prop then return nil end
     
     if x - x0 < -24 then
         return "talk"
@@ -82,7 +84,8 @@ function sheet:onHover(prop, x, y)
         game.setCursor(0)
     end
     
-    game.setHoverText(string.format("%s %s", getVerb(prop, x, y), object.name))
+    game.setCurrentVerb(getVerb(prop, x, y))
+    
     return true
 end
 

@@ -27,9 +27,8 @@ game.export("destroyProp", destroyProp)
 --------------------------------------------------
 
 function sheet:onClick(prop, x, y, down)
-    if down then
-        game.startVerbCountdown(x, y, prop.actor)
-        return true
+    if prop then
+        game.interactWith(x, y, down)
     end
 end
 

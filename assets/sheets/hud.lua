@@ -37,6 +37,7 @@ item_deck:setUVRect(0, 0, 1, 1)
 
 --------------------------------------------------
 
+local dirty = true
 local currentItem
 local currentObject
 local currentVerb
@@ -52,39 +53,68 @@ local function setHoverText(str)
 end
 
 local function updateNarration()
+    if not dirty then
+        return
+    end
+    
+    dirty = false
+
+    local item = currentItem and currentItem.name or nil
+    local itemtags = currentItem and currentItem.tags or { }
     local type = currentObject and currentObject.__type or nil
-    local tags = currentObject and currentObject.tags or { }
+    local objtags = currentObject and currentObject.tags or { }
     local name = currentObject and currentObject.name or nil
     
-    local predicate = { verb = currentVerb, object = name, type = type, unpack(tags) }
+    local predicate = { 
+        verb = currentVerb, 
+        object = name, 
+        item = item, 
+        type = type, 
+        unpack(objtags),
+        unpack(itemtags)
+    }
     
     setHoverText(game.getNarration(predicate))
 end
 
 local function setCurrentItem(item)
-    currentItem = item
+    if currentItem == item then return end
 
-    if nil then
+    currentItem = item
+    
+        
+    dirty = true
+    updateNarration()
+
+    if not item then
         cursor:setDeck(cursor_deck)
         return
     end
     
     item_deck:setTexture(item.img)
     cursor:setDeck(item_deck)
-    
-    updateNarration()
 end
 
 local function setCurrentVerb(verb)
+    if currentVerb == verb then return end
+
     currentVerb = verb
     
+    dirty = true
     updateNarration()
 end
 
 local function setCurrentObject(obj)
+    if currentObject == obj then return end
+
     currentObject = obj
     
+    dirty = true
     updateNarration()
+end
+
+local function getCurrentObject(obj)
+    return currentObject
 end
 
 local function setCursor(cur)
@@ -102,6 +132,7 @@ end
 game.export({ 
     getCurrentItem = getCurrentItem,
     setCurrentItem = setCurrentItem,
+    getCurrentObject = getCurrentObject,
     setCurrentObject = setCurrentObject,
     setCurrentVerb = setCurrentVerb,
     setHoverText = setHoverText, 

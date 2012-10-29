@@ -38,6 +38,11 @@ end
 function sheet:onClick(prop, x, y, down)
     if not down then return true end
     
+    if game.getCurrentItem() then
+        game.setCurrentItem(nil)
+        return true
+    end
+    
     local actor = Actor.getActor("santino")
     if room.scene[actor.id] then
         actor:setGoal(x, y)
@@ -48,6 +53,10 @@ end
 
 function sheet:onRClick(prop, x, y, down)
     if down then
-        game.showInventory(Actor.getActor("santino"))
+        if game.getCurrentItem() then
+            game.setCurrentItem(nil)
+        else
+            game.showInventory(Actor.getActor("santino"))
+        end
     end
 end

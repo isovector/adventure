@@ -48,18 +48,35 @@ local function dispatchVerb(verb)
     end
 end
 
-local function startVerbCountdown(x, y, obj)
+local function startVerbCountdown(x, y)
     x0 = x
     y0 = y
-
-    object = obj
     
     prop:setLoc(x0, y0)
+    
+    object = game.getCurrentObject()
 
     timer = Timer.new(0.5, false, show, timerDelta)
 end
 
-game.export("startVerbCountdown", startVerbCountdown)
+local function interactWith(x, y, down, otherwise)
+    local item = game.getCurrentItem()
+
+    object = game.getCurrentObject()
+    
+    if not down and item then
+        dispatchVerb(item.id)
+        game.setCurrentItem(nil)
+    else
+        if down then
+            startVerbCountdown(x, y)
+        elseif otherwise then
+            otherwise()
+        end
+    end
+end
+
+game.export("interactWith", interactWith)
 
 --------------------------------------------------
 

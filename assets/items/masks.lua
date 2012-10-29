@@ -1,1 +1,1 @@
-Item.new("masks", "Masks", "")
+Item.new("masks", "Masks", "convo-piece")

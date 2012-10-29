@@ -8,10 +8,6 @@ local nar = Narrator.new("", "...")
 game.export("getNarration", function(conds) return nar:getString(conds) end)
 
 --------------------------------------------------
--- default
-nar:addRule("{object}", { "object" })
-
---------------------------------------------------
 -- generic items
 nar:addRule("Use {item} on {object}", { "item" })
 nar:addRule("Show {item} to {object}", { "item", type = "Actor", "convo-piece" })
@@ -31,6 +27,10 @@ nar:addRule("Touch {object}", { verb = "touch" })
 nar:addRule("Pick up {object}", { verb = "touch", "can-pick-up" })
 nar:addRule("Push {object}", { verb = "touch", "can-push" })
 nar:addRule("Pull {object}", { verb = "touch", "can-pull" })
+
+--------------------------------------------------
+-- default
+nar:addRule("{object}", { "object" })
 
 --------------------------------------------------
 -- game specific

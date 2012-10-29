@@ -7,7 +7,7 @@ newclass("Item",
         local ttags = { }
         
         for token in string.gmatch(tags, "[^,]+") do
-            ttags[token] = token
+            table.insert(ttags, token)
         end
         
         local img = MOAIImageTexture.new()

@@ -32,10 +32,8 @@ game.export("getHotspotAtXY", getHotspotAtXY)
 function sheet:onClick(prop, x, y, down)
     for _, hotspot in ipairs(hotspots) do
         if hotspot:hitTest(x, y) and hotspot.interface then
-            if down then
-                game.startVerbCountdown(x, y, hotspot)
-                return true
-            end
+            game.interactWith(x, y, down)
+            return true
         end
     end
     

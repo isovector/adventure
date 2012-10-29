@@ -21,6 +21,15 @@ topic:addOptions(
     }
 )
 
+function charles.masks()
+    player:removeItem("masks")
+
+    local x, y = charles:location()
+    player:walkTo(x, y + 100)
+    player:say("Hey charles! you dig this mask?")
+    charles:say("heck yeah! thanks!")
+end
+
 function charles.talk()
     local x, y = charles:location()
     player:walkTo(x, y + 100)

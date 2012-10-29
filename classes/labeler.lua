@@ -51,7 +51,7 @@ function Labeler:addLabel(str, x, y, r, ...)
     end
     
     label:setString(str)
-    label:setRect(x - 100, y - 10, x + 100, y + 10)
+    label:setRect(x - 400, y - 10, x + 400, y + 10)
     label:setAlignment(MOAITextBox.CENTER_JUSTIFY)
     label:setPriority(999999)
     

@@ -6,6 +6,7 @@ require "classes/sheet"
 local sheet = Sheet.new("inventory")
 
 sheet:setClickAcceptor(Sheet.all_acceptor)
+sheet:setRClickAcceptor(Sheet.all_acceptor)
 sheet:setHoverAcceptor(Sheet.all_acceptor)
 sheet:install()
 sheet:enable(false)
@@ -51,6 +52,8 @@ local function makeProp(item, x, y)
     sheet:insertProp(prop)
     
     prop.item = item
+    
+    return prop
 end
 
 local function showInventory(actor)
@@ -74,7 +77,8 @@ local function showInventory(actor)
         frame:setPriority(100)
         sheet:insertProp(frame)
         
-        makeProp(item, x, y)
+        table.insert(items, frame)
+        table.insert(items, makeProp(item, x, y))
         
         i = i + 1
     end
@@ -87,8 +91,12 @@ game.export("showInventory", showInventory)
 --------------------------------------------------
 
 function sheet:onClick(prop, x, y, down)
-    if down and prop and prop.item then
-        game.startVerbCountdown(x, y, prop.item)
+    if prop and prop.item then
+        game.interactWith(x, y, down, function() game.setCurrentItem(prop.item) end)
+    end
+    
+    if not prop then
+        showInventory(nil)
     end
     
     return true
@@ -101,6 +109,14 @@ function sheet:onHover(prop, x, y)
     else
         game.setCurrentObject(nil)
         game.setCursor(0)
+    end
+    
+    return true
+end
+
+function sheet:onRClick(prop, x, y, down)
+    if down then
+        showInventory(nil)
     end
     
     return true

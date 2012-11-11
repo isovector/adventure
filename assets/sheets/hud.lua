@@ -84,8 +84,15 @@ end
 local function setCurrentItem(item)
     if currentItem == item then return end
 
-    currentItem = item
+    if currentObject then
+        if item == nil then
+            cursor.shader.fragment.strength = 0
+        else
+            cursor.shader.fragment.strength = 1
+        end
+    end
     
+    currentItem = item
         
     dirty = true
     updateNarration()

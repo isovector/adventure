@@ -8,7 +8,7 @@ newclass("FragmentShader",
         for line in code:gmatch("[^\r\n]+") do
             local utype, uname = line:match("uniform ([A-Za-z0-9]+) ([A-Za-z0-9]+);")
             if utype and utype ~= "sampler2D" then
-                if utype == "float" then
+                if utype == "float" or utype == "int" then
                     uniformCount = uniformCount + 1
                     uniforms[uname] = { type = utype, index = uniformCount }
                 else

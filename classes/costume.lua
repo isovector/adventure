@@ -28,6 +28,7 @@ function Costume:addPose(pose, dir, path, frames, w, h, loops)
     deck:setTexture(img)
     deck:setSize(frames, 1)
     deck:setRect(-w, 0, w, -h * 2)
+    deck.img = img
     
     if not self.poses[pose] then
         self.poses[pose] = { }
@@ -69,7 +70,8 @@ newclass("CostumeController",
             pose = "idle",
             last_pose = "idle",
             anim = nil,
-            prop = nil
+            prop = nil,
+            texture = nil
         }
     end
 )
@@ -97,6 +99,7 @@ function CostumeController:start()
     anim:start()
     
     self.anim = anim
+    self.texture = pose.deck.img
 end
 
 function CostumeController:stop()
@@ -125,7 +128,7 @@ function CostumeController:hitTest(x, y)
         y = y + height
     end
 
-    local _, _, _, a = self.pose.texture:getRGBA(x, y)
+    local _, _, _, a = self.texture:getRGBA(x, y)
     return a ~= 0
 end
 

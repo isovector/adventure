@@ -61,6 +61,8 @@ local function showInventory(actor)
         for _, prop in ipairs(items) do
             sheet:removeProp(prop)
         end
+        
+        items = { }
     
         sheet:enable(false)
         return

@@ -1,4 +1,5 @@
 require "classes/game"
+require "classes/shader"
 require "classes/sheet"
 require "classes/timer"
 
@@ -30,6 +31,9 @@ local cursor = MOAIProp2D.new()
 cursor:setDeck(cursor_deck)
 cursor:setLoc(640, 480)
 sheet:insertProp(cursor)
+
+local shader = Shader.new("vertex", "recolor")
+shader:applyTo(cursor)
 
 local item_deck = MOAIGfxQuad2D.new()
 item_deck:setRect(-32, -32, 32, 32)
@@ -107,6 +111,14 @@ end
 local function setCurrentObject(obj)
     if currentObject == obj then return end
 
+    if currentItem then
+        if obj == nil then
+            cursor.shader.fragment.strength = 0
+        else
+            cursor.shader.fragment.strength = 1
+        end
+    end
+    
     currentObject = obj
     
     dirty = true

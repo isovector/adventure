@@ -3,16 +3,23 @@ function newclass(name, ctor)
     
     local class = _G[name]
     class.__index = class
-    
-    function class.new(...)
-        local instance = { }
-        if ctor then
-            instance = ctor(unpack(arg))
+
+    -- if ctor is false, this is a static class
+    if ctor ~= false then
+        function class.new(...)
+            local instance = { }
+            if ctor then
+                instance = ctor(unpack(arg))
+            end
+            
+            if not instance then
+                error(string.format("class `%s's constructor did not return an object", name))
+            end
+            
+            instance.__class = class
+            setmetatable(instance, class)
+            return instance
         end
-        
-        instance.__class = class
-        setmetatable(instance, class)
-        return instance
     end
     
     function class:__tostring()

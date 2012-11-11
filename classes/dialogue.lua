@@ -35,7 +35,6 @@ function Topic:getOptions()
 end
 
 function Topic:option(id)
-    print(id, #self.options)
     local option = self.options[id]
     
     if option.flags:match("o") then
@@ -43,12 +42,16 @@ function Topic:option(id)
     end
     
     Task.start(function()
+        game.enableInput(false)
+    
         if not option.flags:match("s") then
             -- TODO(sandy): make this use the player
             Actor.getActor("santino"):say(option.caption)
         end
 
         option.callback()
+        
+        game.enableInput(true)
         
         if not option.flags:match("x") then
             self:show()

@@ -44,7 +44,11 @@ local function dispatchVerb(verb)
     game.setCurrentVerb(nil)
     
     if id and room.events[id] and room.events[id][verb] then
-        Task.start(room.events[id][verb])
+        Task.start(function(...)
+            game.enableInput(false)
+            room.events[id][verb](...)
+            game.enableInput(true)
+        end)
     end
 end
 

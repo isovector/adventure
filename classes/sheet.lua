@@ -30,6 +30,7 @@ newclass("Sheet",
     end
 )
 
+local inputEnabled = true
 local sheets = { }
 
 local function rebuild_sheet_table()
@@ -42,6 +43,10 @@ local function rebuild_sheet_table()
     end
     
     MOAIRenderMgr.setRenderTable(render)
+end
+
+function Sheet.enableInput(enabled)
+    inputEnabled = enabled
 end
 
 function Sheet.dispatchBeforeDraw()
@@ -63,6 +68,8 @@ function Sheet.dispatchAfterDraw()
 end
 
 function Sheet.dispatchHover(x, y)
+    if not inputEnabled then return nil end
+
     for n = #sheets, 1, -1 do
         local sheet = sheets[n]
     
@@ -75,6 +82,8 @@ function Sheet.dispatchHover(x, y)
 end
 
 function Sheet.dispatchClick(x, y, down)
+    if not inputEnabled then return nil end
+
     for n = #sheets, 1, -1 do
         local sheet = sheets[n]
     
@@ -87,6 +96,8 @@ function Sheet.dispatchClick(x, y, down)
 end
 
 function Sheet.dispatchRClick(x, y, down)
+    if not inputEnabled then return nil end
+
     for n = #sheets, 1, -1 do
         local sheet = sheets[n]
     

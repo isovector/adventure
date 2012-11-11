@@ -48,6 +48,11 @@ local currentVerb
 
 --------------------------------------------------
 
+local function enableInput(enabled)
+    sheet:enable(enabled)
+    Sheet.enableInput(enabled)
+end
+
 local function getCurrentItem()
     return currentItem
 end
@@ -149,6 +154,7 @@ local function updateBuffer(str)
 end
 
 game.export({ 
+    enableInput = enableInput,
     getCurrentItem = getCurrentItem,
     setCurrentItem = setCurrentItem,
     getCurrentObject = getCurrentObject,

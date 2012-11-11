@@ -29,7 +29,6 @@ local function showTopic(newtopic)
         local x = 25
         local y = 650 + (i - #options) * 26
     
-        print(option.caption)
         local label = labeler:addLabel(option.caption, x, y)
         label:setRect(x, y, x + 600, y + 24)
         label:setAlignment(MOAITextBox.LEFT_JUSTIFY)

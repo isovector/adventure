@@ -1,4 +1,5 @@
 art/obj
+assets/config.lua
 samples
 gluthost
 .dropbox

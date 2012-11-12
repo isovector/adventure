@@ -2,18 +2,8 @@ require "classes/class"
 
 newclass("Labeler",
     function(layer, fontpath)
-        local charcodes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,:;!?()&/-'
-        local font = MOAIFont.new()
-        font:loadFromTTF(fontpath, charcodes, 7.5, 163)
-    
-        local style = MOAITextStyle.new()
-        style:setColor(1, 1, 1)
-        style:setFont(font)
-        style:setSize(7.5, 163)
-        
         local self = {
             labels = { },
-            style = style,
             count = 0,
             layer = layer
         }
@@ -44,7 +34,9 @@ end
 
 function Labeler:addLabel(str, x, y, r, ...)
     local label = MOAITextBox.new()
-    label:setStyle(self.style)
+
+    label:setTextSize(24)
+    label:setFont(font)
     
     if r then
         label:setColor(r, ...)

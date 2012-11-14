@@ -1,3 +1,3 @@
 for _, path in ipairs(MOAIFileSystem.listDirectories("assets/actors")) do
-    require(path .. "/actor")
+    require("assets/actors/" .. path .. "/actor")
 end

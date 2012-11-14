@@ -47,6 +47,6 @@ end
 game.export("loadRoom", buildRoom)
 
 for _, room in ipairs(MOAIFileSystem.listDirectories("assets/rooms")) do
-    buildRoom(room:sub(14))
+    buildRoom(room)
 end
 

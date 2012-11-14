@@ -1,4 +1,4 @@
-#!./gluthost
+#!./moai-untz
 
 require "classes/room"
 

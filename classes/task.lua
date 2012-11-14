@@ -4,7 +4,7 @@ newclass("Task")
 
 function Task.sleep(time)
     local timer = MOAITimer.new()
-    timer:setSpan(delay)
+    timer:setSpan(time)
     timer:setListener(
         MOAITimer.EVENT_TIMER_LOOP,
         function()

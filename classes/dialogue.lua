@@ -77,8 +77,8 @@ function Dialogue.time(msg)
     local words = 0
     for _ in msg:gfind("[^%s]+") do words = words + 1 end
     
-    words = math.max(8, words)
-    return words * 0.9
+    words = math.max(5, words)
+    return words * 0.5
 end
 
 function Dialogue:addTopic(id)

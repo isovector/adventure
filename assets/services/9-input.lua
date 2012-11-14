@@ -1,4 +1,5 @@
 local function keyCallback(key, down)
+    if key == 256 then return end
     if not down then return end
 
     if key == 27 then

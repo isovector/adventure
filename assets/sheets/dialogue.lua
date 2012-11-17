@@ -1,4 +1,3 @@
-require "classes/game"
 require "classes/sheet"
 require "classes/dialogue"
 require "classes/labeler"
@@ -38,7 +37,7 @@ local function showTopic(newtopic)
 end
 
 
-game.export("showTopic", showTopic)
+game:add("showTopic", showTopic)
 
 --------------------------------------------------
 

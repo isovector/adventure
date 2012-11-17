@@ -1,4 +1,3 @@
-require "classes/game"
 require "classes/shader"
 require "classes/sheet"
 require "classes/timer"
@@ -153,7 +152,7 @@ local function updateBuffer(str)
     buffer_text:setString(str)
 end
 
-game.export({ 
+game:add({ 
     enableInput = enableInput,
     getCurrentItem = getCurrentItem,
     setCurrentItem = setCurrentItem,

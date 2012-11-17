@@ -1,5 +1,4 @@
 require "classes/room"
-require "classes/game"
 require "classes/sandbox"
 
 local function buildRoom(name)
@@ -44,7 +43,7 @@ local function buildRoom(name)
     end
 end
 
-game.export("loadRoom", buildRoom)
+game:add("loadRoom", buildRoom)
 
 for _, room in ipairs(MOAIFileSystem.listDirectories("assets/rooms")) do
     buildRoom(room)

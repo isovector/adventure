@@ -1,11 +1,10 @@
-require "classes/game"
 require "classes/narrator"
 
 local nar = Narrator.new("", "...")
 
 --------------------------------------------------
 
-game.export("getNarration", function(conds) return nar:getString(conds) end)
+game:add("getNarration", function(conds) return nar:getString(conds) end)
 
 --------------------------------------------------
 -- generic items

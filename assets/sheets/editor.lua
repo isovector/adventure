@@ -1,5 +1,4 @@
 require "classes/compat"
-require "classes/game"
 require "classes/polygon"
 require "classes/sheet"
 

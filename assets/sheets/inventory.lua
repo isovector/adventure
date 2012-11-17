@@ -1,6 +1,5 @@
 require "classes/actor"
 require "classes/item"
-require "classes/game"
 require "classes/sheet"
 
 local sheet = Sheet.new("inventory")
@@ -88,7 +87,7 @@ local function showInventory(actor)
     sheet:enable(true)
 end
 
-game.export("showInventory", showInventory)
+game:add("showInventory", showInventory)
 
 --------------------------------------------------
 

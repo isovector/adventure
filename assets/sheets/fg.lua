@@ -1,5 +1,4 @@
 require "classes/actor"
-require "classes/game"
 require "classes/costume"
 require "classes/sheet"
 
@@ -21,8 +20,8 @@ local function destroyProp(prop)
     sheet:removeProp(prop)
 end
 
-game.export("makeProp", makeProp)
-game.export("destroyProp", destroyProp)
+game:add("makeProp", makeProp)
+game:add("destroyProp", destroyProp)
 
 --------------------------------------------------
 

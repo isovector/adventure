@@ -45,4 +45,4 @@ local function addVis(call, time)
         })
 end
 
-game.export("addVisualization", addVis)
+game:add("addVisualization", addVis)

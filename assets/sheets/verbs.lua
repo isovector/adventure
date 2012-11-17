@@ -1,4 +1,3 @@
-require "classes/game"
 require "classes/sheet"
 require "classes/task"
 
@@ -80,7 +79,7 @@ local function interactWith(x, y, down, otherwise)
     end
 end
 
-game.export("interactWith", interactWith)
+game:add("interactWith", interactWith)
 
 --------------------------------------------------
 

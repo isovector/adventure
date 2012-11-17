@@ -18,8 +18,8 @@ end
 --------------------------------------------------
 
 local mouse = { x = 0, y = 0, down = false }
-game.export("getMouse", function() return mouse.x, mouse.y end)
-game.export("isMouseDown", function() return mouse.down end)
+game:add("getMouse", function() return mouse.x, mouse.y end)
+game:add("isMouseDown", function() return mouse.down end)
 
 --------------------------------------------------
 

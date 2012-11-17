@@ -1,4 +1,3 @@
-require "classes/game"
 require "classes/sheet"
 
 local sheet = Sheet.new("background")
@@ -25,7 +24,7 @@ local function setBackground(path)
     quad:setTexture(path)
 end
 
-game.export("setBackground", setBackground)
+game:add("setBackground", setBackground)
 
 --------------------------------------------------
 

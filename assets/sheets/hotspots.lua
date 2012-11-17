@@ -1,4 +1,3 @@
-require "classes/game"
 require "classes/hotspot"
 require "classes/sheet"
 
@@ -24,8 +23,8 @@ local function getHotspotAtXY(x, y)
     end
 end
 
-game.export("setHotspots", setHotspots)
-game.export("getHotspotAtXY", getHotspotAtXY)
+game:add("setHotspots", setHotspots)
+game:add("getHotspotAtXY", getHotspotAtXY)
 
 --------------------------------------------------
 

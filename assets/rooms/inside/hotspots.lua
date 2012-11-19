@@ -1,5 +1,6 @@
 return function(room)
-	room:addHotspot(Hotspot.new("piano", 5, "Piano", true, Polygon.new({
+	local hotspot
+	hotspot = Hotspot.new("piano", 5, "Piano", true, Polygon.new({
 		789, 467,
 		814, 431,
 		842, 432,
@@ -28,18 +29,23 @@ return function(room)
 		824, 524,
 		806, 510,
 		778, 506,
-	})))
-	room:addHotspot(Hotspot.new("menu", 8, "Menu", true, Polygon.new({
+	}))
+	room:addHotspot(hotspot)
+	hotspot = Hotspot.new("menu", 8, "Menu", true, Polygon.new({
 		39, 216,
 		341, 221,
 		376, 503,
 		217, 508,
 		39, 517,
-	})))
-	room:addHotspot(Hotspot.new("dining_door", 8, "Dining Room", true, Polygon.new({
+	}))
+	room:addHotspot(hotspot)
+	hotspot = Hotspot.new("dining_door", 8, "Dining Room", true, Polygon.new({
 		662, 503,
 		673, 303,
 		792, 300,
 		793, 504,
-	})))
+	}))
+	hotspot:link("outside", 1106, 591)
+	hotspot:setWalkspot(717, 536)
+	room:addHotspot(hotspot)
 end

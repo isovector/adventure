@@ -62,7 +62,7 @@ function Vim:setMode(mode, no_history)
     end
 end
 
-function Vim:popNode()
+function Vim:popMode()
     local idx = #self.mode_stack
     
     if idx == 0 then
@@ -77,7 +77,7 @@ end
 function Vim:clear(change_mode)
     self:change()
     if self.buffer == "" and change_mode then
-        self:popNode()
+        self:popMode()
     else
         self.buffer = ""
     end

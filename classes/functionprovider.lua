@@ -12,11 +12,16 @@ local temp = { }
 local function dispatchFunctions(...)
     local ret
     for _, f in ipairs(temp) do
-        local v = f(...)
-        ret = ret or v
+        local v = { f(...) }
+        
+        if #v ~= 0 then 
+            ret = ret or v
+        end
     end
     
-    return ret
+    if ret then
+        return unpack(ret)
+    end
 end
 
 

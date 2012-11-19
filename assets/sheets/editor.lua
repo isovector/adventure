@@ -6,6 +6,7 @@ local sheet = Sheet.new("editor")
 sheet:install()
 sheet:enable(false)
 
+sheet:setClickAcceptor(Sheet.all_acceptor)
 sheet:setHoverAcceptor(Sheet.all_acceptor)
 
 local color = { 0, 1, 0 }
@@ -99,13 +100,32 @@ end
     scriptprop:setDeck(scriptDeck)
     sheet:insertProp(scriptprop)
 
+    
+local pickedPoint = { -1, -1 }
+local inPickMode = false
+local pickCallback = false
+    
+function sheet:onClick(prop, x, y, down)
+    if not down then
+        return false
+    end
+
+    pickedPoint = { x, y }
+    
+    if inPickMode then
+        vim:clear()
+        vim:clear(true)
+        
+        game.updateBuffer(vim:getBufferText())
+        
+        return true
+    end
+    
+    return false
+end
 
 function sheet:onHover(prop)
-    --if not prop or prop == scriptprop then
-        game.setCursor(10)
-    --[[else
-        game.setCursor(5)
-    end]]
+    game.setCursor(10)
 
     return true
 end
@@ -139,13 +159,26 @@ local function save()
     f:write("}\n")
     f:close()
     
+    -- Write out hotspots
     f = io.open(room.directory .. "/hotspots.lua", "w")
-    f:write("return function(room)\n")
+    f:write("return function(room)\n\tlocal hotspot\n")
     
     for _, hotspot in pairs(room.hotspots) do
-        f:write(string.format("\troom:addHotspot(Hotspot.new(%q, %d, %q, %s, Polygon.new({\n", hotspot.id, hotspot.cursor, hotspot.name, tostring(hotspot.interface)))
+        f:write(string.format("\thotspot = Hotspot.new(%q, %d, %q, %s, Polygon.new({\n", hotspot.id, hotspot.cursor, hotspot.name, tostring(hotspot.interface)))
         write_points(f, hotspot.polygon.points, "\t\t")
-        f:write("\t})))\n")
+        f:write("\t}))\n")
+        
+        if hotspot.endpoint then
+            local ep = hotspot.endpoint
+            f:write(string.format("\thotspot:link(%q, %d, %d)\n", ep.room, ep.x, ep.y));
+        end
+        
+        if hotspot.walkspot then
+            local ws = hotspot.walkspot
+            f:write(string.format("\thotspot:setWalkspot(%d, %d)\n", ws[1], ws[2]));
+        end
+        
+        f:write("\troom:addHotspot(hotspot)\n")
     end
     
     f:write("end\n")
@@ -193,6 +226,21 @@ vim:createMode("editor",
     
     function(new) 
         if new == "normal" then sheet:enable(false) end 
+    end
+)
+
+vim:createMode("pick-point",
+    function(old)
+        inPickMode = true
+    end,
+    
+    function(new)
+        inPickMode = false
+        
+        if pickCallback then
+            pickCallback(unpack(pickedPoint))
+        end
+        pickCallback = nil
     end
 )
 
@@ -332,6 +380,31 @@ vim:cmd("polygon",  "name",     function(...)
                                     if poly.hotspot then
                                         poly.hotspot.name = name
                                         status("Set", poly.hotspot, "name to", name)
+                                    end
+                                end)
+                                
+vim:cmd("polygon",  "link",     function(newRoom)
+                                    if not newRoom or not poly.hotspot then
+                                        return
+                                    end
+
+                                    game.setBackground(Room.getRoom(newRoom).img_path)
+                                    
+                                    local mx, my = game.getMouse()
+                                    poly.hotspot:setWalkspot(mx, my)
+                                    
+                                    pickCallback = function(x, y)
+                                        poly.hotspot:link(newRoom, x, y)
+                                        game.setBackground(room.img_path)
+                                    end
+                                    
+                                    vim:setMode("pick-point")
+                                    game.updateBuffer(vim:getBufferText())
+                                end)
+                                
+vim:cmd("polygon",  "unlink",   function()
+                                    if poly.hotspot then
+                                        poly.hotspot.endpoint = nil
                                     end
                                 end)
                                 

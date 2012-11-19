@@ -21,6 +21,16 @@ sheet:insertProp(prop)
 
 --------------------------------------------------
 
+local function getEventCallback(id, verb)
+    if id and room.events[id] then
+        return room.events[id][verb]
+    end
+end
+
+game:add("getEventCallback", getEventCallback)
+
+--------------------------------------------------
+
 local object = nil
 
 local x0 = 0
@@ -42,10 +52,11 @@ local function dispatchVerb(verb)
 
     game.setCurrentVerb(nil)
     
-    if id and room.events[id] and room.events[id][verb] then
+    local event = game.getEventCallback(id, verb)
+    if event then
         Task.start(function(...)
             game.enableInput(false)
-            room.events[id][verb](...)
+            event(...)
             game.enableInput(true)
         end)
     end
@@ -74,7 +85,7 @@ local function interactWith(x, y, down, otherwise)
         if down then
             startVerbCountdown(x, y)
         elseif otherwise then
-            otherwise()
+            otherwise(object)
         end
     end
 end

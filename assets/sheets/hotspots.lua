@@ -1,5 +1,6 @@
 require "classes/hotspot"
 require "classes/sheet"
+require "classes/task"
 
 local sheet = Sheet.new("hotspots")
 
@@ -28,10 +29,33 @@ game:add("getHotspotAtXY", getHotspotAtXY)
 
 --------------------------------------------------
 
+local function handleDoors(object)
+    local event = game.getEventCallback(object.id, "click")
+    
+    if event then
+        event()
+    elseif object.endpoint then
+        Task.start(function()
+            local actor = Actor.getActor("santino")
+        
+            if object.walkspot then
+                local x, y = unpack(object.walkspot)
+                actor:walkTo(x, y)
+            end
+            
+            Room.change(object.endpoint.room)
+            
+            actor:teleport(object.endpoint.x, object.endpoint.y)
+        end)
+    end
+end
+
+--------------------------------------------------
+
 function sheet:onClick(prop, x, y, down)
     for _, hotspot in ipairs(hotspots) do
         if hotspot:hitTest(x, y) and hotspot.interface then
-            game.interactWith(x, y, down)
+            game.interactWith(x, y, down, handleDoors)
             return true
         end
     end

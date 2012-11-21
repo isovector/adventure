@@ -44,7 +44,7 @@ function sheet:onClick(prop, x, y, down)
     
     local actor = Actor.getActor("santino")
     if room.scene[actor.id] then
-        actor:setGoal(x, y)
+        actor:walkToAsync(x, y)
     end
     
     return true

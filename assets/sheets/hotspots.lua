@@ -40,12 +40,11 @@ local function handleDoors(object)
         
             if object.walkspot then
                 local x, y = unpack(object.walkspot)
-                actor:walkTo(x, y)
+                actor:walkToAsync(x, y, function()
+                    Room.change(object.endpoint.room)
+                    actor:teleport(object.endpoint.x, object.endpoint.y)
+                end)
             end
-            
-            Room.change(object.endpoint.room)
-            
-            actor:teleport(object.endpoint.x, object.endpoint.y)
         end)
     end
 end

@@ -18,6 +18,7 @@ newclass("Actor",
             loop = nil,
             stop = false,
             
+            onGoal = nil,
             pressing = { }
         }
         
@@ -67,9 +68,10 @@ function Actor:teleportRel(x, y)
     self:teleport(sx + x, sy + y)
 end
 
-function Actor:setGoal(x, y)
+function Actor:walkToAsync(x, y, onGoal)
     self.stop = true
     self.goal = { x, y }
+    self.onGoal = onGoal
 end
 
 function Actor:giveItem(id)
@@ -171,6 +173,11 @@ function Actor:mainLoop()
             self.goal = nil
             self.stop = false
             self:walkTo(unpack(goal))
+            
+            if not self.stop and self.onGoal then
+                self:onGoal()
+                self.onGoal = nil
+            end
         end
         
         coroutine.yield()

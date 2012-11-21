@@ -3,7 +3,6 @@
 	<group name='classes' expanded='TRUE'>
 		<file>./classes/actor.lua</file>
 		<file>./classes/class.lua</file>
-		<file>./classes/compat.lua</file>
 		<file>./classes/costume.lua</file>
 		<file>./classes/dialogue.lua</file>
 		<file>./classes/fragmentshader.lua</file>

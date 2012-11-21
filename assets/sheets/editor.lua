@@ -1,4 +1,3 @@
-require "classes/compat"
 require "classes/polygon"
 require "classes/sheet"
 

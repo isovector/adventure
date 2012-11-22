@@ -5,6 +5,20 @@ require "classes/costume"
 
 local cost, anim, deck, curve
 
+-- art/bonson
+--------------------------------------------------
+
+cost = Costume.new()
+cost:addPose("idle", 5, "assets/costumes/bonson/idle.png", 1, 31, 58, true)
+costumes.bonson = cost
+
+-- art/leon
+--------------------------------------------------
+
+cost = Costume.new()
+cost:addPose("idle", 5, "assets/costumes/leon/idle.png", 1, 31, 61, true)
+costumes.leon = cost
+
 -- art/santino
 --------------------------------------------------
 
@@ -17,10 +31,24 @@ cost:addPose("walk", 4, "assets/costumes/santino/walk4.png", 24, 40, 60, true)
 cost:addPose("walk", 6, "assets/costumes/santino/walk6.png", 24, 40, 60, true)
 costumes.santino = cost
 
+-- art/taag
+--------------------------------------------------
+
+cost = Costume.new()
+cost:addPose("idle", 5, "assets/costumes/taag/idle.png", 1, 29, 58, true)
+costumes.taag = cost
+
 -- art/charles
 --------------------------------------------------
 
 cost = Costume.new()
-cost:addPose("idle", 5, "assets/costumes/charles/idle.png", 1, 24, 52, true)
+cost:addPose("idle", 5, "assets/costumes/charles/idle.png", 1, 30, 61, true)
 costumes.charles = cost
+
+-- art/andreja
+--------------------------------------------------
+
+cost = Costume.new()
+cost:addPose("idle", 5, "assets/costumes/andreja/idle.png", 1, 39, 58, true)
+costumes.andreja = cost
 

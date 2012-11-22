@@ -20,4 +20,13 @@ return function(room)
 	hotspot:link("inside", 728, 529)
 	hotspot:setWalkspot(1107, 593)
 	room:addHotspot(hotspot)
+	hotspot = Hotspot.new("citydoor", 8, "City", true, Polygon.new({
+		519, 241,
+		514, 14,
+		630, 10,
+		722, 240,
+	}))
+	hotspot:link("city", 924, 541)
+	hotspot:setWalkspot(601, 271)
+	room:addHotspot(hotspot)
 end

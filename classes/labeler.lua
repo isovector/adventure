@@ -35,7 +35,7 @@ end
 function Labeler:addLabel(str, x, y, r, ...)
     local label = MOAITextBox.new()
 
-    label:setTextSize(24)
+    label:setTextSize(14)
     label:setFont(font)
     
     if r then

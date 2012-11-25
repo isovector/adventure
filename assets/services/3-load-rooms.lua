@@ -1,5 +1,15 @@
 require "classes/room"
-require "classes/sandbox"
+require "classes/scaffoldtable"
+
+local function buildEvent(crumbs, key, value, room)
+    local id = table.concat(crumbs, "_")
+    
+    if not room.events[id] then
+        room.events[id] = { }
+    end
+    
+    room.events[id][key] = value
+end
 
 local function buildRoom(name)
     local path = "assets/rooms/" .. name
@@ -26,19 +36,11 @@ local function buildRoom(name)
     
     if MOAIFileSystem.checkFileExists(path .. "/script.lua") then
         room.onLoad = function()
-            local sb = Sandbox.new()
+            room.events = { }
             
-            for id, actor in pairs(room.scene) do
-                sb:addValue(id, actor.actor)
-            end
-            
-            for _, hs in ipairs(room.hotspots) do
-                sb:addValue(hs.id, hs)
-            end
-            
-            sb:dofile(path .. "/script.lua")
-            
-            room.events = sb:getResults()
+            events = ScaffoldTable.new(buildEvent, true, room)
+            dofile(path .. "/script.lua")
+            events = nil
         end
     end
 end

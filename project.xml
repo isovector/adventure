@@ -12,8 +12,8 @@
 		<file>./classes/labeler.lua</file>
 		<file>./classes/narrator.lua</file>
 		<file>./classes/polygon.lua</file>
+		<file>./classes/scaffoldtable.lua</file>
 		<file>./classes/room.lua</file>
-		<file>./classes/sandbox.lua</file>
 		<file>./classes/shader.lua</file>
 		<file>./classes/sheet.lua</file>
 		<file>./classes/task.lua</file>
@@ -36,7 +36,7 @@
 		<file>./assets/actors/actors.lua</file>
 		<file>./assets/rooms/rooms.lua</file>
 	</group>
-	<group name='services' expanded='FALSE'>
+	<group name='services' expanded='TRUE'>
 		<file>./assets/services/0-functionproviders.lua</file>
 		<file>./assets/services/1-build-costumes.lua</file>
 		<file>./assets/services/1-create-window.lua</file>
@@ -50,8 +50,8 @@
 		<file>./assets/services/3-load-rooms.lua</file>
 		<file>./assets/services/9-input.lua</file>
 	</group>
-	<group name='utils' expanded='FALSE'>
-		<file>./utils/build_costume.py</file>
+	<file>./utils/build_costume.py</file>
+	<group name='utils' expanded='TRUE'>
 		<file>./utils/build_pathfinding.py</file>
 		<file>./utils/parse_image.py</file>
 	</group>

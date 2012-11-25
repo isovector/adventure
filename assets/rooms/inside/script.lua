@@ -1,7 +1,5 @@
-local charles = charles
-local player = santino
-
-local carpet = carpet
+local player = Actor.getActor("santino")
+local charles = Actor.getActor("charles")
 
 local topic = Topic.new("test")
 topic:addOptions(
@@ -21,7 +19,7 @@ topic:addOptions(
     }
 )
 
-function charles.masks()
+function events.charles.masks()
     player:removeItem("masks")
 
     local x, y = charles:location()
@@ -30,13 +28,13 @@ function charles.masks()
     charles:say("heck yeah! thanks!")
 end
 
-function charles.talk()
+function events.charles.talk()
     local x, y = charles:location()
     player:walkTo(x, y + 100)
     topic:show()
 end
 
-function charles.look()
+function events.charles.look()
     player:say("it's charles")
     player:say("he's a cool cat")
     Task.sleep(1.5)

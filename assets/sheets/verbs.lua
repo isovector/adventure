@@ -29,8 +29,6 @@ local function getEventCallback(obj, verb)
         id = string.format("%s_%s", obj.id, id)
     end
 
-    print("invoking", id, verb)
-    
     if id and room.events[id] then
         return room.events[id][verb]
     end

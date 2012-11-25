@@ -43,7 +43,7 @@ function Costume:addPose(pose, dir, path, frames, w, h, loops)
     }
 end
 
-function Costume:addHotspot(poser, dir, hotspot)
+function Costume:addHotspot(pose, dir, hotspot)
     if self.poses[pose] and self.poses[pose][dir] then
         self.poses[pose][dir].hotspots[hotspot.id] = hotspot
     end
@@ -128,15 +128,26 @@ function CostumeController:hitTest(x, y)
     local height = math.max(ry, rh) - math.min(ry, rh) 
     
     -- get local space coords
-    x = x - x0 + (self.prop:getIndex() - 1) * width
-    y = y - y0
+    x0 = x - x0
+    y0 = y - y0
     
-    if y < 0 then
-        y = y + height
+    if y0 < 0 then
+        y0 = y0 + height
     end
-
+    
+    -- get bitmap coords
+    x = x0 + (self.prop:getIndex() - 1) * width
+    y = y0
+    
     local _, _, _, a = self.texture:getRGBA(x, y)
-    return a ~= 0
+    if a ~= 0 then
+        local pose = self.costume:getPose(self.pose, self.direction)
+        
+        local hs = Hotspot.hitTest(pose.hotspots, x0, y0)
+        return hs or true
+    end
+    
+    return nil
 end
 
 function CostumeController:setPose(pose, dir)

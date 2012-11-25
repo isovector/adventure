@@ -51,8 +51,8 @@ def getFramesForPng(file):
     return { 
             'file': "assets/costumes/%%s/%s.png" % os.path.splitext(os.path.basename(file))[0],
             'fps': 1,
-            'width': im.size[0] * 0.6,
-            'height': im.size[1] * 0.6,
+            'width': im.size[0],
+            'height': im.size[1],
             'frames' : 1,
             'events' : { },
             'ratio' : 1

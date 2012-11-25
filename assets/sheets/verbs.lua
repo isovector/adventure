@@ -21,7 +21,16 @@ sheet:insertProp(prop)
 
 --------------------------------------------------
 
-local function getEventCallback(id, verb)
+local function getEventCallback(obj, verb)
+    local id = obj.id
+    
+    while obj.proxy do
+        obj = obj.proxy
+        id = string.format("%s_%s", obj.id, id)
+    end
+
+    print("invoking", id, verb)
+    
     if id and room.events[id] then
         return room.events[id][verb]
     end
@@ -48,11 +57,9 @@ local function show()
 end
 
 local function dispatchVerb(verb)
-    local id = object.id
-
     game.setCurrentVerb(nil)
     
-    local event = game.getEventCallback(id, verb)
+    local event = game.getEventCallback(object, verb)
     if event then
         Task.start(function(...)
             game.enableInput(false)

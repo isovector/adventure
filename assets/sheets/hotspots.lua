@@ -30,7 +30,7 @@ game:add("getHotspotAtXY", getHotspotAtXY)
 --------------------------------------------------
 
 local function handleDoors(object)
-    local event = game.getEventCallback(object.id, "click")
+    local event = game.getEventCallback(object, "click")
     
     if event then
         event()

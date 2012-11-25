@@ -5,18 +5,26 @@ require "classes/costume"
 
 local cost, anim, deck, curve
 
+-- art/car
+--------------------------------------------------
+
+cost = Costume.new()
+cost:addPose("idle", 5, "assets/costumes/car/idle.png", 1, 160, 58, true)
+cost:addPose("open", 5, "assets/costumes/car/open.png", 1, 160, 58, false)
+costumes.car = cost
+
 -- art/bonson
 --------------------------------------------------
 
 cost = Costume.new()
-cost:addPose("idle", 5, "assets/costumes/bonson/idle.png", 1, 31, 58, true)
+cost:addPose("idle", 5, "assets/costumes/bonson/idle.png", 1, 52, 97, true)
 costumes.bonson = cost
 
 -- art/leon
 --------------------------------------------------
 
 cost = Costume.new()
-cost:addPose("idle", 5, "assets/costumes/leon/idle.png", 1, 31, 61, true)
+cost:addPose("idle", 5, "assets/costumes/leon/idle.png", 1, 52, 102, true)
 costumes.leon = cost
 
 -- art/santino
@@ -35,20 +43,20 @@ costumes.santino = cost
 --------------------------------------------------
 
 cost = Costume.new()
-cost:addPose("idle", 5, "assets/costumes/taag/idle.png", 1, 29, 58, true)
+cost:addPose("idle", 5, "assets/costumes/taag/idle.png", 1, 48, 97, true)
 costumes.taag = cost
 
 -- art/charles
 --------------------------------------------------
 
 cost = Costume.new()
-cost:addPose("idle", 5, "assets/costumes/charles/idle.png", 1, 30, 61, true)
+cost:addPose("idle", 5, "assets/costumes/charles/idle.png", 1, 51, 103, true)
 costumes.charles = cost
 
 -- art/andreja
 --------------------------------------------------
 
 cost = Costume.new()
-cost:addPose("idle", 5, "assets/costumes/andreja/idle.png", 1, 39, 58, true)
+cost:addPose("idle", 5, "assets/costumes/andreja/idle.png", 1, 66, 97, true)
 costumes.andreja = cost
 

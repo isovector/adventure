@@ -25,7 +25,7 @@ function Hotspot.hitTest(self, x, y)
     if type(self) == "table" then
         local best = nil
         local bestScore = -999999
-        for i, hotspot in ipairs(self) do
+        for _, hotspot in pairs(self) do
             if hotspot:hitTest(x, y) and hotspot.priority > bestScore then
                 bestScore = hotspot.priority
                 best = hotspot

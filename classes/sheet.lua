@@ -125,7 +125,7 @@ end
 
 function Sheet:prop_acceptor(callback, x, y, ...)
     local prop = self.partition:propForPoint(x, y)
-    if prop and (not prop.actor or prop.actor.costume:hitTest(x, y)) then
+    if prop and (not prop.actor or prop.actor:hitTest(x, y)) then
         return not callback or callback(self, prop, x, y, ...)
     end
     
@@ -134,7 +134,7 @@ end
 
 function Sheet:all_acceptor(callback, x, y, ...)
     local prop = self.partition:propForPoint(x, y)
-    if prop and (not prop.actor or prop.actor.costume:hitTest(x, y)) then
+    if prop and (not prop.actor or prop.actor:hitTest(x, y)) then
         return not callback or callback(self, prop, x, y, ...)
     end
     

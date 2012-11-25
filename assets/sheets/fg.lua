@@ -28,12 +28,15 @@ game:add("destroyProp", destroyProp)
 function sheet:onClick(prop, x, y, down)
     if prop then
         game.interactWith(x, y, down)
+        return true
     end
+    
+    return false
 end
 
 function sheet:onHover(prop, x, y)
     if prop.actor then
-        game.setCurrentObject(prop.actor)
+        game.setCurrentObject(prop.actor.hitHotspot or prop.actor)
     else
         game.setCurrentObject(nil)
     end

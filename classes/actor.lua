@@ -19,7 +19,9 @@ newclass("Actor",
             stop = false,
             
             onGoal = nil,
-            pressing = { }
+            pressing = { },
+            
+            hitHotspot = nil
         }
         
         actors[id] = actor
@@ -34,6 +36,19 @@ end
 
 function Actor:location() 
     return self.prop:getLoc()
+end
+
+function Actor:hitTest(x, y)
+    local hs = self.costume:hitTest(x, y)
+    
+    if hs == true or not hs then
+        self.hitHotspot = nil
+    else
+        hs.proxy = self
+        self.hitHotspot = hs
+    end
+    
+    return hs
 end
 
 function Actor:joinScene()

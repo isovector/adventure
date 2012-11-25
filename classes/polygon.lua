@@ -63,3 +63,11 @@ function Polygon:getBox()
     
     return 0, 0, 0, 0
 end
+
+function Polygon:__serialize(f, indent)
+    f:write(string.format("%sPolygon.new({\n", indent))
+    for i = 1, #self.points, 2 do
+        f:write(string.format("%s    %d, %d,\n", indent, self.points[i], self.points[i + 1]))
+    end
+    f:write(string.format("%s})", indent))
+end

@@ -1,5 +1,6 @@
 require "classes/polygon"
 require "classes/sheet"
+require "classes/serialize"
 
 local sheet = Sheet.new("editor")
 sheet:install()
@@ -129,14 +130,6 @@ function sheet:onHover(prop)
     return true
 end
 
-local function write_points(f, points, prefix)
-    prefix = prefix or "\t"
-
-    for i = 1, #points, 2 do
-        f:write(string.format("%s%d, %d,\n", prefix, points[i], points[i + 1]))
-    end
-end
-
 local function save()
     if room.in_memory then
         MOAIFileSystem.affirmPath(room.directory)
@@ -153,31 +146,18 @@ local function save()
     -- Write out pathfinding
     local f = io.open(room.directory .. "/pathfinding.lua", "w")
     local points = walking.points
-    f:write("return {\n")
-        write_points(f, points)
-    f:write("}\n")
+    f:write("return \n")
+        Serialize.put(f, Polygon.new(points))
+    f:write(".points\n")
     f:close()
     
     -- Write out hotspots
     f = io.open(room.directory .. "/hotspots.lua", "w")
-    f:write("return function(room)\n\tlocal hotspot\n")
+    f:write("return function(room)\n    local hotspot\n")
     
     for _, hotspot in pairs(room.hotspots) do
-        f:write(string.format("\thotspot = Hotspot.new(%q, %d, %q, %s, Polygon.new({\n", hotspot.id, hotspot.cursor, hotspot.name, tostring(hotspot.interface)))
-        write_points(f, hotspot.polygon.points, "\t\t")
-        f:write("\t}))\n")
-        
-        if hotspot.endpoint then
-            local ep = hotspot.endpoint
-            f:write(string.format("\thotspot:link(%q, %d, %d)\n", ep.room, ep.x, ep.y));
-        end
-        
-        if hotspot.walkspot then
-            local ws = hotspot.walkspot
-            f:write(string.format("\thotspot:setWalkspot(%d, %d)\n", ws[1], ws[2]));
-        end
-        
-        f:write("\troom:addHotspot(hotspot)\n")
+        Serialize.put(f, hotspot, "hotspot")
+        f:write("    room:addHotspot(hotspot)\n")
     end
     
     f:write("end\n")
@@ -187,7 +167,7 @@ local function save()
     f = io.open(room.directory .. "/actors.lua", "w")
     f:write("return function(room)\n")
     for key, entry in pairs(room.scene) do
-        f:write(string.format("\troom:addActor(Actor.getActor(%q), %d, %d)\n", key, entry.x, entry.y))
+        f:write(string.format("    room:addActor(Actor.getActor(%q), %d, %d)\n", key, entry.x, entry.y))
     end
     f:write("end\n")
     f:close()

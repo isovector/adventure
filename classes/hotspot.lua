@@ -51,3 +51,21 @@ end
 function Hotspot:setWalkspot(x, y)
     self.walkspot = { x, y }
 end
+
+function Hotspot:__serialize(f, indent, name)
+    f:write(string.format("%s%s = Hotspot.new(%q, %d, %q, %s,\n", indent, name, self.id, self.cursor, self.name, tostring(self.interface)))
+    
+    Serialize.put(f, self.polygon)
+    
+    f:write(string.format("%s, %d)\n", indent, self.priority))
+    
+    if self.endpoint then
+        local ep = self.endpoint
+        f:write(string.format("%s%s:link(%q, %d, %d)\n", indent, name, ep.room, ep.x, ep.y));
+    end
+    
+    if self.walkspot then
+        local ws = self.walkspot
+        f:write(string.format("%s%s:setWalkspot(%d, %d)\n", indent, name, ws[1], ws[2]));
+    end
+end

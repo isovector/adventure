@@ -39,7 +39,14 @@ function Costume:addPose(pose, dir, path, frames, w, h, loops)
         curve = curve,
         texture = img,
         loops = loops,
+        hotspots = { }
     }
+end
+
+function Costume:addHotspot(poser, dir, hotspot)
+    if self.poses[pose] and self.poses[pose][dir] then
+        self.poses[pose][dir].hotspots[hotspot.id] = hotspot
+    end
 end
 
 function Costume:getPose(pose, direction)

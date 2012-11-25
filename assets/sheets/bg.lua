@@ -21,6 +21,10 @@ sheet:insertProp(prop)
 --------------------------------------------------
 
 local function setBackground(path)
+    if type(path) == "Costume" then
+        error("no support for costume hotspotting yet")
+    end
+    
     quad:setTexture(path)
 end
 

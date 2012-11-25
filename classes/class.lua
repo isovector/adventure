@@ -38,3 +38,16 @@ function newclass(name, ctor)
     
     return class
 end
+
+--------------------------------------------------
+
+local origType = type
+function type(object)
+    local t = origType(object)
+    
+    if t == "table" then
+        return object.__type or t
+    end
+    
+    return t
+end

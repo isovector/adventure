@@ -131,13 +131,13 @@ function Sheet:prop_acceptor(callback, x, y, ...)
         end
     end
     
-    return false
+    return nil
 end
 
 function Sheet:all_acceptor(callback, x, y, ...)
     local ret = self:prop_acceptor(callback, x, y, ...)
     
-    if ret == false then
+    if ret == nil then
         return not callback or callback(self, nil, x, y, ...)
     end
     

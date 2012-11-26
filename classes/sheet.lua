@@ -124,21 +124,24 @@ function Sheet.getSheet(id)
 end
 
 function Sheet:prop_acceptor(callback, x, y, ...)
-    local prop = self.partition:propForPoint(x, y)
-    if prop and (not prop.actor or prop.actor:hitTest(x, y)) then
-        return not callback or callback(self, prop, x, y, ...)
+    local propList = { self.partition:propListForPoint(x, y, 0, MOAILayer.SORT_PRIORITY_DESCENDING) }
+    for _, prop in ipairs(propList) do
+        if prop and (not prop.actor or prop.actor:hitTest(x, y)) then
+            return not callback or callback(self, prop, x, y, ...)
+        end
     end
     
     return false
 end
 
 function Sheet:all_acceptor(callback, x, y, ...)
-    local prop = self.partition:propForPoint(x, y)
-    if prop and (not prop.actor or prop.actor:hitTest(x, y)) then
-        return not callback or callback(self, prop, x, y, ...)
+    local ret = self:prop_acceptor(callback, x, y, ...)
+    
+    if ret == false then
+        return not callback or callback(self, nil, x, y, ...)
     end
     
-    return not callback or callback(self, nil, x, y, ...)
+    return ret
 end
 
 function Sheet:enable(enabled)

@@ -1,4 +1,4 @@
-require "classes/class"
+mrequire "classes/class"
 
 newclass("Timer", 
     function(duration, rep, callback, deltacallback)

@@ -1,5 +1,5 @@
-require "classes/sheet"
-require "classes/task"
+mrequire "classes/sheet"
+mrequire "classes/task"
 
 local sheet = Sheet.new("verbs")
 

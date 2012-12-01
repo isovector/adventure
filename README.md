@@ -4,6 +4,7 @@ Running on Linux
 Make sure you install the prerequisites before attempting to compile on linux:
 
 * lua 5.1.4
+* metalua 0.4.1 RC1
 * imagemagick 6.7.6.0 (for compile-time image building)
 * synfig 0.63.04 (for compile-time image building)
 

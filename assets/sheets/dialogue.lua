@@ -1,6 +1,6 @@
-require "classes/sheet"
-require "classes/dialogue"
-require "classes/labeler"
+mrequire "classes/sheet"
+mrequire "classes/dialogue"
+mrequire "classes/labeler"
 
 local sheet = Sheet.new("dialogue")
 

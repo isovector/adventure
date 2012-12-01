@@ -9,7 +9,7 @@ function newclass(name, ctor)
         function class.new(...)
             local instance = { }
             if ctor then
-                instance = ctor(unpack(arg))
+                instance = ctor(...)
             end
             
             if not instance then

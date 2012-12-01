@@ -1,10 +1,11 @@
 #!./moai-untz
 
-require "classes/room"
+require "src/install_meta"
+mrequire "classes/room"
 
 --------------------------------------------------
 
-require "assets/services"
+mrequire "assets/services"
 
 local config = require "assets/config"
 Room.getRoom(config.initialRoom):load()

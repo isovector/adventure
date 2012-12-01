@@ -1,5 +1,5 @@
-require "classes/sheet"
-require "classes/labeler"
+mrequire "classes/sheet"
+mrequire "classes/labeler"
 
 local sheet = Sheet.new("talk")
 

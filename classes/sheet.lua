@@ -1,5 +1,5 @@
-require "classes/class"
-require "classes/labeler"
+mrequire "classes/class"
+mrequire "classes/labeler"
 
 local viewport = viewport
 

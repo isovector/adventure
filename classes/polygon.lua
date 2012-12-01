@@ -1,4 +1,4 @@
-require "classes/class"
+mrequire "classes/class"
 local Shapes = require "classes/lib/HardonCollider/shapes"
 
 newclass("Polygon", 

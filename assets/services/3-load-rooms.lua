@@ -1,5 +1,5 @@
-require "classes/room"
-require "classes/scaffoldtable"
+mrequire "classes/room"
+mrequire "classes/scaffoldtable"
 
 local function buildEvent(crumbs, key, value, room)
     local id = table.concat(crumbs, "_")

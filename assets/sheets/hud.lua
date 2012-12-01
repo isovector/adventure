@@ -1,6 +1,6 @@
-require "classes/shader"
-require "classes/sheet"
-require "classes/timer"
+mrequire "classes/shader"
+mrequire "classes/sheet"
+mrequire "classes/timer"
 
 local sheet = Sheet.new("hud")
 sheet:install()

@@ -1,5 +1,5 @@
-require "classes/sheet"
-require "classes/timer"
+mrequire "classes/sheet"
+mrequire "classes/timer"
 
 local viewport = viewport
 local freq = 0.25

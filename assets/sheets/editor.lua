@@ -1,6 +1,6 @@
-require "classes/polygon"
-require "classes/sheet"
-require "classes/serialize"
+mrequire "classes/polygon"
+mrequire "classes/sheet"
+mrequire "classes/serialize"
 
 local sheet = Sheet.new("editor")
 sheet:install()

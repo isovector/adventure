@@ -1,4 +1,4 @@
-require "classes/class"
+mrequire "classes/class"
 
 newclass("FunctionProvider",
     function()

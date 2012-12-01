@@ -1,6 +1,6 @@
-require "classes/hotspot"
-require "classes/sheet"
-require "classes/task"
+mrequire "classes/hotspot"
+mrequire "classes/sheet"
+mrequire "classes/task"
 
 local sheet = Sheet.new("hotspots")
 

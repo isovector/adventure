@@ -1,5 +1,5 @@
-require "classes/class"
-require "classes/polygon"
+mrequire "classes/class"
+mrequire "classes/polygon"
 
 newclass("Hotspot", function(id, cursor, name, interface, poly, priority)
         priority = priority or 0

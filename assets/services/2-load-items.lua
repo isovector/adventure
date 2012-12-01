@@ -1,4 +1,4 @@
-require "classes/item"
+mrequire "classes/item"
 
 for _, item in ipairs(MOAIFileSystem.listFiles("assets/items")) do
     if item:sub(-4) == ".lua" then

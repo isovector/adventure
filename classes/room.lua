@@ -1,8 +1,8 @@
-require "classes/class"
-require "classes/hotspot"
-require "classes/polygon"
-require 'classes/lib/lua-astar/astar'
-require 'classes/lib/lua-astar/volumehandler'
+mrequire "classes/class"
+mrequire "classes/hotspot"
+mrequire "classes/polygon"
+mrequire 'classes/lib/lua-astar/astar'
+mrequire 'classes/lib/lua-astar/volumehandler'
 
 room = { }
 

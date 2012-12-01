@@ -32,10 +32,6 @@
 		<file>./assets/sheets/verbs.lua</file>
 		<file>./assets/sheets/vis.lua</file>
 	</group>
-	<group name='misc' expanded='FALSE'>
-		<file>./assets/actors/actors.lua</file>
-		<file>./assets/rooms/rooms.lua</file>
-	</group>
 	<group name='services' expanded='TRUE'>
 		<file>./assets/services/0-functionproviders.lua</file>
 		<file>./assets/services/1-build-costumes.lua</file>
@@ -50,9 +46,8 @@
 		<file>./assets/services/3-load-rooms.lua</file>
 		<file>./assets/services/9-input.lua</file>
 	</group>
-	<file>./utils/build_costume.py</file>
 	<group name='utils' expanded='TRUE'>
-		<file>./utils/build_pathfinding.py</file>
+		<file>./utils/build_costume.py</file>
 		<file>./utils/parse_image.py</file>
 	</group>
 </root>

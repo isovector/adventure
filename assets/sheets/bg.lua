@@ -1,4 +1,4 @@
-require "classes/sheet"
+mrequire "classes/sheet"
 
 local sheet = Sheet.new("background")
 

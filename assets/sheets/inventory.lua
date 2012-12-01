@@ -1,6 +1,6 @@
-require "classes/actor"
-require "classes/item"
-require "classes/sheet"
+mrequire "classes/actor"
+mrequire "classes/item"
+mrequire "classes/sheet"
 
 local sheet = Sheet.new("inventory")
 

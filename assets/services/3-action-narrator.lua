@@ -1,4 +1,4 @@
-require "classes/narrator"
+mrequire "classes/narrator"
 
 local nar = Narrator.new("", "...")
 

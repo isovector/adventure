@@ -1,7 +1,7 @@
-require "classes/class"
-require "classes/dialogue"
-require "classes/item"
-require "classes/task"
+mrequire "classes/class"
+mrequire "classes/dialogue"
+mrequire "classes/item"
+mrequire "classes/task"
 
 local actors = { }
 newclass("Actor", 

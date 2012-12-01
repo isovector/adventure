@@ -1,5 +1,5 @@
-require "classes/actor"
-require "classes/room"
+mrequire "classes/actor"
+mrequire "classes/room"
 
 vim:buf("normal", "^q$",    function() os.exit() end)
 vim:cmd("global", "l|oad",  Room.change)

@@ -1,6 +1,6 @@
-require "classes/actor"
-require "classes/costume"
-require "classes/sheet"
+mrequire "classes/actor"
+mrequire "classes/costume"
+mrequire "classes/sheet"
 
 local sheet = Sheet.new("foreground")
 

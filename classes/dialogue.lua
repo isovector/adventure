@@ -1,5 +1,5 @@
-require "classes/class"
-require "classes/task"
+mrequire "classes/class"
+mrequire "classes/task"
 
 newclass("Topic",
     function(id)

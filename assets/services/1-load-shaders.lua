@@ -1,4 +1,4 @@
-require "classes/shader"
+mrequire "classes/shader"
 
 for _, shader in ipairs(MOAIFileSystem.listFiles("assets/shaders")) do
     local name = shader:sub(1, -5)

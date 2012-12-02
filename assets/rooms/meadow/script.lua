@@ -25,5 +25,5 @@ function events.car.hood.look()
 end
 
 function events.car.sparkles.look()
-    player:say("There appear to be sparkles where the engine should be")
+    Room.change("hood")
 end

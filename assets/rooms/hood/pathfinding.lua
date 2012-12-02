@@ -1,0 +1,3 @@
+return 
+    Polygon.new({
+    }).points

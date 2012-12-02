@@ -23,15 +23,33 @@ local function showLabels()
     if labeler:size() ~= 0 then return end
     
     for i = 1, #polies do
-        local x, y = polies[i].points[1] or 10, polies[i].points[2] or 14 * i
+        local x, y, r, b = polies[i]:getBox()
+        
+        if not (r == 0 or b == 0) then
+            x = (x + r) / 2
+            y = (y + b) / 2
+        else
+            x = 10
+            y = 14 * i
+        end
         
         local str = tostring(i - 1)
         if i == 1 then
             str = "w"
         end
         
-        if polies[i].hotspot and not polies[i].hotspot.interface then
-            str = "@" .. str
+        if polies[i].hotspot then
+            local hs = polies[i].hotspot
+            
+            str = str .. ": " .. hs.id
+        
+            if not hs.interface then
+                str = "@" .. str
+            end
+            
+            if hs.endpoint then
+                str = str .. " -> " .. hs.endpoint.room
+            end
         end
         
         labeler:addLabel(str, x, y, 0, 1, 0)

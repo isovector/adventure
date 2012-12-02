@@ -43,9 +43,19 @@ function Labeler:addLabel(str, x, y, r, ...)
     end
     
     label:setString(str)
-    label:setRect(x - 400, y - 10, x + 400, y + 10)
-    label:setAlignment(MOAITextBox.CENTER_JUSTIFY)
     label:setPriority(999999)
+    
+    local w = (#str * 8) / 2
+    if x - w < 0 then
+        label:setRect(10, y - 10, x + 800, y + 10)
+        label:setAlignment(MOAITextBox.LEFT_JUSTIFY)
+    elseif x + w > 1280 then
+        label:setRect(x - 800, y - 10, 1270, y + 10)
+        label:setAlignment(MOAITextBox.RIGHT_JUSTIFY)
+    else
+        label:setRect(x - 400, y - 10, x + 400, y + 10)
+        label:setAlignment(MOAITextBox.CENTER_JUSTIFY)
+    end
     
     self.labels[label] = label
     self.layer:insertProp(label)

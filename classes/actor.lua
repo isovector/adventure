@@ -3,7 +3,7 @@ mrequire "classes/dialogue"
 mrequire "classes/item"
 mrequire "classes/task"
 
-local actors = { }
+Actors = { }
 newclass("Actor", 
     function(id, name, costume, color)
         local actor = {
@@ -24,14 +24,15 @@ newclass("Actor",
             hitHotspot = nil
         }
         
-        actors[id] = actor
+        record /Actors, id = actor
+        Actors[id] = actor
         
         return actor
     end
 )
 
 function Actor.getActor(id)
-    return actors[id]
+    return Actors[id]
 end
 
 function Actor:location() 

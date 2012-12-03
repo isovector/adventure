@@ -1,5 +1,5 @@
-local car = Actor.getActor("car")
-local player = Actor.getActor("santino")
+local car = /Actors/car
+local player = /Actors/santino
 
 local isopen = false
 

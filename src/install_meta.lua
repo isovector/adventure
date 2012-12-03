@@ -11,4 +11,4 @@ function mrequire(path)
     return file()
 end
 
-mrequire "src/meta/test"
+mrequire "src/meta/records"

@@ -127,6 +127,10 @@ function Room:getPath(sx, sy, dx, dy, w, h)
     local src = self:locToPos(sx, sy)
     local dst = self:locToPos(dx, dy)
     
+    if src.x == dst.x and src.y == dst.y then
+        return { }
+    end
+    
     w = w or 1
     h = h or 1
     

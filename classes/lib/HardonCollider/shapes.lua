@@ -150,6 +150,14 @@ function ConvexPolygonShape:intersectsRay(x,y, dx,dy)
 	return self._polygon:intersectsRay(x,y, dx,dy)
 end
 
+function ConcavePolygonShape:intersectsLine(ax,ay, bx,by)
+	return self._polygon:intersectsLine(ax,ay, bx,by)
+end
+
+function ConvexPolygonShape:intersectsLine(ax,ay, bx,by)
+	return self._polygon:intersectsLine(ax,ay, bx,by)
+end
+
 -- circle intersection if distance of ray/center is smaller
 -- than radius.
 -- with r(s) = p + d*s = (x,y) + (dx,dy) * s defining the ray and

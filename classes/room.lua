@@ -17,6 +17,7 @@ newclass("Room", function(id, path)
             
             handler = nil,
             astar = nil,
+            walkPolygon = nil,
             
             onLoad = nil
         }
@@ -66,6 +67,7 @@ function Room:installPathing(polys)
     
     self.handler = handler
     self.astar = astar
+    self.walkPolygon = hs
 end
 
 function Room:addHotspot(hotspot)
@@ -95,6 +97,30 @@ function Room:nodeToLoc(node)
     return loc.x * res - res / 2, loc.y * res - res / 2
 end
 
+function Room:shortenPath(nodes, poly, low, high)
+    if high <= low then
+        return { { self:nodeToLoc(nodes[low]) } }
+    end
+
+    local ax,ay = self:nodeToLoc(nodes[low])
+    local bx,by = self:nodeToLoc(nodes[high])
+    
+    if self.walkPolygon:lineTest(ax,ay, bx,by) then
+        local mid = math.floor((high - low) / 2) + low
+    
+        local a = self:shortenPath(nodes, poly, low, mid)
+        local b = self:shortenPath(nodes, poly, mid + 1, high)
+    
+        for _, node in ipairs(b) do
+            table.insert(a, node)
+        end
+        
+        return a
+    end
+    
+    return { {ax,ay}, {bx,by} }
+end
+
 function Room:getPath(sx, sy, dx, dy, w, h)
     if not self.astar then return nil end
 
@@ -109,12 +135,8 @@ function Room:getPath(sx, sy, dx, dy, w, h)
     
     if not path then return { } end
     
-    local result = { }
-    for _, node in ipairs(path:getNodes()) do
-        table.insert(result, { self:nodeToLoc(node) } )
-    end
-    
-    return result
+    local nodes = path:getNodes()
+    return self:shortenPath(nodes, self.walkPolygon, 1, #nodes)
 end
 
 function Room:load()

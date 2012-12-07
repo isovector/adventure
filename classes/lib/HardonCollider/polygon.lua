@@ -75,6 +75,26 @@ local function ccw(p, q, r)
 	return vector.det(q.x-p.x, q.y-p.y,  r.x-p.x, r.y-p.y) >= 0
 end
 
+-- returns true if two lines intersect
+local function lineLineIntersection(ax,ay, bx,by, cx,cy, dx,dy)
+    local ex, ey = bx - ax, by - ay
+    local fx, fy = dx - cx, dy - cy
+    local epx, epy = -ey, ex
+    local fpx, fpy = -fy, fx
+    
+    local gdot = vector.dot(ex,ey, fpx,fpy)
+    local hdot = vector.dot(fx,fy, epx,epy)
+    
+    if hdot == 0 or gdot == 0 then
+        return true
+    end
+
+    local g = vector.dot(bx-dx, by-dy, fpx,fpy) / gdot
+    local h = vector.dot(ax-cx, ay-cy, epx,epy) / hdot
+   
+    return h >= 0 and h <= 1 and g >= 0 and g <= 1
+end
+
 -- test wether a and b lie on the same side of the line c->d
 local function onSameSide(a,b, c,d)
 	local px, py = d.x-c.x, d.y-c.y
@@ -374,6 +394,19 @@ function Polygon:contains(x,y)
 		end
 	end
 	return in_polygon
+end
+
+function Polygon:intersectsLine(ax,ay, bx,by)
+	local q1,q2 = nil, self.vertices[#self.vertices]
+	for i = 1, #self.vertices do
+		q1,q2 = q2,self.vertices[i]
+        
+        if lineLineIntersection(ax,ay, bx,by, q1.x,q1.y, q2.x,q2.y) then
+            return true
+        end
+	end
+    
+	return false
 end
 
 function Polygon:intersectsRay(x,y, dx,dy)

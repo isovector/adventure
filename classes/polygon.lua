@@ -54,6 +54,16 @@ function Polygon:hitTest(x, y)
     return false
 end
 
+function Polygon:lineTest(ax,ay, bx,by)
+    self:rebuildCollision()
+    
+    if self.shape then
+        return self.shape:intersectsLine(bx,by, ax,ay)
+    end
+    
+    return false
+end
+
 function Polygon:getBox()
     self:rebuildCollision()
 

@@ -18,6 +18,7 @@ newclass("Actor",
             loop = nil,
             stop = false,
             
+            action = nil,
             onGoal = nil,
             pressing = { },
             
@@ -76,6 +77,7 @@ end
 function Actor:teleport(x, y)
     if self.prop then
         self.prop:setLoc(x, y)
+        self.prop:setPriority(y)
     end
 end
 
@@ -85,6 +87,10 @@ function Actor:teleportRel(x, y)
 end
 
 function Actor:walkToAsync(x, y, onGoal)
+    if self.action then
+        self.action:stop()
+    end
+
     self.stop = true
     self.goal = { x, y }
     self.onGoal = onGoal
@@ -116,7 +122,10 @@ end
 
 function Actor:stopWalking()
     self.stop = true
-    Task.sleep(0.001)
+    
+    if self.action then
+        self.action:stop()
+    end
 end
 
 function Actor:walkTo(x, y)
@@ -151,38 +160,47 @@ function Actor:moveToXY(x, y)
         
         self.costume:setDirection({ dx, dy })
     
-        MOAIThread.blockOnAction(self.prop:moveLoc(dx, dy, dist / self.speed, MOAIEaseType.LINEAR))
-        sx, sy = self:location()
+        self.action = self.prop:moveLoc(dx, dy, dist / self.speed, MOAIEaseType.LINEAR)
         
-        -- do unpressing
-        for hotspot in pairs(self.pressing) do
-            if not hotspot:hitTest(sx, sy) then
-                local events = room.events[hotspot.id]
-                if events and events.unpress then
-                    start(events.unpress, self)
+        while self.action:isBusy() do
+            sx, sy = self:location()
+        
+            -- do unpressing
+            for hotspot in pairs(self.pressing) do
+                if not hotspot:hitTest(sx, sy) then
+                    local events = room.events[hotspot.id]
+                    if events and events.unpress then
+                        start(events.unpress, self)
+                    end
+                    
+                    self.pressing[hotspot] = nil
                 end
-                
-                self.pressing[hotspot] = nil
-            end
-        end
-        
-        -- do pressing
-        local hotspot = game.getHotspotAtXY(sx, sy)
-        if hotspot and not self.pressing[hotspot] then
-            local events = room.events[hotspot.id]
-            if events and events.press then
-                start(events.press, self)
             end
             
-            self.pressing[hotspot] = true
+            -- do pressing
+            local hotspot = game.getHotspotAtXY(sx, sy)
+            if hotspot and not self.pressing[hotspot] then
+                local events = room.events[hotspot.id]
+                if events and events.press then
+                    start(events.press, self)
+                end
+                
+                self.pressing[hotspot] = true
+            end
+            
+            self.prop:setPriority(sy)
+        
+            coroutine.yield(0)
         end
+        
+        self.action = nil
     end
 end
 
 function Actor:mainLoop()
     while self.prop do
         local _, y = self:location()
-        self.prop:setPriority(y)
+        
     
         if self.goal then
             local goal = self.goal

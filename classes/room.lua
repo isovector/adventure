@@ -1,5 +1,6 @@
 mrequire "classes/class"
 mrequire "classes/hotspot"
+mrequire "classes/interpolator"
 mrequire "classes/polygon"
 mrequire 'classes/lib/lua-astar/astar'
 mrequire 'classes/lib/lua-astar/volumehandler'
@@ -7,13 +8,20 @@ mrequire 'classes/lib/lua-astar/volumehandler'
 room = { }
 
 local rooms = { }
-newclass("Room", function(id, path)
+newclass("Room", 
+    function(id, path)
+        local perspective = Interpolator.new()
+        perspective[0] = 1
+        perspective[720] = 1
+
         local room = { 
             id = id, 
             img_path = path,
             hotspots = { },
             scene = { },
             events = { },
+            
+            perspective = perspective,
             
             handler = nil,
             astar = nil,

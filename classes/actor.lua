@@ -90,6 +90,7 @@ function Actor:teleport(x, y)
     if self.prop then
         self.prop:setLoc(x, y)
         self.prop:setPriority(y)
+        self:setScale(room.perspective[y])
     end
 end
 
@@ -199,8 +200,9 @@ function Actor:moveToXY(x, y)
                 
                 self.pressing[hotspot] = true
             end
-            
+
             self.prop:setPriority(sy)
+            self:setScale(room.perspective[y])
         
             coroutine.yield(0)
         end
@@ -212,7 +214,6 @@ end
 function Actor:mainLoop()
     while self.prop do
         local _, y = self:location()
-        
     
         if self.goal then
             local goal = self.goal

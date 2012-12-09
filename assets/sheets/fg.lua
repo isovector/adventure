@@ -10,14 +10,24 @@ sheet:install()
 
 --------------------------------------------------
 
-local function makeProp()
+local props = { }
+
+local function makeProp(name)
+    if props[name] then
+        return props[name]
+    end
+    
     local prop = MOAIProp2D.new()
     sheet:insertProp(prop)
+    
+    props[name] = prop
+    
     return prop
 end
 
-local function destroyProp(prop)
-    sheet:removeProp(prop)
+local function destroyProp(name)
+    sheet:removeProp(props[name])
+    props[name] = nil
 end
 
 game:add("makeProp", makeProp)

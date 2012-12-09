@@ -54,7 +54,7 @@ function Actor:hitTest(x, y)
 end
 
 function Actor:joinScene()
-    local prop = game.makeProp()
+    local prop = game.makeProp(tostring(self))
     prop.actor = self
     
     self.prop = prop
@@ -69,7 +69,7 @@ end
 
 function Actor:leaveScene()
     self.prop.actor = nil
-    game.destroyProp(self.prop)
+    game.destroyProp(tostring(self))
     self.prop = nil
     self.stop = true
 end

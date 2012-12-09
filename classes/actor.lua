@@ -18,6 +18,8 @@ newclass("Actor",
             loop = nil,
             stop = false,
             
+            defaultScale = 1,
+            
             action = nil,
             onGoal = nil,
             pressing = { },
@@ -40,8 +42,16 @@ function Actor:location()
     return self.prop:getLoc()
 end
 
+function Actor:scale()
+   return self.prop:getScl()
+end
+
+function Actor:setScale(scale)
+    self.prop:setScl(scale * self.defaultScale, scale * self.defaultScale)
+end
+
 function Actor:hitTest(x, y)
-    local hs = self.costume:hitTest(x, y)
+    local hs = self.costume:hitTest(x, y, self:scale())
     
     if hs == true or not hs then
         self.hitHotspot = nil
@@ -60,6 +70,8 @@ function Actor:joinScene()
     self.prop = prop
     self.costume:setProp(prop)
     self.costume:refresh()
+    
+    self:setScale(1)
     
     if not self.loop then
         self.loop = MOAIThread.new()

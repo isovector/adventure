@@ -117,19 +117,19 @@ function CostumeController:refresh()
     self:start()
 end
 
-function CostumeController:hitTest(x, y)
+function CostumeController:hitTest(x, y, xscale, yscale)
     local rx, rh, rw, ry = self.prop:getRect()
     local lx, ly = self.prop:getLoc()
     
-    local x0 = rx + lx
-    local y0 = ry + ly
+    local x0 = rx * xscale + lx
+    local y0 = ry * yscale + ly
     
     local width = math.max(rx, rw) - math.min(rx, rw)
     local height = math.max(ry, rh) - math.min(ry, rh) 
     
     -- get local space coords
-    x0 = x - x0
-    y0 = y - y0
+    x0 = (x - x0) / xscale
+    y0 = (y - y0) / yscale
     
     if y0 < 0 then
         y0 = y0 + height

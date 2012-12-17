@@ -175,7 +175,7 @@ function Actor:moveToXY(x, y)
     
         self.action = self.prop:moveLoc(dx, dy, dist / self.speed, MOAIEaseType.LINEAR)
         
-        while self.action:isBusy() do
+        while self.action and self.action:isBusy() do
             sx, sy = self:location()
         
             -- do unpressing

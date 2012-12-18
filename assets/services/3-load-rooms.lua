@@ -38,7 +38,7 @@ local function buildRoom(name)
         room.onLoad = function()
             room.events = { }
             
-            events = ScaffoldTable.new(buildEvent, true, room)
+            events = ScaffoldTable.new(buildEvent, nil, true, room)
             dofile(path .. "/script.lua")
             events = nil
         end

@@ -1,11 +1,12 @@
 mrequire "classes/class"
 
 newclass("ScaffoldTable",
-    function(callback, lastSeparate, ...)
+    function(callback, getCallback, lastSeparate, ...)
         lastSeparate = lastSeparate or false
     
         return { 
             __callback = callback,
+            __getCallback = getCallback,
             __lastSeparate = lastSeparate,
             __extra = { ... }
         }
@@ -38,5 +39,17 @@ function ScaffoldTable:__newindex(key, value)
     else
         table.insert(crumbs, key)
         callback(crumbs, value, unpack(extra))
+    end
+end
+
+function ScaffoldTable:__deref()
+    local crumbs, root = self:getBreadcrumbs()
+    local callback = rawget(root, "__getCallback")
+    local extra = rawget(root, "__extra")
+    
+    if callback then
+        return callback(crumbs, value, unpack(extra))
+    else
+        error("No dereference callback was assigned to the ScaffoldTable")
     end
 end

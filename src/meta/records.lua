@@ -40,4 +40,9 @@ local slashList = gg.list{ mlp.id, separators = "/"}
 mlp.expr.primary = gg.multisequence { mlp.expr.primary,  gg.sequence{"/", slashList, builder = recget } }
 mlp.stat:add { "record", "/", slashList, gg.onkeyword{",", mlp.expr}, "=", mlp.expr, builder = recset } 
 
+
+--------------------------------------------------------------------
+
+mlp.expr.prefix:add { "*", prec = 100, builder = |_, x| `Invoke { x, `String { "__deref" } } }
+
 }

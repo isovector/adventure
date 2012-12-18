@@ -7,5 +7,5 @@ end
 table.sort(services)
 
 for _, service in ipairs(services) do
-    require("assets/services/" .. service)
+    mrequire("assets/services/" .. service)
 end

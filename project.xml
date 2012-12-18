@@ -50,4 +50,7 @@
 		<file>./utils/build_costume.py</file>
 		<file>./utils/parse_image.py</file>
 	</group>
+	<file>./LICENSE</file>
+	<file>./README.md</file>
+	<file>./VERSION</file>
 </root>

@@ -42,6 +42,14 @@ function ScaffoldTable:__newindex(key, value)
     end
 end
 
+function ScaffoldTable:__assign(value)
+    local crumbs, root = self:getBreadcrumbs()
+    local callback = rawget(root, "__callback")
+    local extra = rawget(root, "__extra")
+    
+    callback(crumbs, value, unpack(extra))
+end
+
 function ScaffoldTable:__deref()
     local crumbs, root = self:getBreadcrumbs()
     local callback = rawget(root, "__getCallback")

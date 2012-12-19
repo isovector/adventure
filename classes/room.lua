@@ -166,6 +166,14 @@ function Room:load()
     if self.onLoad then
         self:onLoad()
     end
+    
+    self:reload()
+end
+
+function Room:reload()
+    if self.events.__utility.reload then
+        self.events.__utility.reload()
+    end
 end
 
 function Room:unload()

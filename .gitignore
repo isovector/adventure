@@ -1,5 +1,6 @@
 art/obj
 assets/config.lua
+.saves
 samples
 moai-untz
 .dropbox

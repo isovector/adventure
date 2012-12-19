@@ -43,6 +43,22 @@ mlp.stat:add { "record", "/", slashList, gg.onkeyword{",", mlp.expr}, "=", mlp.e
 
 --------------------------------------------------------------------
 
+local function persistence(x)
+    lhs, rhs = unpack(x)
+    assert(#lhs == #rhs)
+    return `Local { lhs, rhs }
+end
+
+mlp.lexer:add { "=>", "persist" }
+
+mlp.stat:add { "persist", gg.list { mlp.id, separators = "," }, "=", gg.list { mlp.expr, separators = ","}, builder = persistence }
+
+mlp.stat.assignments["=>"] = function(lexpr, rexpr)
+    assert(#lexpr == 1 and #rexpr == 1)
+    local left, right = lexpr[1], rexpr[1]
+    return `Invoke { left, `String { "__assign" }, right }
+end
+
 mlp.expr.prefix:add { "*", prec = 100, builder = |_, x| `Invoke { x, `String { "__deref" } } }
 
 }

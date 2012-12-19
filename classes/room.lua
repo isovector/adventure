@@ -171,7 +171,7 @@ function Room:load()
 end
 
 function Room:reload()
-    if self.events.__utility.reload then
+    if self.events.__utility and self.events.__utility.reload then
         self.events.__utility.reload()
     end
 end

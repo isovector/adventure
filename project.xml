@@ -12,6 +12,7 @@
 		<file>./classes/labeler.lua</file>
 		<file>./classes/narrator.lua</file>
 		<file>./classes/polygon.lua</file>
+		<file>./classes/savemanager.lua</file>
 		<file>./classes/scaffoldtable.lua</file>
 		<file>./classes/room.lua</file>
 		<file>./classes/shader.lua</file>

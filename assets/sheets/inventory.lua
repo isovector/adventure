@@ -56,7 +56,7 @@ local function makeProp(item, x, y)
 end
 
 local function showInventory(actor)
-    if sheet.enabled then
+    if sheet.enabled and not actor then
         for _, prop in ipairs(items) do
             sheet:removeProp(prop)
         end
@@ -83,7 +83,7 @@ local function showInventory(actor)
         
         i = i + 1
     end
-    
+
     sheet:enable(true)
 end
 

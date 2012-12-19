@@ -43,7 +43,7 @@ function SaveManager.save(slot, name)
             table.insert(mactor.inventory, id)
         end
         
-        if room.scene[id] then
+        if actor.prop then
             mactor.location = { actor:location() } 
         end
     end
@@ -69,7 +69,8 @@ function SaveManager.load(slot)
         
         local loc = actordata.location
         if loc then
-            room:addActor(actor, loc[1], loc[2])
+            actor:joinScene()
+            actor:teleport(loc[1], loc[2])
         end
     end
     

@@ -4,8 +4,6 @@ local player = /Actors/santino
 persist isOpen = save.meadow.isOpen
 
 function events.__utility.reload()
-    print("isopen?", *isOpen)
-
     car.costume:setPose(*isOpen and "open" or "idle")
 end
 

@@ -1,4 +1,4 @@
-import(isOpen) from save.meadow
+import isOpen = false from save.meadow
 
 local car = Actors.car
 local player = Actors.santino

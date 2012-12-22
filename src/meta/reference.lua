@@ -136,10 +136,12 @@ local function import_builder(x)
         end
     end
     
-    for id in values(locals) do
-        if id[1] then
+    for import in values(locals) do
+        local id = import[1]
+        local value = import[2]
+        if id and id[1] then
             local index = `Index { index, `String { id[1] } }
-            table.insert(result, `If { `Op { "eq", index, `Nil },  { `Set { { index }, { `False } } } })
+            table.insert(result, `If { `Op { "eq", index, `Nil },  { `Set { { index }, { value[1] or `False } } } })
             table.insert(result, `Call { `Id{ ".$REF" .. id[1]}, index })
         end
     end
@@ -153,7 +155,7 @@ mlp.lexer:add { "reference", "import", "from" }
 mlp.stat:add { "reference", gg.list { mlp.id, separators = "," }, "=", gg.list { mlp.expr, separators = ","}, builder = ref_builder }
 
 
-mlp.stat:add { "import", "(", gg.list { mlp.id, separators = "," }, ")", "from", gg.list { mlp.id, separators = "." }, builder = import_builder }
+mlp.stat:add { "import", gg.list { gg.sequence { mlp.id, gg.multisequence { { }, { "=", mlp.expr } } }, separators = "," }, "from", gg.list { mlp.id, separators = "." }, builder = import_builder }
 
 }
 

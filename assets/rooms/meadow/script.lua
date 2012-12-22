@@ -1,14 +1,14 @@
-local car = /Actors/car
-local player = /Actors/santino
+import(isOpen) from save.meadow
 
-persist isOpen = save.meadow.isOpen
+local car = Actors.car
+local player = Actors.santino
 
 function events.__utility.reload()
-    car.costume:setPose(*isOpen and "open" or "idle")
+    car.costume:setPose(isOpen and "open" or "idle")
 end
 
 function events.car.look()
-    if not *isOpen then
+    if not isOpen then
         player:say("It's a beater")
     else
         player:say("It's a beater and the hood is up")
@@ -20,8 +20,8 @@ function events.car.hood.touch()
 
     player:walkTo(x - 75, y + 50)
     
-    isOpen => not *isOpen
-    car.costume:setPose(*isOpen and "open" or "idle")
+    isOpen = not isOpen
+    car.costume:setPose(isOpen and "open" or "idle")
 end
 
 function events.car.hood.look()

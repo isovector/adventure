@@ -1,4 +1,4 @@
-mrequire "classes/vim"
+require "classes/vim"
 
 MOAISim.openWindow("Earnest Money", 1280, 720)
 

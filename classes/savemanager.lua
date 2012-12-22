@@ -8,29 +8,26 @@ local persistence = _G["classes/lib/persistence"]
 --------------------------------------------------
 
 local gamedata = { }
-local function saveVal(crumbs, val)
-    gamedata[table.concat(crumbs, "/")] = val
-end
-
-local function loadVal(crumbs)
-    return gamedata[table.concat(crumbs, "/")]
-end
 
 --------------------------------------------------
 
 newclass("SaveManager", false)
 
+SaveManager.version = "adventure engine v1.1"
+SaveManager.format = 2
+
+--------------------------------------------------
+
 function SaveManager.install()
     gamedata = { }
-    local save = ScaffoldTable.new(saveVal, loadVal)
-    _G.save= save
+    _G.save = gamedata
 end
 
 function SaveManager.save(slot, name)
     local meta = { }
     meta.room = room.id
-    meta.format = 1
-    meta.version = "adventure engine v1.1"
+    meta.format = SaveManager.format
+    meta.version = SaveManager.version
     
     meta.actors = { }
 
@@ -59,6 +56,10 @@ function SaveManager.load(slot)
     
     local meta = gamedata[".meta"]
     
+    if meta.format ~= SaveManager.format then
+        error("Unable to load incompatable format of save game")
+    end
+    
     Room.change(meta.room)
     
     for id, actordata in pairs(meta.actors) do
@@ -74,7 +75,8 @@ function SaveManager.load(slot)
         end
     end
     
-    room:reload()
-    
     gamedata[".meta"] = nil
+    _G.save = gamedata
+    
+    room:reload()
 end

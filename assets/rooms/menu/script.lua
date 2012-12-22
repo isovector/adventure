@@ -4,7 +4,7 @@ topic:addOptions(
         caption = "New Game",
         flags = "xs",
         callback = function()
-            Room.getRoom("inside"):load()
+            Room.change("meadow")
         end
     },
     {

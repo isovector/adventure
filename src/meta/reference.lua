@@ -84,7 +84,7 @@ local function chunk_transformer (term)
         | `Localrec{ vars, ... } -> scope.add(refs, vars)
         | `Local{ ... }          -> -- pass
         | `Call { ... }          ->   name = x[1][1]
-                                    if name:sub(1, 5) == ".$REF" then
+                                    if type(name) == "string" and name:sub(1, 5) == ".$REF" then
                                         scope.addRef(refs, name:sub(6), x[2])
                                         x <- `Local { { `Id { "_" } }, { `Nil } }
                                     end

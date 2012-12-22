@@ -1,5 +1,5 @@
 mrequire "classes/class"
-mrequire "classes/dialogue"
+require "classes/dialogue"
 mrequire "classes/item"
 mrequire "classes/task"
 
@@ -27,7 +27,6 @@ newclass("Actor",
             hitHotspot = nil
         }
         
-        record /Actors, id = actor
         Actors[id] = actor
         
         return actor

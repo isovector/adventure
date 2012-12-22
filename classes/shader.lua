@@ -1,5 +1,5 @@
 mrequire "classes/class"
-mrequire "classes/fragmentshader"
+require "classes/fragmentshader"
 
 local function fragmentAssignment(self, key, value)
     local uni = self.__shader.fsh.uniforms[key]

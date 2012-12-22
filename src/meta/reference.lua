@@ -9,11 +9,7 @@ require "metalua.walk"
 
 -----------------------------------------------------------------------------
 
-Reference = { `Pair{ `String "tag", `String "Reference" } }
-
------------------------------------------------------------------------------
-
-scope = { }
+local scope = { }
 scope.__index = scope
 
 function scope:new()
@@ -23,17 +19,24 @@ function scope:new()
     return ret
 end
 
-function scope:push(...)
+function scope:push()
     table.insert (self.stack, table.shallow_copy (self.current))
-    if ... then return self:add(...) end
 end
 
 function scope:pop()
     self.current = table.remove (self.stack)
 end
 
-function scope:add (name, val)
-    self.current[name] = val
+function scope:add(vars)
+    for id in values (vars) do
+        if id.tag == "Id" then
+            self.current[id[1]] = false
+        end
+    end
+end
+
+function scope:addRef(name, replacement)
+    self.current[name] = replacement
 end
 
 -----------------------------------------------------------------------------
@@ -51,7 +54,7 @@ local function chunk_transformer (term)
     -----------------------------------------------------------------------------
     function cfg.expr.down(x)
         match x with
-        | `Function{ params, _ } -> scope.push(refs)
+        | `Function{ params, _ } -> scope.push(refs); scope.add(refs, params)
         | _ -> -- pass
         end
     end
@@ -76,13 +79,13 @@ local function chunk_transformer (term)
     -----------------------------------------------------------------------------
     function cfg.stat.down(x)
         match x with
-        | `Forin{ vars, ... }    -> scope.push(refs)
-        | `Fornum{ var, ... }    -> scope.push(refs)
-        | `Localrec{ vars, ... } -> -- pass
+        | `Forin{ vars, ... }    -> scope.push(refs); scope.add(refs, vars)
+        | `Fornum{ var, ... }    -> scope.push(refs); scope.add(refs, { var })
+        | `Localrec{ vars, ... } -> scope.add(refs, vars)
         | `Local{ ... }          -> -- pass
         | `Call { ... }          ->   name = x[1][1]
                                     if name:sub(1, 5) == ".$REF" then
-                                        scope.add(refs, name:sub(6), x[2])
+                                        scope.addRef(refs, name:sub(6), x[2])
                                         x <- `Local { { `Id { "_" } }, { `Nil } }
                                     end
         | _ -> --pass
@@ -95,7 +98,7 @@ local function chunk_transformer (term)
     function cfg.stat.up(x)
         match x with
         | `Forin{ ... } | `Fornum{ ... } -> scope.pop(refs)
-        | `Local{ vars, ... }            -> -- pass
+        | `Local{ vars, ... }            -> scope.add(refs, vars)
         | `Localrec{ ... }               -> -- pass
         | _ -> --pass
         end
@@ -115,8 +118,42 @@ local function ref_builder(x)
     return `Call { `Id{ ".$REF" .. lhs[1][1]}, rhs[1] }
 end
 
+local function import_builder(x)
+    locals, source = unpack(x)
+    
+    local result = { }
+    
+    local index
+    for id in values(source) do
+        if id[1] then
+            if not index then
+                index = id
+            else
+                index = `Index { index, `String { id[1] } }
+            end
+            
+            table.insert(result, `If { `Op { "eq", index, `Nil },  { `Set { { index }, { `Table { } } } } })
+        end
+    end
+    
+    for id in values(locals) do
+        if id[1] then
+            local index = `Index { index, `String { id[1] } }
+            table.insert(result, `If { `Op { "eq", index, `Nil },  { `Set { { index }, { `False } } } })
+            table.insert(result, `Call { `Id{ ".$REF" .. id[1]}, index })
+        end
+    end
+    
+    
+    return result
+end
+
 mlp.chunk.transformers:add (chunk_transformer)
-mlp.lexer:add { "reference" }
+mlp.lexer:add { "reference", "import", "from" }
 mlp.stat:add { "reference", gg.list { mlp.id, separators = "," }, "=", gg.list { mlp.expr, separators = ","}, builder = ref_builder }
 
+
+mlp.stat:add { "import", "(", gg.list { mlp.id, separators = "," }, ")", "from", gg.list { mlp.id, separators = "." }, builder = import_builder }
+
 }
+

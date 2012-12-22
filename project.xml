@@ -21,6 +21,9 @@
 		<file>./classes/timer.lua</file>
 		<file>./classes/vim.lua</file>
 	</group>
+	<group name='meta' expanded='TRUE'>
+		<file>./src/meta/reference.lua</file>
+	</group>
 	<group name='sheets' expanded='TRUE'>
 		<file>./assets/sheets/bg.lua</file>
 		<file>./assets/sheets/dialogue.lua</file>
@@ -35,6 +38,7 @@
 	</group>
 	<group name='services' expanded='TRUE'>
 		<file>./assets/services/0-functionproviders.lua</file>
+		<file>./assets/services/0-save-games.lua</file>
 		<file>./assets/services/1-build-costumes.lua</file>
 		<file>./assets/services/1-create-window.lua</file>
 		<file>./assets/services/1-load-font.lua</file>

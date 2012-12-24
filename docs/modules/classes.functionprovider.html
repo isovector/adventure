@@ -33,16 +33,17 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Classes">Classes</a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul>
   <li><a href="../modules/classes.actor.html">classes.actor</a></li>
-  <li><strong>classes.class</strong></li>
+  <li><a href="../modules/classes.class.html">classes.class</a></li>
   <li><a href="../modules/classes.costume.html">classes.costume</a></li>
   <li><a href="../modules/classes.fragmentshader.html">classes.fragmentshader</a></li>
-  <li><a href="../modules/classes.functionprovider.html">classes.functionprovider</a></li>
+  <li><strong>classes.functionprovider</strong></li>
   <li><a href="../modules/classes.hotspot.html">classes.hotspot</a></li>
   <li><a href="../modules/classes.item.html">classes.item</a></li>
   <li><a href="../modules/classes.labeler.html">classes.labeler</a></li>
@@ -63,20 +64,32 @@
 
 <div id="content">
 
-<h1>Module <code>classes.class</code></h1>
+<h1>Module <code>classes.functionprovider</code></h1>
 
-<p>Provides class infrastructure.</p>
+<p>Acts as both a global function store and as a
+ way of collescing multiple functions into one.</p>
 <p></p>
 
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#newclass">newclass&nbsp;(name, ctor)</a></td>
-	<td class="summary">Creates a new class, and registers it in the global namespace.</td>
+	<td class="name" nowrap><a href="#FunctionProvider.__newindex">FunctionProvider.__newindex&nbsp;()</a></td>
+	<td class="summary">Informs the user that you may not directly newindex a FunctionProvider.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#type">type&nbsp;(object)</a></td>
-	<td class="summary">Overloads type to return the class name of class instances</td>
+	<td class="name" nowrap><a href="#FunctionProvider:__index">FunctionProvider:__index&nbsp;(key)</a></td>
+	<td class="summary">Returns the multifunction associated with the given key.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FunctionProvider:add">FunctionProvider:add&nbsp;(name, func)</a></td>
+	<td class="summary">Adds a function to the FunctionProvider</td>
+	</tr>
+</table>
+<h2><a href="#Classes">Classes</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#FunctionProvider">FunctionProvider</a></td>
+	<td class="summary">The FunctionProvider class.</td>
 	</tr>
 </table>
 
@@ -88,37 +101,66 @@
     
     <dl class="function">
     <dt>
-    <a name = "newclass"></a>
-    <strong>newclass&nbsp;(name, ctor)</strong>
+    <a name = "FunctionProvider.__newindex"></a>
+    <strong>FunctionProvider.__newindex&nbsp;()</strong>
     </dt>
     <dd>
-    Creates a new class, and registers it in the global namespace. 
+    Informs the user that you may not directly newindex a FunctionProvider. 
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FunctionProvider:__index"></a>
+    <strong>FunctionProvider:__index&nbsp;(key)</strong>
+    </dt>
+    <dd>
+    Returns the multifunction associated with the given key. 
 
     <h3>Parameters:</h3>
     <ul>
-       <li><code><em>name</em></code>:  The name of the class</li>
-       <li><code><em>ctor</em></code>:  A constructor function, or false for purely static classes</li>
+       <li><code><em>key</em></code>: </li>
     </ul>
 
 
     <h3>Returns:</h3>
     <ol>
-        The new class
+        A function which when called will evaluate all of the functions given by the key.
     </ol>
 
 
 </dd>
     <dt>
-    <a name = "type"></a>
-    <strong>type&nbsp;(object)</strong>
+    <a name = "FunctionProvider:add"></a>
+    <strong>FunctionProvider:add&nbsp;(name, func)</strong>
     </dt>
     <dd>
-    Overloads type to return the class name of class instances 
+    Adds a function to the FunctionProvider 
 
     <h3>Parameters:</h3>
     <ul>
-       <li><code><em>object</em></code>: </li>
+       <li><code><em>name</em></code>: </li>
+       <li><code><em>func</em></code>: </li>
     </ul>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Classes"></a>Classes</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "FunctionProvider"></a>
+    <strong>FunctionProvider</strong>
+    </dt>
+    <dd>
+    The FunctionProvider class. 
+ Constructor signature is ().
+
 
 
 

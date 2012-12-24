@@ -44,7 +44,7 @@
   <li><a href="../modules/classes.costume.html">classes.costume</a></li>
   <li><a href="../modules/classes.fragmentshader.html">classes.fragmentshader</a></li>
   <li><a href="../modules/classes.functionprovider.html">classes.functionprovider</a></li>
-  <li><a href="../modules/classes.hotspot.html">classes.hotspot</a></li>
+  <li><strong>classes.hotspot</strong></li>
   <li><a href="../modules/classes.item.html">classes.item</a></li>
   <li><a href="../modules/classes.labeler.html">classes.labeler</a></li>
   <li><a href="../modules/classes.narrator.html">classes.narrator</a></li>
@@ -52,7 +52,7 @@
   <li><a href="../modules/classes.room.html">classes.room</a></li>
   <li><a href="../modules/classes.savemanager.html">classes.savemanager</a></li>
   <li><a href="../modules/classes.scaffoldtable.html">classes.scaffoldtable</a></li>
-  <li><strong>classes.shader</strong></li>
+  <li><a href="../modules/classes.shader.html">classes.shader</a></li>
   <li><a href="../modules/classes.sheet.html">classes.sheet</a></li>
   <li><a href="../modules/classes.task.html">classes.task</a></li>
   <li><a href="../modules/classes.timer.html">classes.timer</a></li>
@@ -64,36 +64,38 @@
 
 <div id="content">
 
-<h1>Module <code>classes.shader</code></h1>
+<h1>Module <code>classes.hotspot</code></h1>
 
-<p>Provides a high-level wrapper around MOAI's Shaders.</p>
+<p>Encapsulation of the Polygon class for game usage.</p>
 <p>
- Encorporates both VSHes and FSHes into one object.</p>
+ A Hotspot consists a Polygon, cursor, z-order information,
+ and door data for Room hotspots. These are usually created
+ in the in-game editor.</p>
 
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Shader.registerVsh">Shader.registerVsh&nbsp;(id)</a></td>
-	<td class="summary">Helper method to register a vertex shader.</td>
+	<td class="name" nowrap><a href="#Hotspot.hitTest">Hotspot.hitTest&nbsp;(self, x, y)</a></td>
+	<td class="summary">Determines if a ray at (x, y) will hit this Hotspot.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Shader.registerFsh">Shader.registerFsh&nbsp;(id)</a></td>
-	<td class="summary">Helper method to register a fragment shader.</td>
+	<td class="name" nowrap><a href="#Hotspot:link">Hotspot:link&nbsp;(roomId, x, y)</a></td>
+	<td class="summary">Turns the Hotspot into a door.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Shader:setUniform">Shader:setUniform&nbsp;(name, uni, value)</a></td>
-	<td class="summary">Wrapper around MOAI's setUniform interface.</td>
+	<td class="name" nowrap><a href="#Hotspot:setWalkspot">Hotspot:setWalkspot&nbsp;(x, y)</a></td>
+	<td class="summary">Sets a walkspot Actors will path to when interacting with this Hotspot.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Shader:applyTo">Shader:applyTo&nbsp;(prop)</a></td>
-	<td class="summary">Applies a shader to a MOAI prop.</td>
+	<td class="name" nowrap><a href="#Hotspot:__serialize">Hotspot:__serialize&nbsp;(f, indent, name)</a></td>
+	<td class="summary">Flattens the Hotspot into a textual representation for room saving.</td>
 	</tr>
 </table>
 <h2><a href="#Classes">Classes</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Shader">Shader</a></td>
-	<td class="summary">The Shader class.</td>
+	<td class="name" nowrap><a href="#Hotspot">Hotspot</a></td>
+	<td class="summary">The Hotspot class.</td>
 	</tr>
 </table>
 
@@ -105,16 +107,39 @@
     
     <dl class="function">
     <dt>
-    <a name = "Shader.registerVsh"></a>
-    <strong>Shader.registerVsh&nbsp;(id)</strong>
+    <a name = "Hotspot.hitTest"></a>
+    <strong>Hotspot.hitTest&nbsp;(self, x, y)</strong>
     </dt>
     <dd>
-    Helper method to register a vertex shader.  
- Called by the 1-load-shaders.lua service.
+    Determines if a ray at (x, y) will hit this Hotspot. 
 
     <h3>Parameters:</h3>
     <ul>
-       <li><code><em>id</em></code>: </li>
+       <li><code><em>self</em></code>:  The Hotspot instance, or a table of Hotspots.</li>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        The top-most Hotspot IF called as a static function.
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Hotspot:link"></a>
+    <strong>Hotspot:link&nbsp;(roomId, x, y)</strong>
+    </dt>
+    <dd>
+    Turns the Hotspot into a door. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>roomId</em></code>:  The room to link to.</li>
+       <li><code><em>x</em></code>:  The x position to enter the room at.</li>
+       <li><code><em>y</em></code>:  The y position to enter the room at.</li>
     </ul>
 
 
@@ -122,16 +147,16 @@
 
 </dd>
     <dt>
-    <a name = "Shader.registerFsh"></a>
-    <strong>Shader.registerFsh&nbsp;(id)</strong>
+    <a name = "Hotspot:setWalkspot"></a>
+    <strong>Hotspot:setWalkspot&nbsp;(x, y)</strong>
     </dt>
     <dd>
-    Helper method to register a fragment shader.  
- Called by the 1-load-shaders.lua service.
+    Sets a walkspot Actors will path to when interacting with this Hotspot. 
 
     <h3>Parameters:</h3>
     <ul>
-       <li><code><em>id</em></code>: </li>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
     </ul>
 
 
@@ -139,34 +164,17 @@
 
 </dd>
     <dt>
-    <a name = "Shader:setUniform"></a>
-    <strong>Shader:setUniform&nbsp;(name, uni, value)</strong>
+    <a name = "Hotspot:__serialize"></a>
+    <strong>Hotspot:__serialize&nbsp;(f, indent, name)</strong>
     </dt>
     <dd>
-    Wrapper around MOAI's setUniform interface. 
- This should never be called by user code.
+    Flattens the Hotspot into a textual representation for room saving. 
 
     <h3>Parameters:</h3>
     <ul>
-       <li><code><em>name</em></code>:  The uniform name</li>
-       <li><code><em>uni</em></code>:  The uniform object</li>
-       <li><code><em>value</em></code>:  The new value for uniform</li>
-    </ul>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Shader:applyTo"></a>
-    <strong>Shader:applyTo&nbsp;(prop)</strong>
-    </dt>
-    <dd>
-    Applies a shader to a MOAI prop. 
-
-    <h3>Parameters:</h3>
-    <ul>
-       <li><code><em>prop</em></code>: </li>
+       <li><code><em>f</em></code>:  The output file</li>
+       <li><code><em>indent</em></code>:  The current indent level</li>
+       <li><code><em>name</em></code>:  The output variable name of the hotspot</li>
     </ul>
 
 
@@ -178,14 +186,14 @@
     
     <dl class="function">
     <dt>
-    <a name = "Shader"></a>
-    <strong>Shader</strong>
+    <a name = "Hotspot"></a>
+    <strong>Hotspot</strong>
     </dt>
     <dd>
-    The Shader class. 
- Constructor signature is (vsh, fsh).
- Both vsh and fsh should be basenames of files in /assets/shaders.
- The fragment index contains the uniforms in the FSH, and may be assigned to for convenience.
+    The Hotspot class. 
+ Constructor signature is (id, cursor, name, interface, poly, priority).
+ Cursor should be an index into the game cursors.
+ Interface is a bool whther or not this Hotspot will appear as an object in game.
 
 
 

@@ -1,5 +1,13 @@
+--- A Sheet component that provides arbitrary text-writing
+-- services.
+-- @see Sheet:getLabeler
+
 mrequire "classes/class"
 
+--- The Labeler class.
+-- Constructor signature is (layer, fontpath).
+-- @param fontpath Deprecated. To be removed.
+-- @newclass Hotspot
 newclass("Labeler",
     function(layer, fontpath)
         local self = {
@@ -21,6 +29,7 @@ newclass("Labeler",
     end
 )
 
+--- Internal method called to draw the text buffers.
 function Labeler:draw()
     for label in pairs(self.labels) do
         local x, y, w, h = label:getStringBounds(1, 100)
@@ -32,6 +41,14 @@ function Labeler:draw()
     end
 end
 
+--- Adds a text buffer to the label layer.
+-- @param str The string to write
+-- @param x x
+-- @param y y
+-- @param r [optional] The red color component
+-- @param ... [optional] The green and blue color components
+-- @return A handle to the new label.
+-- @see Labeler:removeLabel
 function Labeler:addLabel(str, x, y, r, ...)
     local label = MOAITextBox.new()
 
@@ -64,6 +81,8 @@ function Labeler:addLabel(str, x, y, r, ...)
     return label
 end
 
+--- Removes a previously added label.
+-- @param label The label handle returned by Labeler:addLabel.
 function Labeler:removeLabel(label)
     if self.labels[label] then
         self.labels[label] = nil
@@ -72,6 +91,7 @@ function Labeler:removeLabel(label)
     end
 end
 
+--- Removes all associated labels.
 function Labeler:clearLabels()
     for label in pairs(self.labels) do
         self.layer:removeProp(label)
@@ -81,6 +101,8 @@ function Labeler:clearLabels()
     self.count = 0
 end
 
+--- The number of labels currently being drawn.
+-- @return size
 function Labeler:size()
     return self.count
 end

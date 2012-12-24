@@ -1,5 +1,12 @@
+--- Utility class to parse fragment shaders and export uniform information.
+
 mrequire "classes/class"
 
+--- The FragmentShader class.
+-- This is an internal class used by Shader and as such should probably
+-- never be used in user code.
+-- Constructor signature is (code).
+-- @newclass FragmentShader
 newclass("FragmentShader",
     function(code)
         local uniforms = { }

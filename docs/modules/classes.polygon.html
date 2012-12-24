@@ -48,11 +48,11 @@
   <li><a href="../modules/classes.item.html">classes.item</a></li>
   <li><a href="../modules/classes.labeler.html">classes.labeler</a></li>
   <li><a href="../modules/classes.narrator.html">classes.narrator</a></li>
-  <li><a href="../modules/classes.polygon.html">classes.polygon</a></li>
+  <li><strong>classes.polygon</strong></li>
   <li><a href="../modules/classes.room.html">classes.room</a></li>
   <li><a href="../modules/classes.savemanager.html">classes.savemanager</a></li>
   <li><a href="../modules/classes.scaffoldtable.html">classes.scaffoldtable</a></li>
-  <li><strong>classes.shader</strong></li>
+  <li><a href="../modules/classes.shader.html">classes.shader</a></li>
   <li><a href="../modules/classes.sheet.html">classes.sheet</a></li>
   <li><a href="../modules/classes.task.html">classes.task</a></li>
   <li><a href="../modules/classes.timer.html">classes.timer</a></li>
@@ -64,36 +64,46 @@
 
 <div id="content">
 
-<h1>Module <code>classes.shader</code></h1>
+<h1>Module <code>classes.polygon</code></h1>
 
-<p>Provides a high-level wrapper around MOAI's Shaders.</p>
+<p>A wrapper around HardonCollider's polygon shapes.</p>
 <p>
- Encorporates both VSHes and FSHes into one object.</p>
+ This provides convenient runtime polygon collision detection.</p>
 
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Shader.registerVsh">Shader.registerVsh&nbsp;(id)</a></td>
-	<td class="summary">Helper method to register a vertex shader.</td>
+	<td class="name" nowrap><a href="#Polygon:addPoint">Polygon:addPoint&nbsp;(x, y)</a></td>
+	<td class="summary">Adds a point to the Polygon.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Shader.registerFsh">Shader.registerFsh&nbsp;(id)</a></td>
-	<td class="summary">Helper method to register a fragment shader.</td>
+	<td class="name" nowrap><a href="#Polygon:removePoint">Polygon:removePoint&nbsp;()</a></td>
+	<td class="summary">Removes the last added point from the Polygon.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Shader:setUniform">Shader:setUniform&nbsp;(name, uni, value)</a></td>
-	<td class="summary">Wrapper around MOAI's setUniform interface.</td>
+	<td class="name" nowrap><a href="#Polygon:size">Polygon:size&nbsp;()</a></td>
+	<td class="summary">Returns the number of points in the Polygon.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Shader:applyTo">Shader:applyTo&nbsp;(prop)</a></td>
-	<td class="summary">Applies a shader to a MOAI prop.</td>
+	<td class="name" nowrap><a href="#Polygon:invalidate">Polygon:invalidate&nbsp;()</a></td>
+	<td class="summary">Informs the internal collision detection to rebuild it's
+ associated mesh.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Polygon:rebuildCollision">Polygon:rebuildCollision&nbsp;()</a></td>
+	<td class="summary">Creates a new Hardon polygon shape corresponding to this
+ polygon.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Polygon:hitTest">Polygon:hitTest&nbsp;(x, y)</a></td>
+	<td class="summary">Determines if a ray at (x, y) will hit this Polygon.</td>
 	</tr>
 </table>
 <h2><a href="#Classes">Classes</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Shader">Shader</a></td>
-	<td class="summary">The Shader class.</td>
+	<td class="name" nowrap><a href="#Polygon">Polygon</a></td>
+	<td class="summary">The Polygon class.</td>
 	</tr>
 </table>
 
@@ -105,16 +115,16 @@
     
     <dl class="function">
     <dt>
-    <a name = "Shader.registerVsh"></a>
-    <strong>Shader.registerVsh&nbsp;(id)</strong>
+    <a name = "Polygon:addPoint"></a>
+    <strong>Polygon:addPoint&nbsp;(x, y)</strong>
     </dt>
     <dd>
-    Helper method to register a vertex shader.  
- Called by the 1-load-shaders.lua service.
+    Adds a point to the Polygon. 
 
     <h3>Parameters:</h3>
     <ul>
-       <li><code><em>id</em></code>: </li>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
     </ul>
 
 
@@ -122,51 +132,67 @@
 
 </dd>
     <dt>
-    <a name = "Shader.registerFsh"></a>
-    <strong>Shader.registerFsh&nbsp;(id)</strong>
+    <a name = "Polygon:removePoint"></a>
+    <strong>Polygon:removePoint&nbsp;()</strong>
     </dt>
     <dd>
-    Helper method to register a fragment shader.  
- Called by the 1-load-shaders.lua service.
+    Removes the last added point from the Polygon. 
 
-    <h3>Parameters:</h3>
-    <ul>
-       <li><code><em>id</em></code>: </li>
-    </ul>
 
 
 
 
 </dd>
     <dt>
-    <a name = "Shader:setUniform"></a>
-    <strong>Shader:setUniform&nbsp;(name, uni, value)</strong>
+    <a name = "Polygon:size"></a>
+    <strong>Polygon:size&nbsp;()</strong>
     </dt>
     <dd>
-    Wrapper around MOAI's setUniform interface. 
- This should never be called by user code.
+    Returns the number of points in the Polygon. 
 
-    <h3>Parameters:</h3>
-    <ul>
-       <li><code><em>name</em></code>:  The uniform name</li>
-       <li><code><em>uni</em></code>:  The uniform object</li>
-       <li><code><em>value</em></code>:  The new value for uniform</li>
-    </ul>
 
 
 
 
 </dd>
     <dt>
-    <a name = "Shader:applyTo"></a>
-    <strong>Shader:applyTo&nbsp;(prop)</strong>
+    <a name = "Polygon:invalidate"></a>
+    <strong>Polygon:invalidate&nbsp;()</strong>
     </dt>
     <dd>
-    Applies a shader to a MOAI prop. 
+    Informs the internal collision detection to rebuild it's
+ associated mesh.  This is automatically called whenever
+ points are added or removed.
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Polygon:rebuildCollision"></a>
+    <strong>Polygon:rebuildCollision&nbsp;()</strong>
+    </dt>
+    <dd>
+    Creates a new Hardon polygon shape corresponding to this
+ polygon. 
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Polygon:hitTest"></a>
+    <strong>Polygon:hitTest&nbsp;(x, y)</strong>
+    </dt>
+    <dd>
+    Determines if a ray at (x, y) will hit this Polygon. 
 
     <h3>Parameters:</h3>
     <ul>
-       <li><code><em>prop</em></code>: </li>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
     </ul>
 
 
@@ -178,14 +204,12 @@
     
     <dl class="function">
     <dt>
-    <a name = "Shader"></a>
-    <strong>Shader</strong>
+    <a name = "Polygon"></a>
+    <strong>Polygon</strong>
     </dt>
     <dd>
-    The Shader class. 
- Constructor signature is (vsh, fsh).
- Both vsh and fsh should be basenames of files in /assets/shaders.
- The fragment index contains the uniforms in the FSH, and may be assigned to for convenience.
+    The Polygon class. 
+ Constructor signature is (first, ...).
 
 
 

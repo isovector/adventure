@@ -10,7 +10,7 @@ mrequire "classes/task"
 --- A global table containing id => Actor
 Actors = { }
 
---- The actor class.
+--- The Actor class.
 -- Constructor signature is (id, name, costume, color).
 -- @newclass Actor
 newclass("Actor", 

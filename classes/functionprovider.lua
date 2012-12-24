@@ -1,5 +1,11 @@
+--- Acts as both a global function store and as a
+-- way of collescing multiple functions into one.
+
 mrequire "classes/class"
 
+--- The FunctionProvider class.
+-- Constructor signature is ().
+-- @newclass FunctionProvider
 newclass("FunctionProvider",
     function()
         return {
@@ -24,11 +30,14 @@ local function dispatchFunctions(...)
     end
 end
 
-
+--- Informs the user that you may not directly newindex a FunctionProvider.
 function FunctionProvider.__newindex()
-    error("Functions may only be added to the Functionprovider via add()")
+    error("Functions may only be added to the FunctionProvider via add()")
 end
 
+--- Returns the multifunction associated with the given key.
+-- @param key
+-- @return A function which when called will evaluate all of the functions given by the key.
 function FunctionProvider:__index(key)
     if self.funcs[key] then
         local result = dispatchFunctions
@@ -39,13 +48,18 @@ function FunctionProvider:__index(key)
     return rawget(self.__class, key) or error(key .. " hasn't been added to the FunctionProvider. Check your spelling and requires")
 end
 
-
+--- Internal function to add multiple functions to a FunctionProvider at once.
+-- @param self The FunctionProvider instance
+-- @param t The table of key => value pairs to add
 local function addTable(self, t)
     for name, func in pairs(t) do
         self:add(name, func)
     end
 end
 
+--- Adds a function to the FunctionProvider
+-- @param name
+-- @param func
 function FunctionProvider:add(name, func)
     if not func and type(name) == "table" then
         addTable(self, name)

@@ -1,0 +1,512 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>adventure engine v1.1</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>adventure engine</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Classes">Classes</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/classes.actor.html">classes.actor</a></li>
+  <li><a href="../modules/classes.class.html">classes.class</a></li>
+  <li><a href="../modules/classes.costume.html">classes.costume</a></li>
+  <li><a href="../modules/classes.fragmentshader.html">classes.fragmentshader</a></li>
+  <li><a href="../modules/classes.functionprovider.html">classes.functionprovider</a></li>
+  <li><a href="../modules/classes.hotspot.html">classes.hotspot</a></li>
+  <li><a href="../modules/classes.item.html">classes.item</a></li>
+  <li><a href="../modules/classes.labeler.html">classes.labeler</a></li>
+  <li><a href="../modules/classes.narrator.html">classes.narrator</a></li>
+  <li><a href="../modules/classes.polygon.html">classes.polygon</a></li>
+  <li><a href="../modules/classes.room.html">classes.room</a></li>
+  <li><a href="../modules/classes.savemanager.html">classes.savemanager</a></li>
+  <li><a href="../modules/classes.scaffoldtable.html">classes.scaffoldtable</a></li>
+  <li><a href="../modules/classes.shader.html">classes.shader</a></li>
+  <li><strong>classes.sheet</strong></li>
+  <li><a href="../modules/classes.task.html">classes.task</a></li>
+  <li><a href="../modules/classes.timer.html">classes.timer</a></li>
+  <li><a href="../modules/src.install_meta.html">src.install_meta</a></li>
+  <li><a href="../modules/src.meta.reference.html">src.meta.reference</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>classes.sheet</code></h1>
+
+<p>A more fully-featured version of MOAI's layer class.</p>
+<p>
+ Sheets are individual drawing layers. They are automatically
+ managed and provide common functionality hooks.</p>
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Sheet.enableInput">Sheet.enableInput&nbsp;(enabled)</a></td>
+	<td class="summary">Static method to globally set the input state.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet.dispatchBeforeDraw">Sheet.dispatchBeforeDraw&nbsp;()</a></td>
+	<td class="summary">Internal static method to call onBeforeDraw hooks.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet.dispatchAfterDraw">Sheet.dispatchAfterDraw&nbsp;()</a></td>
+	<td class="summary">Internal static method to call onAfterDraw hooks.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet.dispatchHover">Sheet.dispatchHover&nbsp;(x, y)</a></td>
+	<td class="summary">Internal static method to interpret hover hooks according to the hoverAcceptor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet.dispatchClick">Sheet.dispatchClick&nbsp;(x, y, down)</a></td>
+	<td class="summary">Internal static method to interpret click hooks according to the clickAcceptor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet.dispatchRClick">Sheet.dispatchRClick&nbsp;(x, y, down)</a></td>
+	<td class="summary">Internal static method to interpret click hooks according to the rClickAcceptor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet.getSheets">Sheet.getSheets&nbsp;()</a></td>
+	<td class="summary">Gets the Sheet stack.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet.getSheet">Sheet.getSheet&nbsp;(id)</a></td>
+	<td class="summary">Gets a Sheet by id.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet:prop_acceptor">Sheet:prop_acceptor&nbsp;(callback, x, y, ...)</a></td>
+	<td class="summary">An acceptor which binds only to props registered on the Sheet.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet:all_acceptor">Sheet:all_acceptor&nbsp;(callback, x, y, ...)</a></td>
+	<td class="summary">An acceptor which always binds.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet:enable">Sheet:enable&nbsp;(enabled)</a></td>
+	<td class="summary">Sets the enabled state of the Sheet.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet:setClickAcceptor">Sheet:setClickAcceptor&nbsp;(acceptor)</a></td>
+	<td class="summary">Associates a Sheet.x_acceptor with the current Sheet's click hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet:setRClickAcceptor">Sheet:setRClickAcceptor&nbsp;(acceptor)</a></td>
+	<td class="summary">Associates a Sheet.x_acceptor with the current Sheet's right click hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet:setHoverAcceptor">Sheet:setHoverAcceptor&nbsp;(acceptor)</a></td>
+	<td class="summary">Associates a Sheet.x_acceptor with the current Sheet's hover hook.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet:needsDraw">Sheet:needsDraw&nbsp;(enabled)</a></td>
+	<td class="summary">Sets whether or not to draw this Sheet.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet:install">Sheet:install&nbsp;()</a></td>
+	<td class="summary">Hooks the given Sheet into the global Sheet collection, to be automatically
+ managed henceforth.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet:insertProp">Sheet:insertProp&nbsp;(prop)</a></td>
+	<td class="summary">Adds a prop to the Sheet.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Sheet:getLabeler">Sheet:getLabeler&nbsp;()</a></td>
+	<td class="summary">Returns the Sheet's associated Labeler.</td>
+	</tr>
+</table>
+<h2><a href="#Classes">Classes</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Sheet">Sheet</a></td>
+	<td class="summary">The Sheet class.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Sheet.enableInput"></a>
+    <strong>Sheet.enableInput&nbsp;(enabled)</strong>
+    </dt>
+    <dd>
+    Static method to globally set the input state. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>enabled</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Sheet.dispatchBeforeDraw"></a>
+    <strong>Sheet.dispatchBeforeDraw&nbsp;()</strong>
+    </dt>
+    <dd>
+    Internal static method to call onBeforeDraw hooks. 
+ This should not be called by user code.
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Sheet.dispatchAfterDraw"></a>
+    <strong>Sheet.dispatchAfterDraw&nbsp;()</strong>
+    </dt>
+    <dd>
+    Internal static method to call onAfterDraw hooks. 
+ This should not be called by user code.
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Sheet.dispatchHover"></a>
+    <strong>Sheet.dispatchHover&nbsp;(x, y)</strong>
+    </dt>
+    <dd>
+    Internal static method to interpret hover hooks according to the hoverAcceptor. 
+ This should not be called by user code.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+    </ul>
+
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/classes.sheet.html#Sheet:setHoverAcceptor">Sheet:setHoverAcceptor</a>
+    </ul>
+</dd>
+    <dt>
+    <a name = "Sheet.dispatchClick"></a>
+    <strong>Sheet.dispatchClick&nbsp;(x, y, down)</strong>
+    </dt>
+    <dd>
+    Internal static method to interpret click hooks according to the clickAcceptor. 
+ This should not be called by user code.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+       <li><code><em>down</em></code>: </li>
+    </ul>
+
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/classes.sheet.html#Sheet:setClickAcceptor">Sheet:setClickAcceptor</a>
+    </ul>
+</dd>
+    <dt>
+    <a name = "Sheet.dispatchRClick"></a>
+    <strong>Sheet.dispatchRClick&nbsp;(x, y, down)</strong>
+    </dt>
+    <dd>
+    Internal static method to interpret click hooks according to the rClickAcceptor. 
+ This should not be called by user code.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+       <li><code><em>down</em></code>: </li>
+    </ul>
+
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/classes.sheet.html#Sheet:setRClickAcceptor">Sheet:setRClickAcceptor</a>
+    </ul>
+</dd>
+    <dt>
+    <a name = "Sheet.getSheets"></a>
+    <strong>Sheet.getSheets&nbsp;()</strong>
+    </dt>
+    <dd>
+    Gets the Sheet stack. 
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+        A table of all registered Sheets
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Sheet.getSheet"></a>
+    <strong>Sheet.getSheet&nbsp;(id)</strong>
+    </dt>
+    <dd>
+    Gets a Sheet by id. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>id</em></code>:  The Sheet id</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        The requested Sheet
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Sheet:prop_acceptor"></a>
+    <strong>Sheet:prop_acceptor&nbsp;(callback, x, y, ...)</strong>
+    </dt>
+    <dd>
+    An acceptor which binds only to props registered on the Sheet. 
+ This function should never be called by user code, but instead used as an argument
+ to Sheet:setXAcceptor.
+ The callback will receive (prop, x, y, ...).
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>callback</em></code>: </li>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+       <li><code><em>...</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Sheet:all_acceptor"></a>
+    <strong>Sheet:all_acceptor&nbsp;(callback, x, y, ...)</strong>
+    </dt>
+    <dd>
+    An acceptor which always binds. 
+ This function should never be called by uesr code, but instead used as an argument
+ to Sheet:setXAcceptor.
+ The callback will receive (prop, x, y, ...), where prop is nil if one doesn't exist at (x, y)
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>callback</em></code>: </li>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+       <li><code><em>...</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Sheet:enable"></a>
+    <strong>Sheet:enable&nbsp;(enabled)</strong>
+    </dt>
+    <dd>
+    Sets the enabled state of the Sheet.  Disabled Sheets receive no input and cannot be seen.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>enabled</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Sheet:setClickAcceptor"></a>
+    <strong>Sheet:setClickAcceptor&nbsp;(acceptor)</strong>
+    </dt>
+    <dd>
+    Associates a Sheet.x_acceptor with the current Sheet's click hook.  
+ When the acceptor binds, Sheet:onClick will be called with (prop, x, y, down)
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>acceptor</em></code>:  Either Sheet.prop_acceptor or Sheet.all_acceptor</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Sheet:setRClickAcceptor"></a>
+    <strong>Sheet:setRClickAcceptor&nbsp;(acceptor)</strong>
+    </dt>
+    <dd>
+    Associates a Sheet.x_acceptor with the current Sheet's right click hook.  
+ When the acceptor binds, Sheet:onRClick will be called with (prop, x, y, down)
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>acceptor</em></code>:  Either Sheet.prop_acceptor or Sheet.all_acceptor</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Sheet:setHoverAcceptor"></a>
+    <strong>Sheet:setHoverAcceptor&nbsp;(acceptor)</strong>
+    </dt>
+    <dd>
+    Associates a Sheet.x_acceptor with the current Sheet's hover hook.  
+ When the acceptor binds, Sheet:onHover will be called with (prop, x, y)
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>acceptor</em></code>:  Either Sheet.prop_acceptor or Sheet.all_acceptor</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Sheet:needsDraw"></a>
+    <strong>Sheet:needsDraw&nbsp;(enabled)</strong>
+    </dt>
+    <dd>
+    Sets whether or not to draw this Sheet.  Setting false implies the Sheet
+ can still receive input.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>enabled</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Sheet:install"></a>
+    <strong>Sheet:install&nbsp;()</strong>
+    </dt>
+    <dd>
+    Hooks the given Sheet into the global Sheet collection, to be automatically
+ managed henceforth. 
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Sheet:insertProp"></a>
+    <strong>Sheet:insertProp&nbsp;(prop)</strong>
+    </dt>
+    <dd>
+    Adds a prop to the Sheet.  The prop is automatically given raycast detection
+ for prop acceptor management.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>prop</em></code>:  A MOAIProp</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Sheet:getLabeler"></a>
+    <strong>Sheet:getLabeler&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the Sheet's associated Labeler. 
+ The first call of this function will create a new labeler.
+
+
+
+
+
+    <h3>see also:</h3>
+    <ul>
+    </ul>
+</dd>
+</dl>
+    <h2><a name="Classes"></a>Classes</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Sheet"></a>
+    <strong>Sheet</strong>
+    </dt>
+    <dd>
+    The Sheet class. 
+ Constructor signature is (id).
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

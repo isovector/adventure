@@ -1,0 +1,497 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>adventure engine v1.1</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>adventure engine</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Classes">Classes</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><strong>classes.actor</strong></li>
+  <li><a href="../modules/classes.lib.lua-astar.middleclass.html">classes.lib.lua-astar.middleclass</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>classes.actor</code></h1>
+
+<p>Actors are game objects.</p>
+<p> They can move, animate, and talk.
+ Actors are usually created via the 2-load-actors.lua service,
+ which loads them from /assets/actors/</p>
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Actor.getActor">Actor.getActor&nbsp;(id)</a></td>
+	<td class="summary">Gets an actor by id.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:location">Actor:location&nbsp;()</a></td>
+	<td class="summary">Gets the location of an Actor in world space.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:scale">Actor:scale&nbsp;()</a></td>
+	<td class="summary">Wrapper to get the prop scaling of the Actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:setScale">Actor:setScale&nbsp;(scale)</a></td>
+	<td class="summary">Sets the perspective size.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:hitTest">Actor:hitTest&nbsp;(x, y)</a></td>
+	<td class="summary">Determines if a ray at (x, y) will hit the actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:joinScene">Actor:joinScene&nbsp;()</a></td>
+	<td class="summary">Creates a prop and a game loop for an Actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:leaveScene">Actor:leaveScene&nbsp;()</a></td>
+	<td class="summary">Destroys a prop and the game loop.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:teleport">Actor:teleport&nbsp;(x, y)</a></td>
+	<td class="summary">Instantly moves the Actor to (x, y).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:teleportRel">Actor:teleportRel&nbsp;(x, y)</a></td>
+	<td class="summary">Instant moves the Actor by (x, y) relative to her current location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:walkToAsync">Actor:walkToAsync&nbsp;(x, y, onGoal)</a></td>
+	<td class="summary">Paths an Actor to (x, y) without blocking the thread.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:giveItem">Actor:giveItem&nbsp;(id)</a></td>
+	<td class="summary">Gives an item by id to the Actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:removeItem">Actor:removeItem&nbsp;(id)</a></td>
+	<td class="summary">Take an item by id away.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:hasItem">Actor:hasItem&nbsp;(id)</a></td>
+	<td class="summary">Does the Actor have an item by id?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:say">Actor:say&nbsp;(msg)</a></td>
+	<td class="summary">Display a text bubble above the Actor's head.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:stopWalking">Actor:stopWalking&nbsp;()</a></td>
+	<td class="summary">Cancels an asynchronous walk task.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:walkTo">Actor:walkTo&nbsp;(x, y)</a></td>
+	<td class="summary">Synchronously walk to (x, y).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:moveToXY">Actor:moveToXY&nbsp;(x, y)</a></td>
+	<td class="summary">Internal pathfollowing routine.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor:mainLoop">Actor:mainLoop&nbsp;()</a></td>
+	<td class="summary">Internal thread procedure.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Actors">Actors</a></td>
+	<td class="summary">A global table containing id => Actor</td>
+	</tr>
+</table>
+<h2><a href="#Classes">Classes</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Actor">Actor</a></td>
+	<td class="summary">The actor class.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Actor.getActor"></a>
+    <strong>Actor.getActor&nbsp;(id)</strong>
+    </dt>
+    <dd>
+    Gets an actor by id. 
+ This is more OO than directly indexing the Actors table
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>id</em></code>: </li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        An Actor registered by id
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Actor:location"></a>
+    <strong>Actor:location&nbsp;()</strong>
+    </dt>
+    <dd>
+    Gets the location of an Actor in world space. 
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>x in world space</li>
+        <li>y in world space</li>
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Actor:scale"></a>
+    <strong>Actor:scale&nbsp;()</strong>
+    </dt>
+    <dd>
+    Wrapper to get the prop scaling of the Actor. 
+ This will crash if the Actor is not in the scene
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:setScale"></a>
+    <strong>Actor:setScale&nbsp;(scale)</strong>
+    </dt>
+    <dd>
+    Sets the perspective size. 
+ The given scale will be multiplied by the defaultScale
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>scale</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:hitTest"></a>
+    <strong>Actor:hitTest&nbsp;(x, y)</strong>
+    </dt>
+    <dd>
+    Determines if a ray at (x, y) will hit the actor. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>true IF the costume is hit but there is no hotspot underneath</li>
+        <li>Hotspot IF the costume is hit and a registerd hotspot</li>
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Actor:joinScene"></a>
+    <strong>Actor:joinScene&nbsp;()</strong>
+    </dt>
+    <dd>
+    Creates a prop and a game loop for an Actor. 
+ This should probably never be called by user code
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:leaveScene"></a>
+    <strong>Actor:leaveScene&nbsp;()</strong>
+    </dt>
+    <dd>
+    Destroys a prop and the game loop. 
+ This should probably never be called by user code
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:teleport"></a>
+    <strong>Actor:teleport&nbsp;(x, y)</strong>
+    </dt>
+    <dd>
+    Instantly moves the Actor to (x, y). 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:teleportRel"></a>
+    <strong>Actor:teleportRel&nbsp;(x, y)</strong>
+    </dt>
+    <dd>
+    Instant moves the Actor by (x, y) relative to her current location. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:walkToAsync"></a>
+    <strong>Actor:walkToAsync&nbsp;(x, y, onGoal)</strong>
+    </dt>
+    <dd>
+    Paths an Actor to (x, y) without blocking the thread. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>x</em></code>:  A callback to perform when she arrives</li>
+       <li><code><em>y</em></code>: </li>
+       <li><code><em>onGoal</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:giveItem"></a>
+    <strong>Actor:giveItem&nbsp;(id)</strong>
+    </dt>
+    <dd>
+    Gives an item by id to the Actor. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>id</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:removeItem"></a>
+    <strong>Actor:removeItem&nbsp;(id)</strong>
+    </dt>
+    <dd>
+    Take an item by id away. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>id</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:hasItem"></a>
+    <strong>Actor:hasItem&nbsp;(id)</strong>
+    </dt>
+    <dd>
+    Does the Actor have an item by id? 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>id</em></code>: </li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        whether or not the Actor has any Item:id
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Actor:say"></a>
+    <strong>Actor:say&nbsp;(msg)</strong>
+    </dt>
+    <dd>
+    Display a text bubble above the Actor's head. 
+ This will block the thread.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>msg</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:stopWalking"></a>
+    <strong>Actor:stopWalking&nbsp;()</strong>
+    </dt>
+    <dd>
+    Cancels an asynchronous walk task. 
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:walkTo"></a>
+    <strong>Actor:walkTo&nbsp;(x, y)</strong>
+    </dt>
+    <dd>
+    Synchronously walk to (x, y). 
+ This will block the thread
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:moveToXY"></a>
+    <strong>Actor:moveToXY&nbsp;(x, y)</strong>
+    </dt>
+    <dd>
+    Internal pathfollowing routine. 
+ This should never be called by user code.
+ Also handles hotspot pressing and unpressing.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor:mainLoop"></a>
+    <strong>Actor:mainLoop&nbsp;()</strong>
+    </dt>
+    <dd>
+    Internal thread procedure. 
+ This should never be called by user code.
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Tables"></a>Tables</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Actors"></a>
+    <strong>Actors</strong>
+    </dt>
+    <dd>
+    A global table containing id => Actor 
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Classes"></a>Classes</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Actor"></a>
+    <strong>Actor</strong>
+    </dt>
+    <dd>
+    The actor class. 
+ Constructor signature is (id, name, costume, color).
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

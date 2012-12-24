@@ -1,9 +1,18 @@
+--- Actors are game objects. They can move, animate, and talk.
+-- Actors are usually created via the 2-load-actors.lua service,
+-- which loads them from /assets/actors/
+
 mrequire "classes/class"
 require "classes/dialogue"
 mrequire "classes/item"
 mrequire "classes/task"
 
+--- A global table containing id => Actor
 Actors = { }
+
+--- The actor class.
+-- Constructor signature is (id, name, costume, color).
+-- @newclass Actor
 newclass("Actor", 
     function(id, name, costume, color)
         local actor = {
@@ -33,22 +42,37 @@ newclass("Actor",
     end
 )
 
+--- Gets an actor by id.
+-- This is more OO than directly indexing the Actors table
+-- @param id
+-- @return An Actor registered by id
 function Actor.getActor(id)
     return Actors[id]
 end
 
+--- Gets the location of an Actor in world space.
+-- @return x in world space
+-- @return y in world space
 function Actor:location() 
     return self.prop:getLoc()
 end
 
+--- Wrapper to get the prop scaling of the Actor.
+-- This will crash if the Actor is not in the scene
 function Actor:scale()
    return self.prop:getScl()
 end
 
+--- Sets the perspective size.
+-- The given scale will be multiplied by the defaultScale
+-- @param scale
 function Actor:setScale(scale)
     self.prop:setScl(scale * self.defaultScale, scale * self.defaultScale)
 end
 
+--- Determines if a ray at (x, y) will hit the actor.
+-- @return true IF the costume is hit but there is no hotspot underneath
+-- @return Hotspot IF the costume is hit and a registerd hotspot
 function Actor:hitTest(x, y)
     local hs = self.costume:hitTest(x, y, self:scale())
     
@@ -62,6 +86,8 @@ function Actor:hitTest(x, y)
     return hs
 end
 
+--- Creates a prop and a game loop for an Actor.
+-- This should probably never be called by user code
 function Actor:joinScene()
     local prop = game.makeProp(tostring(self))
     prop.actor = self
@@ -78,6 +104,8 @@ function Actor:joinScene()
     end
 end
 
+--- Destroys a prop and the game loop.
+-- This should probably never be called by user code
 function Actor:leaveScene()
     self.prop.actor = nil
     game.destroyProp(tostring(self))
@@ -85,6 +113,7 @@ function Actor:leaveScene()
     self.stop = true
 end
 
+--- Instantly moves the Actor to (x, y).
 function Actor:teleport(x, y)
     if self.prop then
         self.prop:setLoc(x, y)
@@ -93,11 +122,14 @@ function Actor:teleport(x, y)
     end
 end
 
+--- Instant moves the Actor by (x, y) relative to her current location.
 function Actor:teleportRel(x, y)
     local sx, sy = self:location()
     self:teleport(sx + x, sy + y)
 end
 
+--- Paths an Actor to (x, y) without blocking the thread.
+-- @param onGoal A callback to perform when she arrives
 function Actor:walkToAsync(x, y, onGoal)
     if self.action then
         self.action:stop()
@@ -108,18 +140,28 @@ function Actor:walkToAsync(x, y, onGoal)
     self.onGoal = onGoal
 end
 
+--- Gives an item by id to the Actor.
+-- @param id
 function Actor:giveItem(id)
     self.inventory[id] = Item.getItem(id)
 end
 
+--- Take an item by id away.
+-- @param id
 function Actor:removeItem(id)
     self.inventory[id] = nil
 end
 
+--- Does the Actor have an item by id?
+-- @param id
+-- @return whether or not the Actor has any Item:id
 function Actor:hasItem(id)
     return self.inventory[id]
 end
 
+--- Display a text bubble above the Actor's head.
+-- This will block the thread.
+-- @param msg
 function Actor:say(msg)
     local x, y = self:location()
 
@@ -132,6 +174,7 @@ function Actor:say(msg)
     self.costume:setPose("idle")
 end
 
+--- Cancels an asynchronous walk task.
 function Actor:stopWalking()
     self.stop = true
     
@@ -140,6 +183,8 @@ function Actor:stopWalking()
     end
 end
 
+--- Synchronously walk to (x, y).
+-- This will block the thread
 function Actor:walkTo(x, y)
     local sx, sy = self:location()
     local path = room:getPath(sx, sy, x, y, 1, 1)
@@ -163,6 +208,9 @@ function Actor:walkTo(x, y)
     end
 end
 
+--- Internal pathfollowing routine.
+-- This should never be called by user code.
+-- Also handles hotspot pressing and unpressing.
 function Actor:moveToXY(x, y)
     if self.prop and not self.stop then
         local sx, sy = self:location()
@@ -210,6 +258,8 @@ function Actor:moveToXY(x, y)
     end
 end
 
+--- Internal thread procedure.
+-- This should never be called by user code.
 function Actor:mainLoop()
     while self.prop do
         local _, y = self:location()

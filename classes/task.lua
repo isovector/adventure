@@ -1,7 +1,13 @@
+--- Provides asynchronous task functionality.
+
 mrequire "classes/class"
 
-newclass("Task")
+--- The static Task class.
+-- @newclass Task
+newclass("Task", false)
 
+--- Blocks the currently running task.
+-- @param time The time to block for in seconds
 function Task.sleep(time)
     local timer = MOAITimer.new()
     timer:setSpan(time)
@@ -17,6 +23,9 @@ function Task.sleep(time)
     MOAIThread.blockOnAction(timer)
 end
 
+--- Runs a function asynchronously
+-- @param callback
+-- @param ...
 function Task.start(callback, ...)
     local thread = MOAIThread.new()
     thread:run(callback, ...)

@@ -30,15 +30,19 @@
   <li><a href="../index.html">Index</a></li>
 </ul>
 
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
 
 
 <h2>Modules</h2>
 <ul>
   <li><a href="../modules/classes.actor.html">classes.actor</a></li>
-  <li><a href="../modules/classes.class.html">classes.class</a></li>
+  <li><strong>classes.class</strong></li>
   <li><a href="../modules/classes.costume.html">classes.costume</a></li>
   <li><a href="../modules/classes.item.html">classes.item</a></li>
-  <li><strong>classes.lib.lua-astar.middleclass</strong></li>
+  <li><a href="../modules/classes.lib.lua-astar.middleclass.html">classes.lib.lua-astar.middleclass</a></li>
   <li><a href="../modules/classes.narrator.html">classes.narrator</a></li>
   <li><a href="../modules/classes.room.html">classes.room</a></li>
   <li><a href="../modules/classes.savemanager.html">classes.savemanager</a></li>
@@ -54,18 +58,68 @@
 
 <div id="content">
 
-<h1>Module <code>classes.lib.lua-astar.middleclass</code></h1>
+<h1>Module <code>classes.class</code></h1>
 
-<p>middleclass.lua - v1.2
- Enrique García ( enrique.garcia.cota [AT] gmail [DOT] com ) - 19 Oct 2009
- Based on YaciCode, from Julien Patte and LuaObject, from Sébastien Rocca-Serra</p>
+<p>Provides class infrastructure.</p>
 <p></p>
 
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#newclass">newclass&nbsp;(name, ctor)</a></td>
+	<td class="summary">Creates a new class, and registers it in the global namespace.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#type">type&nbsp;(object)</a></td>
+	<td class="summary">Overloads type to return the class name of class instances</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "newclass"></a>
+    <strong>newclass&nbsp;(name, ctor)</strong>
+    </dt>
+    <dd>
+    Creates a new class, and registers it in the global namespace. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>name</em></code>:  The name of the class</li>
+       <li><code><em>ctor</em></code>:  A constructor function, or false for purely static classes</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        The new class
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "type"></a>
+    <strong>type&nbsp;(object)</strong>
+    </dt>
+    <dd>
+    Overloads type to return the class name of class instances 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>object</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->

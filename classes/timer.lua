@@ -1,5 +1,10 @@
+--- Provides an interruptable timer with customizable delta callbacks.
+
 mrequire "classes/class"
 
+--- The Timer class.
+-- Constructor signature is (duration, rep, callback, deltacallback).
+-- @newclass Timer
 newclass("Timer", 
     function(duration, rep, callback, deltacallback)
         local timer = { alive = true }
@@ -30,6 +35,7 @@ newclass("Timer",
     end
 )
 
+--- Stops a running timer.
 function Timer:stop()
     self.alive = false
     self.routine = nil

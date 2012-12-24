@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>adventure engine v1.1</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>adventure engine</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Fields">Fields</a></li>
+<li><a href="#Classes">Classes</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/classes.actor.html">classes.actor</a></li>
+  <li><a href="../modules/classes.class.html">classes.class</a></li>
+  <li><a href="../modules/classes.costume.html">classes.costume</a></li>
+  <li><a href="../modules/classes.item.html">classes.item</a></li>
+  <li><a href="../modules/classes.lib.lua-astar.middleclass.html">classes.lib.lua-astar.middleclass</a></li>
+  <li><a href="../modules/classes.narrator.html">classes.narrator</a></li>
+  <li><a href="../modules/classes.room.html">classes.room</a></li>
+  <li><strong>classes.savemanager</strong></li>
+  <li><a href="../modules/classes.scaffoldtable.html">classes.scaffoldtable</a></li>
+  <li><a href="../modules/classes.shader.html">classes.shader</a></li>
+  <li><a href="../modules/classes.task.html">classes.task</a></li>
+  <li><a href="../modules/classes.timer.html">classes.timer</a></li>
+  <li><a href="../modules/src.install_meta.html">src.install_meta</a></li>
+  <li><a href="../modules/src.meta.reference.html">src.meta.reference</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>classes.savemanager</code></h1>
+
+<p>A static class to manage saving and loading.</p>
+<p></p>
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#SaveManager.install">SaveManager.install&nbsp;()</a></td>
+	<td class="summary">Internal class to register saving functionality.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SaveManager.save">SaveManager.save&nbsp;(slot, name)</a></td>
+	<td class="summary">Saves the current state of the game into a slot.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SaveManager.load">SaveManager.load&nbsp;(slot)</a></td>
+	<td class="summary">Loads a save game into memory.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#gamedata">gamedata</a></td>
+	<td class="summary"></td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#SaveManager.version">SaveManager.version</a></td>
+	<td class="summary">The human-friendly version of save games.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SaveManager.format">SaveManager.format</a></td>
+	<td class="summary">The actual format version of save games.</td>
+	</tr>
+</table>
+<h2><a href="#Classes">Classes</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#SaveManager">SaveManager</a></td>
+	<td class="summary">The static SaveManager class.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "SaveManager.install"></a>
+    <strong>SaveManager.install&nbsp;()</strong>
+    </dt>
+    <dd>
+    Internal class to register saving functionality. 
+ This is usually called by the 0-save-games.lua service.
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SaveManager.save"></a>
+    <strong>SaveManager.save&nbsp;(slot, name)</strong>
+    </dt>
+    <dd>
+    Saves the current state of the game into a slot. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>slot</em></code>:  The save game slot. 0 is autosave.</li>
+       <li><code><em>name</em></code>:  The human readable name of the save game. This is provided by the user.</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SaveManager.load"></a>
+    <strong>SaveManager.load&nbsp;(slot)</strong>
+    </dt>
+    <dd>
+    Loads a save game into memory. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>slot</em></code>:  The save game slot to load</li>
+    </ul>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Tables"></a>Tables</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "gamedata"></a>
+    <strong>gamedata</strong>
+    </dt>
+    <dd>
+    ? 
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Fields"></a>Fields</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "SaveManager.version"></a>
+    <strong>SaveManager.version</strong>
+    </dt>
+    <dd>
+    The human-friendly version of save games. 
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SaveManager.format"></a>
+    <strong>SaveManager.format</strong>
+    </dt>
+    <dd>
+    The actual format version of save games. 
+ This number must align between then serializer and deserializer for save games to work.
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Classes"></a>Classes</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "SaveManager"></a>
+    <strong>SaveManager</strong>
+    </dt>
+    <dd>
+    The static SaveManager class. 
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

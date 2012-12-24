@@ -1,4 +1,5 @@
--- from http://metalua.blogspot.ca/2007/12/code-walkers.html
+--- Provides the import() and reference constructs to the language via metalua.
+-- ldoc fails to parse metalua correctly.
 
 -{ extension 'match' }
 -{ extension 'log' }
@@ -8,7 +9,7 @@
 require "metalua.walk"
 
 -----------------------------------------------------------------------------
-
+;
 local scope = { }
 scope.__index = scope
 
@@ -40,9 +41,12 @@ function scope:addRef(name, replacement)
 end
 
 -----------------------------------------------------------------------------
-
+;
 local refs = scope:new()
 
+-- from http://metalua.blogspot.ca/2007/12/code-walkers.html
+
+--- Maintains scope information and replaces references.
 local function chunk_transformer (term)
     local refs    = refs:new()
     local cfg = { expr  = { },
@@ -113,11 +117,15 @@ local function chunk_transformer (term)
     walk.block(cfg, term)
 end
 
+--- Builds the lua AST for a reference declaration.
+-- @param x A matching reference AST
 local function ref_builder(x)
     lhs, rhs = unpack(x)
     return `Call { `Id{ ".$REF" .. lhs[1][1]}, rhs[1] }
 end
 
+--- Builds the lua AST for an import declaration.
+-- @param x A matching import AST
 local function import_builder(x)
     locals, source = unpack(x)
     

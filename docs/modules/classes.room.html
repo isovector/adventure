@@ -1,0 +1,433 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>adventure engine v1.1</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>adventure engine</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Classes">Classes</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/classes.actor.html">classes.actor</a></li>
+  <li><a href="../modules/classes.class.html">classes.class</a></li>
+  <li><a href="../modules/classes.costume.html">classes.costume</a></li>
+  <li><a href="../modules/classes.item.html">classes.item</a></li>
+  <li><a href="../modules/classes.lib.lua-astar.middleclass.html">classes.lib.lua-astar.middleclass</a></li>
+  <li><a href="../modules/classes.narrator.html">classes.narrator</a></li>
+  <li><strong>classes.room</strong></li>
+  <li><a href="../modules/classes.savemanager.html">classes.savemanager</a></li>
+  <li><a href="../modules/classes.scaffoldtable.html">classes.scaffoldtable</a></li>
+  <li><a href="../modules/classes.shader.html">classes.shader</a></li>
+  <li><a href="../modules/classes.task.html">classes.task</a></li>
+  <li><a href="../modules/classes.timer.html">classes.timer</a></li>
+  <li><a href="../modules/src.install_meta.html">src.install_meta</a></li>
+  <li><a href="../modules/src.meta.reference.html">src.meta.reference</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>classes.room</code></h1>
+
+<p>Rooms are locations that may contain Actors.</p>
+<p>
+ They consist of a backdrop, Actors, Hotspots, and doors.
+ Rooms are created via the room editor, and are automatically loaded via the 3-load-rooms.lua service.</p>
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Room.getRoom">Room.getRoom&nbsp;(id)</a></td>
+	<td class="summary">Static method to get a room by id.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room.change">Room.change&nbsp;(id)</a></td>
+	<td class="summary">Static method to change the current room.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room:installPathing">Room:installPathing&nbsp;(polys)</a></td>
+	<td class="summary">Internal method to create a nav mesh.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room:addHotspot">Room:addHotspot&nbsp;(hotspot)</a></td>
+	<td class="summary">Add a Hotspot to the room.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room:removeHotspot">Room:removeHotspot&nbsp;(id)</a></td>
+	<td class="summary">Remove a hotspot from the room.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room:locToPos">Room:locToPos&nbsp;(x, y)</a></td>
+	<td class="summary">Turns a world space location into a pathing map node.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room:nodeToLoc">Room:nodeToLoc&nbsp;(node)</a></td>
+	<td class="summary">Turns a pathing map node into a world space location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room:shortenPath">Room:shortenPath&nbsp;(nodes, poly, low, high)</a></td>
+	<td class="summary">Shortens an A* path by bisection of intersecting edges</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room:getPath">Room:getPath&nbsp;(sx, sy, dx, dy, w, h)</a></td>
+	<td class="summary">Calculates a path against the navmesh</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room:load">Room:load&nbsp;()</a></td>
+	<td class="summary">Initializes a room.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room:reload">Room:reload&nbsp;()</a></td>
+	<td class="summary">Calls the reload script.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room:unload">Room:unload&nbsp;()</a></td>
+	<td class="summary">Cleans up a room when another is being loaded.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room:addActor">Room:addActor&nbsp;(actor, x, y)</a></td>
+	<td class="summary">Adds an Actor to the scene graph.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Room:removeActor">Room:removeActor&nbsp;(actor)</a></td>
+	<td class="summary">Removes an Actor from the scene graph.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#room">room</a></td>
+	<td class="summary">A global pointing at the current room</td>
+	</tr>
+</table>
+<h2><a href="#Classes">Classes</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Room">Room</a></td>
+	<td class="summary">The Room class.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Room.getRoom"></a>
+    <strong>Room.getRoom&nbsp;(id)</strong>
+    </dt>
+    <dd>
+    Static method to get a room by id. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>id</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Room.change"></a>
+    <strong>Room.change&nbsp;(id)</strong>
+    </dt>
+    <dd>
+    Static method to change the current room. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>id</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Room:installPathing"></a>
+    <strong>Room:installPathing&nbsp;(polys)</strong>
+    </dt>
+    <dd>
+    Internal method to create a nav mesh. 
+ User code should never call this.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>polys</em></code>:  A table of alternating x, y coordinates of polygon vertices</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Room:addHotspot"></a>
+    <strong>Room:addHotspot&nbsp;(hotspot)</strong>
+    </dt>
+    <dd>
+    Add a Hotspot to the room. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>hotspot</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Room:removeHotspot"></a>
+    <strong>Room:removeHotspot&nbsp;(id)</strong>
+    </dt>
+    <dd>
+    Remove a hotspot from the room. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>id</em></code>:  The id of the Hotspot to remove</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Room:locToPos"></a>
+    <strong>Room:locToPos&nbsp;(x, y)</strong>
+    </dt>
+    <dd>
+    Turns a world space location into a pathing map node. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        A table of (x => x, y => y) which can be fed into lua-astar
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Room:nodeToLoc"></a>
+    <strong>Room:nodeToLoc&nbsp;(node)</strong>
+    </dt>
+    <dd>
+    Turns a pathing map node into a world space location. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>node</em></code>:  The result of a locToPos or pathfinding node</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>x</li>
+        <li>y</li>
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Room:shortenPath"></a>
+    <strong>Room:shortenPath&nbsp;(nodes, poly, low, high)</strong>
+    </dt>
+    <dd>
+    Shortens an A* path by bisection of intersecting edges 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>nodes</em></code>:  The calculated A* path</li>
+       <li><code><em>poly</em></code>:  The navmesh (this doesn't appear to be used)</li>
+       <li><code><em>low</em></code>:  The lower bound of the recursion</li>
+       <li><code><em>high</em></code>:  The upper bound of the recursion</li>
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        A smoother path than the one given by A*
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Room:getPath"></a>
+    <strong>Room:getPath&nbsp;(sx, sy, dx, dy, w, h)</strong>
+    </dt>
+    <dd>
+    Calculates a path against the navmesh 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>sx</em></code>:  Source x</li>
+       <li><code><em>sy</em></code>:  Source y</li>
+       <li><code><em>dx</em></code>:  Destination x</li>
+       <li><code><em>dy</em></code>:  Destination y</li>
+       <li><code><em>w</em></code>:  The width of the pathfinder</li>
+       <li><code><em>h</em></code>:  The height of the pathfinder</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Room:load"></a>
+    <strong>Room:load&nbsp;()</strong>
+    </dt>
+    <dd>
+    Initializes a room. 
+ Sets the backdrop, hotspots, joins Actors, and calls the reload script.
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Room:reload"></a>
+    <strong>Room:reload&nbsp;()</strong>
+    </dt>
+    <dd>
+    Calls the reload script. 
+ Called whenever a room is entered or a save is loaded.
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Room:unload"></a>
+    <strong>Room:unload&nbsp;()</strong>
+    </dt>
+    <dd>
+    Cleans up a room when another is being loaded. 
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Room:addActor"></a>
+    <strong>Room:addActor&nbsp;(actor, x, y)</strong>
+    </dt>
+    <dd>
+    Adds an Actor to the scene graph. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>actor</em></code>:  A real actor (not an id)</li>
+       <li><code><em>x</em></code>: </li>
+       <li><code><em>y</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Room:removeActor"></a>
+    <strong>Room:removeActor&nbsp;(actor)</strong>
+    </dt>
+    <dd>
+    Removes an Actor from the scene graph. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>actor</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Tables"></a>Tables</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "room"></a>
+    <strong>room</strong>
+    </dt>
+    <dd>
+    A global pointing at the current room 
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Classes"></a>Classes</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Room"></a>
+    <strong>Room</strong>
+    </dt>
+    <dd>
+    The Room class. 
+ Constructor signature is (id, path).
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

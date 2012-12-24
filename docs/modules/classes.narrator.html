@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>adventure engine v1.1</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>adventure engine</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Classes">Classes</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/classes.actor.html">classes.actor</a></li>
+  <li><a href="../modules/classes.class.html">classes.class</a></li>
+  <li><a href="../modules/classes.costume.html">classes.costume</a></li>
+  <li><a href="../modules/classes.item.html">classes.item</a></li>
+  <li><a href="../modules/classes.lib.lua-astar.middleclass.html">classes.lib.lua-astar.middleclass</a></li>
+  <li><strong>classes.narrator</strong></li>
+  <li><a href="../modules/classes.room.html">classes.room</a></li>
+  <li><a href="../modules/classes.savemanager.html">classes.savemanager</a></li>
+  <li><a href="../modules/classes.scaffoldtable.html">classes.scaffoldtable</a></li>
+  <li><a href="../modules/classes.shader.html">classes.shader</a></li>
+  <li><a href="../modules/classes.task.html">classes.task</a></li>
+  <li><a href="../modules/classes.timer.html">classes.timer</a></li>
+  <li><a href="../modules/src.install_meta.html">src.install_meta</a></li>
+  <li><a href="../modules/src.meta.reference.html">src.meta.reference</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>classes.narrator</code></h1>
+
+<p>The Narrator creates context appropriate strings given a set of rules.</p>
+<p>
+ It is used primarily to create the action text.</p>
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Narrator:determineConditions">Narrator:determineConditions&nbsp;(conditions)</a></td>
+	<td class="summary">Internal function to parse a rule table into specific and necessary conditions.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Narrator:addRule">Narrator:addRule&nbsp;(desc, conditions)</a></td>
+	<td class="summary">Creates a new rule which will return a string when certain conditions match.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Narrator:evaluate">Narrator:evaluate&nbsp;(rule, s, n)</a></td>
+	<td class="summary">Internal method to determine the score of a rule given specific and necessary conditions.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Narrator:getString">Narrator:getString&nbsp;(conditions)</a></td>
+	<td class="summary">Returns the best string for given conditions.</td>
+	</tr>
+</table>
+<h2><a href="#Classes">Classes</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Narrator">Narrator</a></td>
+	<td class="summary">The Narrator class.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Narrator:determineConditions"></a>
+    <strong>Narrator:determineConditions&nbsp;(conditions)</strong>
+    </dt>
+    <dd>
+    Internal function to parse a rule table into specific and necessary conditions. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>conditions</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Narrator:addRule"></a>
+    <strong>Narrator:addRule&nbsp;(desc, conditions)</strong>
+    </dt>
+    <dd>
+    Creates a new rule which will return a string when certain conditions match. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>desc</em></code>:  The string to return. May include specific keys in braces to be replaced upon match.</li>
+       <li><code><em>conditions</em></code>:  See getString for a description of this table</li>
+    </ul>
+
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/classes.narrator.html#Narrator:getString">Narrator:getString</a>
+    </ul>
+</dd>
+    <dt>
+    <a name = "Narrator:evaluate"></a>
+    <strong>Narrator:evaluate&nbsp;(rule, s, n)</strong>
+    </dt>
+    <dd>
+    Internal method to determine the score of a rule given specific and necessary conditions. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>rule</em></code>: </li>
+       <li><code><em>s</em></code>: </li>
+       <li><code><em>n</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Narrator:getString"></a>
+    <strong>Narrator:getString&nbsp;(conditions)</strong>
+    </dt>
+    <dd>
+    Returns the best string for given conditions. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>conditions</em></code>:  Table of key=>value pairs for specific conditions, or simply value for keys which must be set.</li>
+    </ul>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Classes"></a>Classes</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Narrator"></a>
+    <strong>Narrator</strong>
+    </dt>
+    <dd>
+    The Narrator class. 
+ Constructor signature is (default, missing, sMatch, nMatch).
+ Default is a string to return when no rules match.
+ Missing fills in empty blanks.
+ sMatch is the score awarded for specific rule matches.
+ nMatch is the score awarded for necessary rule matches.
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

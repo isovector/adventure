@@ -30,6 +30,11 @@
   <li><a href="../index.html">Index</a></li>
 </ul>
 
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Classes">Classes</a></li>
+</ul>
 
 
 <h2>Modules</h2>
@@ -38,14 +43,14 @@
   <li><a href="../modules/classes.class.html">classes.class</a></li>
   <li><a href="../modules/classes.costume.html">classes.costume</a></li>
   <li><a href="../modules/classes.item.html">classes.item</a></li>
-  <li><strong>classes.lib.lua-astar.middleclass</strong></li>
+  <li><a href="../modules/classes.lib.lua-astar.middleclass.html">classes.lib.lua-astar.middleclass</a></li>
   <li><a href="../modules/classes.narrator.html">classes.narrator</a></li>
   <li><a href="../modules/classes.room.html">classes.room</a></li>
   <li><a href="../modules/classes.savemanager.html">classes.savemanager</a></li>
   <li><a href="../modules/classes.scaffoldtable.html">classes.scaffoldtable</a></li>
   <li><a href="../modules/classes.shader.html">classes.shader</a></li>
   <li><a href="../modules/classes.task.html">classes.task</a></li>
-  <li><a href="../modules/classes.timer.html">classes.timer</a></li>
+  <li><strong>classes.timer</strong></li>
   <li><a href="../modules/src.install_meta.html">src.install_meta</a></li>
   <li><a href="../modules/src.meta.reference.html">src.meta.reference</a></li>
 </ul>
@@ -54,18 +59,63 @@
 
 <div id="content">
 
-<h1>Module <code>classes.lib.lua-astar.middleclass</code></h1>
+<h1>Module <code>classes.timer</code></h1>
 
-<p>middleclass.lua - v1.2
- Enrique García ( enrique.garcia.cota [AT] gmail [DOT] com ) - 19 Oct 2009
- Based on YaciCode, from Julien Patte and LuaObject, from Sébastien Rocca-Serra</p>
+<p>Provides an interruptable timer with customizable delta callbacks.</p>
 <p></p>
 
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Timer:stop">Timer:stop&nbsp;()</a></td>
+	<td class="summary">Stops a running timer.</td>
+	</tr>
+</table>
+<h2><a href="#Classes">Classes</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Timer">Timer</a></td>
+	<td class="summary">The Timer class.</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Timer:stop"></a>
+    <strong>Timer:stop&nbsp;()</strong>
+    </dt>
+    <dd>
+    Stops a running timer. 
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Classes"></a>Classes</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Timer"></a>
+    <strong>Timer</strong>
+    </dt>
+    <dd>
+    The Timer class. 
+ Constructor signature is (duration, rep, callback, deltacallback).
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->

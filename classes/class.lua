@@ -1,3 +1,9 @@
+--- Provides class infrastructure.
+
+--- Creates a new class, and registers it in the global namespace.
+-- @param name The name of the class
+-- @param ctor A constructor function, or false for purely static classes
+-- @return The new class
 function newclass(name, ctor)
     _G[name] = { }
     
@@ -39,9 +45,12 @@ function newclass(name, ctor)
     return class
 end
 
---------------------------------------------------
-
+-------------------------------------------------
+;
 local origType = type
+
+--- Overloads type to return the class name of class instances
+-- @param object
 function type(object)
     local t = origType(object)
     

@@ -1,5 +1,15 @@
+--- The Narrator creates context appropriate strings given a set of rules.
+-- It is used primarily to create the action text.
+
 mrequire "classes/class"
 
+--- The Narrator class.
+-- Constructor signature is (default, missing, sMatch, nMatch).
+-- Default is a string to return when no rules match.
+-- Missing fills in empty blanks.
+-- sMatch is the score awarded for specific rule matches.
+-- nMatch is the score awarded for necessary rule matches.
+-- @newclass Narrator
 newclass("Narrator",
     function(default, missing, sMatch, nMatch)
         return {
@@ -13,6 +23,8 @@ newclass("Narrator",
     end
 )
 
+--- Internal function to parse a rule table into specific and necessary conditions.
+-- @param conditions
 function Narrator:determineConditions(conditions)
     local specific = { }
     local necessary = { }
@@ -28,6 +40,10 @@ function Narrator:determineConditions(conditions)
     return specific, necessary
 end
 
+--- Creates a new rule which will return a string when certain conditions match.
+-- @param desc The string to return. May include specific keys in braces to be replaced upon match.
+-- @param conditions See getString for a description of this table
+-- @see Narrator:getString
 function Narrator:addRule(desc, conditions)
     local s, n = self:determineConditions(conditions)
 
@@ -38,6 +54,10 @@ function Narrator:addRule(desc, conditions)
     })
 end
 
+--- Internal method to determine the score of a rule given specific and necessary conditions.
+-- @param rule
+-- @param s
+-- @param n
 function Narrator:evaluate(rule, s, n)
     local score = 0
     
@@ -60,6 +80,8 @@ function Narrator:evaluate(rule, s, n)
     return score
 end
 
+--- Returns the best string for given conditions.
+-- @param conditions Table of key=>value pairs for specific conditions, or simply value for keys which must be set.
 function Narrator:getString(conditions)
     local s, n = self:determineConditions(conditions)
     

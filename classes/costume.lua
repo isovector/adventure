@@ -1,3 +1,5 @@
+--- Costumes are animation sources for Actors.
+
 mrequire "classes/class"
 
 costumes = { }

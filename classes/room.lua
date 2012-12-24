@@ -1,3 +1,7 @@
+--- Rooms are locations that may contain Actors.
+-- They consist of a backdrop, Actors, Hotspots, and doors.
+-- Rooms are created via the room editor, and are automatically loaded via the 3-load-rooms.lua service.
+
 mrequire "classes/class"
 mrequire "classes/hotspot"
 mrequire "classes/interpolator"
@@ -5,9 +9,14 @@ mrequire "classes/polygon"
 mrequire 'classes/lib/lua-astar/astar'
 mrequire 'classes/lib/lua-astar/volumehandler'
 
+--- A global pointing at the current room
 room = { }
 
 local rooms = { }
+
+--- The Room class.
+-- Constructor signature is (id, path).
+-- @newclass Room
 newclass("Room", 
     function(id, path)
         local perspective = Interpolator.new()
@@ -35,12 +44,16 @@ newclass("Room",
     end
 )
 
+--- Static method to get a room by id.
+-- @param id
 function Room.getRoom(id)
     id = id or room.id
 
     return rooms[id]
 end
 
+--- Static method to change the current room.
+-- @param id
 function Room.change(id)
     if rooms[id] then
         room:unload()
@@ -48,6 +61,9 @@ function Room.change(id)
     end
 end
 
+--- Internal method to create a nav mesh.
+-- User code should never call this.
+-- @param polys A table of alternating x, y coordinates of polygon vertices
 function Room:installPathing(polys)
     local res = 16
     
@@ -78,10 +94,14 @@ function Room:installPathing(polys)
     self.walkPolygon = hs
 end
 
+--- Add a Hotspot to the room.
+-- @param hotspot
 function Room:addHotspot(hotspot)
     table.insert(self.hotspots, hotspot)
 end
 
+--- Remove a hotspot from the room.
+-- @param id The id of the Hotspot to remove
 function Room:removeHotspot(id)
     for i = 1, #self.hotspots do
         if self.hotspots[i].id == id then
@@ -91,11 +111,17 @@ function Room:removeHotspot(id)
     end
 end
 
+--- Turns a world space location into a pathing map node.
+-- @return A table of (x => x, y => y) which can be fed into lua-astar
 function Room:locToPos(x, y)
     local res = self.astar.resolution
     return { x = math.floor(x / res) + 1, y = math.floor(y / res) + 1 }
 end
 
+--- Turns a pathing map node into a world space location.
+-- @param node The result of a locToPos or pathfinding node
+-- @return x
+-- @return y
 function Room:nodeToLoc(node)
     if not node then return 0, 0 end
     
@@ -105,6 +131,12 @@ function Room:nodeToLoc(node)
     return loc.x * res - res / 2, loc.y * res - res / 2
 end
 
+--- Shortens an A* path by bisection of intersecting edges
+-- @param nodes The calculated A* path
+-- @param poly The navmesh (this doesn't appear to be used)
+-- @param low The lower bound of the recursion
+-- @param high The upper bound of the recursion
+-- @return A smoother path than the one given by A*
 function Room:shortenPath(nodes, poly, low, high)
     if high <= low then
         return { { self:nodeToLoc(nodes[low]) } }
@@ -129,6 +161,13 @@ function Room:shortenPath(nodes, poly, low, high)
     return { {ax,ay}, {bx,by} }
 end
 
+--- Calculates a path against the navmesh
+-- @param sx Source x
+-- @param sy Source y
+-- @param dx Destination x
+-- @param dy Destination y
+-- @param w The width of the pathfinder
+-- @param h The height of the pathfinder
 function Room:getPath(sx, sy, dx, dy, w, h)
     if not self.astar then return nil end
 
@@ -151,6 +190,8 @@ function Room:getPath(sx, sy, dx, dy, w, h)
     return self:shortenPath(nodes, self.walkPolygon, 1, #nodes)
 end
 
+--- Initializes a room.
+-- Sets the backdrop, hotspots, joins Actors, and calls the reload script.
 function Room:load()
     room = self
     game.setBackground(self.img_path)
@@ -170,12 +211,15 @@ function Room:load()
     self:reload()
 end
 
+--- Calls the reload script.
+-- Called whenever a room is entered or a save is loaded.
 function Room:reload()
     if self.events.__utility and self.events.__utility.reload then
         self.events.__utility.reload()
     end
 end
 
+--- Cleans up a room when another is being loaded.
 function Room:unload()
     room = nil
     game.setHotspots({ })
@@ -185,6 +229,8 @@ function Room:unload()
     end
 end
 
+--- Adds an Actor to the scene graph.
+-- @param actor A real actor (not an id)
 function Room:addActor(actor, x, y)
     if not self.scene[actor.id] then
         local entry = { actor = actor, x = x, y = y }
@@ -203,6 +249,8 @@ function Room:addActor(actor, x, y)
     end
 end
 
+--- Removes an Actor from the scene graph.
+-- @param actor
 function Room:removeActor(actor)
     self.scene[actor.id] = nil
     

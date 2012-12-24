@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>adventure engine v1.1</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>adventure engine</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Classes">Classes</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/classes.actor.html">classes.actor</a></li>
+  <li><a href="../modules/classes.class.html">classes.class</a></li>
+  <li><a href="../modules/classes.costume.html">classes.costume</a></li>
+  <li><a href="../modules/classes.item.html">classes.item</a></li>
+  <li><a href="../modules/classes.lib.lua-astar.middleclass.html">classes.lib.lua-astar.middleclass</a></li>
+  <li><a href="../modules/classes.narrator.html">classes.narrator</a></li>
+  <li><a href="../modules/classes.room.html">classes.room</a></li>
+  <li><a href="../modules/classes.savemanager.html">classes.savemanager</a></li>
+  <li><strong>classes.scaffoldtable</strong></li>
+  <li><a href="../modules/classes.shader.html">classes.shader</a></li>
+  <li><a href="../modules/classes.task.html">classes.task</a></li>
+  <li><a href="../modules/classes.timer.html">classes.timer</a></li>
+  <li><a href="../modules/src.install_meta.html">src.install_meta</a></li>
+  <li><a href="../modules/src.meta.reference.html">src.meta.reference</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>classes.scaffoldtable</code></h1>
+
+<p>Provides an automatically expanding table hierarchy.</p>
+<p>
+ This is used to rapidly declare hierarchical data that won't change during runtime.</p>
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ScaffoldTable:getBreadcrumbs">ScaffoldTable:getBreadcrumbs&nbsp;()</a></td>
+	<td class="summary">Returns a table of the position of the current node in a ScaffoldTable.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ScaffoldTable:__index">ScaffoldTable:__index&nbsp;(key)</a></td>
+	<td class="summary">The magic indexing behavior of the ScaffoldTable.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ScaffoldTable:__newindex">ScaffoldTable:__newindex&nbsp;(key, value)</a></td>
+	<td class="summary">Calls the registered callback when newindexed.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ScaffoldTable:__assign">ScaffoldTable:__assign&nbsp;()</a></td>
+	<td class="summary">Legacy code.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ScaffoldTable:__deref">ScaffoldTable:__deref&nbsp;()</a></td>
+	<td class="summary">Legacy code.</td>
+	</tr>
+</table>
+<h2><a href="#Classes">Classes</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ScaffoldTable">ScaffoldTable</a></td>
+	<td class="summary">The ScaffoldTable class.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "ScaffoldTable:getBreadcrumbs"></a>
+    <strong>ScaffoldTable:getBreadcrumbs&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns a table of the position of the current node in a ScaffoldTable. 
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+        The position of the current node in the ScaffoldTable.
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "ScaffoldTable:__index"></a>
+    <strong>ScaffoldTable:__index&nbsp;(key)</strong>
+    </dt>
+    <dd>
+    The magic indexing behavior of the ScaffoldTable. 
+ If the requested index doesn't exist, this will return a new table parented
+ to the indexee.
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>key</em></code>:  The name of the new table</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ScaffoldTable:__newindex"></a>
+    <strong>ScaffoldTable:__newindex&nbsp;(key, value)</strong>
+    </dt>
+    <dd>
+    Calls the registered callback when newindexed. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>key</em></code>: </li>
+       <li><code><em>value</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ScaffoldTable:__assign"></a>
+    <strong>ScaffoldTable:__assign&nbsp;()</strong>
+    </dt>
+    <dd>
+    Legacy code.  To be removed.
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ScaffoldTable:__deref"></a>
+    <strong>ScaffoldTable:__deref&nbsp;()</strong>
+    </dt>
+    <dd>
+    Legacy code.  To be removed.
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Classes"></a>Classes</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "ScaffoldTable"></a>
+    <strong>ScaffoldTable</strong>
+    </dt>
+    <dd>
+    The ScaffoldTable class. 
+ Constructor signature is (callback, getCallback, lastSeparate, ...).
+ Indexing this table results in automatic copies of itself with a parent pointer.
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

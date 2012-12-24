@@ -30,6 +30,11 @@
   <li><a href="../index.html">Index</a></li>
 </ul>
 
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Classes">Classes</a></li>
+</ul>
 
 
 <h2>Modules</h2>
@@ -38,13 +43,13 @@
   <li><a href="../modules/classes.class.html">classes.class</a></li>
   <li><a href="../modules/classes.costume.html">classes.costume</a></li>
   <li><a href="../modules/classes.item.html">classes.item</a></li>
-  <li><strong>classes.lib.lua-astar.middleclass</strong></li>
+  <li><a href="../modules/classes.lib.lua-astar.middleclass.html">classes.lib.lua-astar.middleclass</a></li>
   <li><a href="../modules/classes.narrator.html">classes.narrator</a></li>
   <li><a href="../modules/classes.room.html">classes.room</a></li>
   <li><a href="../modules/classes.savemanager.html">classes.savemanager</a></li>
   <li><a href="../modules/classes.scaffoldtable.html">classes.scaffoldtable</a></li>
   <li><a href="../modules/classes.shader.html">classes.shader</a></li>
-  <li><a href="../modules/classes.task.html">classes.task</a></li>
+  <li><strong>classes.task</strong></li>
   <li><a href="../modules/classes.timer.html">classes.timer</a></li>
   <li><a href="../modules/src.install_meta.html">src.install_meta</a></li>
   <li><a href="../modules/src.meta.reference.html">src.meta.reference</a></li>
@@ -54,18 +59,87 @@
 
 <div id="content">
 
-<h1>Module <code>classes.lib.lua-astar.middleclass</code></h1>
+<h1>Module <code>classes.task</code></h1>
 
-<p>middleclass.lua - v1.2
- Enrique García ( enrique.garcia.cota [AT] gmail [DOT] com ) - 19 Oct 2009
- Based on YaciCode, from Julien Patte and LuaObject, from Sébastien Rocca-Serra</p>
+<p>Provides asynchronous task functionality.</p>
 <p></p>
 
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Task.sleep">Task.sleep&nbsp;(time)</a></td>
+	<td class="summary">Blocks the currently running task.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Task.start">Task.start&nbsp;(callback, ...)</a></td>
+	<td class="summary">Runs a function asynchronously</td>
+	</tr>
+</table>
+<h2><a href="#Classes">Classes</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Task">Task</a></td>
+	<td class="summary">The static Task class.</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Task.sleep"></a>
+    <strong>Task.sleep&nbsp;(time)</strong>
+    </dt>
+    <dd>
+    Blocks the currently running task. 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>time</em></code>:  The time to block for in seconds</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Task.start"></a>
+    <strong>Task.start&nbsp;(callback, ...)</strong>
+    </dt>
+    <dd>
+    Runs a function asynchronously 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>callback</em></code>: </li>
+       <li><code><em>...</em></code>: </li>
+    </ul>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Classes"></a>Classes</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "Task"></a>
+    <strong>Task</strong>
+    </dt>
+    <dd>
+    The static Task class. 
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->

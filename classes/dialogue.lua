@@ -45,8 +45,7 @@ function Topic:option(id)
         game.enableInput(false)
     
         if not option.flags:match("s") then
-            -- TODO(sandy): make this use the player
-            Actor.getActor("santino"):say(option.caption)
+            Adventure.player:say(option.caption)
         end
 
         option.callback()

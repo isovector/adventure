@@ -4,7 +4,8 @@
 
 mrequire "classes/class"
 
-local items = { }
+import items from Adventure
+items = { }
 
 --- The Item class.
 -- Constructor signature is (id, name, tags).

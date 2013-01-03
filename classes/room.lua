@@ -10,7 +10,7 @@ mrequire 'classes/lib/lua-astar/astar'
 mrequire 'classes/lib/lua-astar/volumehandler'
 
 --- A global pointing at the current room
-room = { }
+import room from Adventure
 
 local rooms = { }
 

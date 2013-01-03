@@ -9,7 +9,8 @@ local persistence = _G["classes/lib/persistence"]
 
 --------------------------------------------------
 
-local gamedata = { }
+import save, room from Adventure
+save = { }
 
 --------------------------------------------------
 
@@ -29,8 +30,7 @@ SaveManager.format = 2
 --- Internal class to register saving functionality.
 -- This is usually called by the 0-save-games.lua service.
 function SaveManager.install()
-    gamedata = { }
-    _G.save = gamedata
+    save = { }
 end
 
 --- Saves the current state of the game into a slot.
@@ -58,18 +58,18 @@ function SaveManager.save(slot, name)
         end
     end
     
-    gamedata[".meta"] = meta
+    save[".meta"] = meta
 
     MOAIFileSystem.affirmPath(".saves/")
-    persistence.store(string.format(".saves/%d.sav", slot), gamedata)
+    persistence.store(string.format(".saves/%d.sav", slot), save)
 end
 
 --- Loads a save game into memory.
 -- @param slot The save game slot to load
 function SaveManager.load(slot)
-    gamedata = persistence.load(string.format(".saves/%d.sav", slot))
+    save = persistence.load(string.format(".saves/%d.sav", slot))
     
-    local meta = gamedata[".meta"]
+    local meta = save[".meta"]
     
     if meta.format ~= SaveManager.format then
         error("Unable to load incompatable format of save game")
@@ -90,8 +90,7 @@ function SaveManager.load(slot)
         end
     end
     
-    gamedata[".meta"] = nil
-    _G.save = gamedata
+    save[".meta"] = nil
     
     room:reload()
 end

@@ -6,6 +6,3 @@ mrequire "classes/room"
 --------------------------------------------------
 
 mrequire "assets/services"
-
-local config = require "assets/config"
-Room.getRoom(config.initialRoom):load()

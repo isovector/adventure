@@ -9,6 +9,10 @@ sheet:install()
 
 --------------------------------------------------
 
+import player from Adventure
+
+--------------------------------------------------
+
 local quad = MOAIGfxQuad2D.new()
 quad:setRect(0, 0, 1280, 720)
 quad:setUVRect(0, 0, 1, 1)
@@ -46,9 +50,8 @@ function sheet:onClick(prop, x, y, down)
         return true
     end
     
-    local actor = Actor.getActor("santino")
-    if actor.prop then
-        actor:walkToAsync(x, y)
+    if player.prop then
+        player:walkToAsync(x, y)
     end
     
     return true
@@ -59,7 +62,7 @@ function sheet:onRClick(prop, x, y, down)
         if game.getCurrentItem() then
             game.setCurrentItem(nil)
         else
-            game.showInventory(Actor.getActor("santino"))
+            game.showInventory(player)
         end
     end
 end

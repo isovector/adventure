@@ -149,7 +149,7 @@ local function import_builder(x)
         local value = import[2]
         if id and id[1] then
             local index = `Index { index, `String { id[1] } }
-            table.insert(result, `If { `Op { "eq", index, `Nil },  { `Set { { index }, { value[1] or `False } } } })
+            table.insert(result, `If { `Op { "eq", index, `Nil },  { `Set { { index }, { value[1] or `Nil } } } })
             table.insert(result, `Call { `Id{ ".$REF" .. id[1]}, index })
         end
     end

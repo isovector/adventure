@@ -1,5 +1,5 @@
---- Actors are game objects. They can move, animate, and talk.
--- Actors are usually created via the 2-load-actors.lua service,
+--- actors are game objects. They can move, animate, and talk.
+-- actors are usually created via the 2-load-actors.lua service,
 -- which loads them from /assets/actors/
 
 mrequire "classes/class"
@@ -8,7 +8,8 @@ mrequire "classes/item"
 mrequire "classes/task"
 
 --- A global table containing id => Actor
-Actors = { }
+import actors, room from Adventure
+actors = { }
 
 --- The Actor class.
 -- Constructor signature is (id, name, costume, color).
@@ -36,18 +37,18 @@ newclass("Actor",
             hitHotspot = nil
         }
         
-        Actors[id] = actor
+        actors[id] = actor
         
         return actor
     end
 )
 
 --- Gets an actor by id.
--- This is more OO than directly indexing the Actors table
+-- This is more OO than directly indexing the actors table
 -- @param id
 -- @return An Actor registered by id
 function Actor.getActor(id)
-    return Actors[id]
+    return actors[id]
 end
 
 --- Gets the location of an Actor in world space.

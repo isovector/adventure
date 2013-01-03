@@ -10,6 +10,10 @@ sheet:install()
 
 --------------------------------------------------
 
+import room from Adventure
+
+--------------------------------------------------
+
 local quad = MOAIGfxQuad2D.new()
 quad:setRect(-72, -24, 72, 24)
 quad:setUVRect(0, 0, 1, 1)

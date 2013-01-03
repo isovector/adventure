@@ -2,6 +2,8 @@ mrequire "classes/polygon"
 mrequire "classes/sheet"
 mrequire "classes/serialize"
 
+import room from Adventure
+
 local sheet = Sheet.new("editor")
 sheet:install()
 sheet:enable(false)

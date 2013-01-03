@@ -1,3 +1,4 @@
 return {
-    initialRoom = "menu"
+    player = "santino",
+    initialRoom = "meadow"
 }

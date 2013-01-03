@@ -2,6 +2,8 @@ mrequire "classes/hotspot"
 mrequire "classes/sheet"
 mrequire "classes/task"
 
+import player from Adventure
+
 local sheet = Sheet.new("hotspots")
 
 sheet:setClickAcceptor(Sheet.all_acceptor)
@@ -36,7 +38,7 @@ local function handleDoors(object)
         event()
     elseif object.endpoint then
         Task.start(function()
-            local actor = Actor.getActor("santino")
+            local actor = player
         
             if object.walkspot then
                 local x, y = unpack(object.walkspot)

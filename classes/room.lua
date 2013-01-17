@@ -100,6 +100,16 @@ function Room:addHotspot(hotspot)
     table.insert(self.hotspots, hotspot)
 end
 
+--- Lookup a hotspot by id.
+-- @param id
+function Room:getHotspotById(id)
+    for hotspot in values(self.hotspots) do
+        if hotspot.id == id then
+            return hotspot
+        end
+    end
+end
+
 --- Remove a hotspot from the room.
 -- @param id The id of the Hotspot to remove
 function Room:removeHotspot(id)

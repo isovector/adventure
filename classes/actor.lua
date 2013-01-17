@@ -282,3 +282,14 @@ function Actor:mainLoop()
     
     self.loop = nil
 end
+
+--- Convince an actor to exit the room by the id of a door.
+-- @param id
+function Actor:exitRoomByDoor(id)
+    local door = room:getHotspotById(id)
+    if door and door.walkspot then
+        local x, y = unpack(door.walkspot)
+        self:walkTo(x, y)
+        room:removeActor(self)
+    end
+end

@@ -1,5 +1,10 @@
+--- Provides the vim-like command line interface.
+
 mrequire "classes/class"
 
+--- The Vim class.
+-- Constructor signature is ().
+-- @newclass Vim
 newclass("Vim", 
     function()
         return {
@@ -12,6 +17,8 @@ newclass("Vim",
     end
 )
 
+--- Returns a string representation of the buffer or, if empty,  the name of the current 
+-- mode.
 function Vim:getBufferText()
     if self.buffer == "" then
         return "-- " .. string.upper(self.mode) .. " --"
@@ -20,17 +27,22 @@ function Vim:getBufferText()
     return self.buffer
 end
 
+--- Adds a character to the buffer.
+-- @param char
 function Vim:addChar(char)
     self.buffer = self.buffer .. char
     self:change()
     self:check()
 end
 
+--- Simulates pressing backspace on the buffer.
 function Vim:backspace()
     self.buffer = self.buffer:sub(1, #self.buffer - 1)
     self:change()
 end
 
+--- Internal method called whenever the buffer changes, used to manage change 
+-- callbacks.
 function Vim:change()
     if #self.change_callbacks == 0 then return end
 
@@ -41,10 +53,16 @@ function Vim:change()
     self.change_callbacks = { }
 end
 
+--- Register a function to be called when the buffer changes.
+-- @param callback
 function Vim:addChangeCallback(callback)
     table.insert(self.change_callbacks, callback)
 end
 
+--- Sets the current mode. If no_history is set, the current mode will not be put onto 
+-- the history stack.
+-- @param mode
+-- @param no_history
 function Vim:setMode(mode, no_history)
     local old = self.mode
     if not no_history then
@@ -62,6 +80,7 @@ function Vim:setMode(mode, no_history)
     end
 end
 
+--- Pops a mode off of the history stack.
 function Vim:popMode()
     local idx = #self.mode_stack
     
@@ -74,6 +93,8 @@ function Vim:popMode()
     table.remove(self.mode_stack, idx)
 end
 
+--- Clears the buffer. If change_mode is on, simulates pressing <ESC> in Vim.
+-- @param change_mode
 function Vim:clear(change_mode)
     self:change()
     if self.buffer == "" and change_mode then
@@ -83,6 +104,10 @@ function Vim:clear(change_mode)
     end
 end
 
+--- Checks if a command matches any commands registered in a given mode.
+-- @param mode
+-- @param cmd
+-- @param args
 function Vim:checkModeCmd(mode, cmd, args)
     for _, entry in ipairs(self.modes[mode].commands) do
         if cmd == entry.cmd then
@@ -95,6 +120,7 @@ function Vim:checkModeCmd(mode, cmd, args)
     return false
 end
 
+--- Called when the buffer is submitted (ie: <RET> in Vim).
 function Vim:send()
     local buffer = self.buffer
     
@@ -123,6 +149,7 @@ function Vim:send()
     self:clear()
 end
 
+--- Checks whether any buffer actions match the buffer.
 function Vim:check()
     local buffer = self.buffer
     local cleared = false
@@ -143,6 +170,10 @@ function Vim:check()
     end
 end
 
+--- Adds a new mode, calling enter when entering, and exit when exiting.
+-- @param mode
+-- @param enter
+-- @param exit
 function Vim:createMode(mode, enter, exit)
     if not self.modes[mode] then
         self.modes[mode] = { commands = { }, buffs = { }, onEnter = enter, onExit = exit }
@@ -157,6 +188,10 @@ function Vim:createMode(mode, enter, exit)
     end
 end
 
+--- Adds a new buffer action. Cmd should be regex to be matched on the buffer.
+-- @param mode
+-- @param cmd
+-- @param action
 function Vim:buf(mode, cmd, action)
     self:createMode(mode)
 
@@ -174,6 +209,11 @@ local function build_command(t, cmd, action)
     table.insert(t, { cmd = cmd, action = action })
 end
 
+--- Adds a new command to the Vim. Command should be of the form "ac|tion", where
+-- the pipe indicates the break for a shortcut.
+-- @param mode
+-- @param cmd
+-- @param action
 function Vim:cmd(mode, cmd, action)
     self:createMode(mode)
 

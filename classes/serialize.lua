@@ -1,15 +1,22 @@
+--- The serializer class. This manages recursive serializations.
+
 require "classes/class"
 
 local indent = 0
 
 --------------------------------------------------
 
+
+--- The Serialize class.
+-- @newclass Serialize
 newclass("Serialize",
     function()
         return { }
     end
 )
 
+--- Returns a string representing the indenting for a given block depth.
+-- @param indent
 function Serialize.getIndent(indent)
     local ret = ""
     for i = 1, indent do
@@ -19,6 +26,9 @@ function Serialize.getIndent(indent)
     return ret
 end
 
+--- Recursively serializes an object into f.
+-- @param f
+-- @param obj
 function Serialize.put(f, obj, ...)
     if not obj.__serialize then
         error("No serialize method for type " .. type(obj))

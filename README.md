@@ -1,4 +1,4 @@
-adventure engine 1.0.0
+adventure engine 1.1.0
 ======================
 
 adventure engine is a MOAI-based game engine for creating old '90s styled LucasArts graphical point-n-click adventure games. The engine is open-source, and permissively licensed, so that your games can be sold with no licensing hassles. adventure engine has most of the features you'd expect from a neo-classic adventure game including support for actors, dialogue, inventories, multiple verbs and by being written in lua - it seemlessly includes an expressive scripting language. In addition, it comes with a fully functional content editor and an art pipeline.
@@ -7,9 +7,15 @@ The codebase is broken into two main directories, *classes/* and *assets/*. The 
 
 Art assets can be created in synfig-studio, and imported into the game via the makefile. The wikipage on Costumes has more information.
 
-Unfortunately, at this time there is little documentation of the engine as a whole, or of any individual components. The room editor interface is notoriously bad, but those familiar with vim might have a fair go at getting it to work. See the exported commands at the end of *assets/sheets/editor.lua* for breadcrumbs on where to start. That being said, if you have any questions, feel free to contact me and I will do my best to respond in a timely fashion.
-
 Happy adventuring!
+
+
+New Changes
+===========
+
+New in version 1.1.0 is the persistence interface. There is now a automated game saving/loading system, and a unified API to work with it. See the sample code for details!
+
+Also new in this version is the entire codebase has been commented, and outputted to HTML via ldoc. 
 
 
 
@@ -42,4 +48,4 @@ After all of that, try:
 
 > adventure.bat
 
-Easy.
+Easy, probably.

@@ -1,5 +1,12 @@
+--- Utility class which manages z-scaling and other linear interpolations.
+
 require "classes/class"
 
+--- The Interpolator class.
+-- Constructor signature is (errorValue?).
+-- ErrorValue is the value returned when the Interpolator is unable to lerp
+-- due to not having enough data points.
+-- @newclass Interpolator
 newclass("Interpolator",
     function(errorValue)
         errorValue = errorValue or -1
@@ -11,6 +18,7 @@ newclass("Interpolator",
     end
 )
 
+--- Removes all points from the lerper.
 function Interpolator:clear()
     for _, key in ipairs(rawget(self, "keys")) do
         rawset(self, key, nil)
@@ -19,6 +27,8 @@ function Interpolator:clear()
     rawset(self, "keys", { })
 end
 
+--- Metafunction which calculates a lerp between given datapoints.
+-- @param index
 function Interpolator:__index(index)
     local value = rawget(self, index)
     
@@ -60,6 +70,10 @@ end
 
 local oldAssert = assert
 local nullAssert = function() end
+
+--- Metafunction which sets a new lerp datapoint.
+-- @param index
+-- @param value
 function Interpolator:__newindex(index, value)
     rawset(self, index, value)
     

@@ -1,8 +1,8 @@
 #!./moai-untz
 
 require "src/install_meta"
-mrequire "classes/room"
+mrequire "src/game/room"
 
 --------------------------------------------------
 
-mrequire "assets/services"
+mrequire "game/services"

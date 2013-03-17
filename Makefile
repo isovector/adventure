@@ -1,6 +1,6 @@
 OBJDIR = art/obj
-COSTDIR = assets/costumes
-ITEMDIR = assets/items
+COSTDIR = game/costumes
+ITEMDIR = game/items
 
 #########################################################
 
@@ -9,12 +9,12 @@ items = $(patsubst %.png, %.lua, $(shell find $(ITEMDIR)/ -type f -name '*.png')
 
 #########################################################
 
-art : $(OBJDIR) assets/services/1-build-costumes.lua
+art : $(OBJDIR) game/services/1-build-costumes.lua
 
 items : $(items)
 
-assets/services/1-build-costumes.lua : utils/build_costume.py $(art)
-	python2 utils/build_costume.py art > assets/services/1-build-costumes.lua
+game/services/1-build-costumes.lua : src/utils/build_costume.py $(art)
+	python2 src/utils/build_costume.py art > game/services/1-build-costumes.lua
 
 $(COSTDIR)/%.png : art/%.png
 	mkdir -p $(dir $@)
@@ -27,7 +27,7 @@ $(COSTDIR)/%.png : art/%.sifz
 	rm $(OBJDIR)/*.png
 
 $(ITEMDIR)/%.lua : $(ITEMDIR)/%.png
-	lua utils/build_item.lua `basename -s .png $<` > $@
+	lua src/utils/build_item.lua `basename -s .png $<` > $@
 
 #########################################################
 

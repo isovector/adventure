@@ -1,55 +1,55 @@
 <root identifier="sciteproj project file">
 	<file>./adventure</file>
 	<group name='classes' expanded='TRUE'>
-		<file>./classes/actor.lua</file>
-		<file>./classes/class.lua</file>
-		<file>./classes/costume.lua</file>
-		<file>./classes/dialogue.lua</file>
-		<file>./classes/fragmentshader.lua</file>
-		<file>./classes/functionprovider.lua</file>
-		<file>./classes/hotspot.lua</file>
-		<file>./classes/item.lua</file>
-		<file>./classes/labeler.lua</file>
-		<file>./classes/narrator.lua</file>
-		<file>./classes/polygon.lua</file>
-		<file>./classes/savemanager.lua</file>
-		<file>./classes/scaffoldtable.lua</file>
-		<file>./classes/room.lua</file>
-		<file>./classes/shader.lua</file>
-		<file>./classes/sheet.lua</file>
-		<file>./classes/task.lua</file>
-		<file>./classes/timer.lua</file>
-		<file>./classes/vim.lua</file>
+		<file>./src/game/actor.lua</file>
+		<file>./src/class.lua</file>
+		<file>./src/game/costume.lua</file>
+		<file>./src/game/dialogue.lua</file>
+		<file>./src/engine/fragmentshader.lua</file>
+		<file>./src/engine/functionprovider.lua</file>
+		<file>./src/game/hotspot.lua</file>
+		<file>./src/game/item.lua</file>
+		<file>./src/engine/labeler.lua</file>
+		<file>./src/game/narrator.lua</file>
+		<file>./src/engine/polygon.lua</file>
+		<file>./src/engine/savemanager.lua</file>
+		<file>./src/engine/scaffoldtable.lua</file>
+		<file>./src/game/room.lua</file>
+		<file>./src/engine/shader.lua</file>
+		<file>./src/engine/sheet.lua</file>
+		<file>./src/engine/task.lua</file>
+		<file>./src/engine/timer.lua</file>
+		<file>./src/engine/vim.lua</file>
 	</group>
 	<group name='meta' expanded='TRUE'>
 		<file>./src/meta/reference.lua</file>
 	</group>
 	<group name='sheets' expanded='TRUE'>
-		<file>./assets/sheets/bg.lua</file>
-		<file>./assets/sheets/dialogue.lua</file>
-		<file>./assets/sheets/editor.lua</file>
-		<file>./assets/sheets/fg.lua</file>
-		<file>./assets/sheets/hotspots.lua</file>
-		<file>./assets/sheets/hud.lua</file>
-		<file>./assets/sheets/inventory.lua</file>
-		<file>./assets/sheets/talk.lua</file>
-		<file>./assets/sheets/verbs.lua</file>
-		<file>./assets/sheets/vis.lua</file>
+		<file>./game/sheets/bg.lua</file>
+		<file>./game/sheets/dialogue.lua</file>
+		<file>./game/sheets/editor.lua</file>
+		<file>./game/sheets/fg.lua</file>
+		<file>./game/sheets/hotspots.lua</file>
+		<file>./game/sheets/hud.lua</file>
+		<file>./game/sheets/inventory.lua</file>
+		<file>./game/sheets/talk.lua</file>
+		<file>./game/sheets/verbs.lua</file>
+		<file>./game/sheets/vis.lua</file>
 	</group>
 	<group name='services' expanded='TRUE'>
-		<file>./assets/services/0-functionproviders.lua</file>
-		<file>./assets/services/0-save-games.lua</file>
-		<file>./assets/services/1-build-costumes.lua</file>
-		<file>./assets/services/1-create-window.lua</file>
-		<file>./assets/services/1-load-font.lua</file>
-		<file>./assets/services/1-load-shaders.lua</file>
-		<file>./assets/services/1-load-sheets.lua</file>
-		<file>./assets/services/2-load-actors.lua</file>
-		<file>./assets/services/2-load-items.lua</file>
-		<file>./assets/services/3-action-narrator.lua</file>
-		<file>./assets/services/3-global-bindings.lua</file>
-		<file>./assets/services/3-load-rooms.lua</file>
-		<file>./assets/services/9-input.lua</file>
+		<file>./game/services/0-functionproviders.lua</file>
+		<file>./game/services/0-save-games.lua</file>
+		<file>./game/services/1-build-costumes.lua</file>
+		<file>./game/services/1-create-window.lua</file>
+		<file>./game/services/1-load-font.lua</file>
+		<file>./game/services/1-load-shaders.lua</file>
+		<file>./game/services/1-load-sheets.lua</file>
+		<file>./game/services/2-load-actors.lua</file>
+		<file>./game/services/2-load-items.lua</file>
+		<file>./game/services/3-action-narrator.lua</file>
+		<file>./game/services/3-global-bindings.lua</file>
+		<file>./game/services/3-load-rooms.lua</file>
+		<file>./game/services/9-input.lua</file>
 	</group>
 	<group name='utils' expanded='TRUE'>
 		<file>./utils/build_costume.py</file>

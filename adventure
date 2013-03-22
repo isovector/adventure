@@ -5,4 +5,4 @@ mrequire "src/game/room"
 
 --------------------------------------------------
 
-mrequire "game/services"
+mrequire "src/game/services"

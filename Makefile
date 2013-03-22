@@ -9,12 +9,12 @@ items = $(patsubst %.png, %.lua, $(shell find $(ITEMDIR)/ -type f -name '*.png')
 
 #########################################################
 
-art : $(OBJDIR) game/services/1-build-costumes.lua
+art : $(OBJDIR) game/costumes/costumes.lua
 
 items : $(items)
 
-game/services/1-build-costumes.lua : src/utils/build_costume.py $(art)
-	python2 src/utils/build_costume.py art > game/services/1-build-costumes.lua
+game/costumes/costumes.lua : src/utils/build_costume.py $(art)
+	python2 src/utils/build_costume.py art > game/costumes/costumes.lua
 
 $(COSTDIR)/%.png : art/%.png
 	mkdir -p $(dir $@)

@@ -1,0 +1,1 @@
+mrequire "game/costumes/costumes"

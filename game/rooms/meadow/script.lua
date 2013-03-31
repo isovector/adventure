@@ -1,5 +1,5 @@
 import 
-    playedIntro = false,
+    playedIntro = true,
     isOpen = false 
     from Adventure.save.meadow
     

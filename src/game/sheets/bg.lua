@@ -1,3 +1,4 @@
+mrequire "src/engine/shader"
 mrequire "src/engine/sheet"
 
 local sheet = Sheet.new("background")
@@ -21,6 +22,9 @@ local prop = MOAIProp2D.new()
 prop:setDeck(quad)
 
 sheet:insertProp(prop)
+
+local shader = Shader.new("vertex", "pixelize")
+--shader:applyTo(prop)
 
 --------------------------------------------------
 

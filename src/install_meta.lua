@@ -1,6 +1,6 @@
 --- Installs runtime metalua support.
 
-package.path = "/usr/share/lua/5.1/?.luac;" .. package.path
+package.path = "/usr/share/lua/5.1/?.luac;/usr/local/lib/lua/5.1/?.luac;" .. package.path
 require "metalua.compiler"
 
 --- Like lua's require(), but loading sources as metalua instead.

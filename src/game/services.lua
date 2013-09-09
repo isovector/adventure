@@ -2,11 +2,15 @@ local services = { }
 local gservices = { }
 
 for _, service in ipairs(MOAIFileSystem.listFiles("src/game/services")) do
-    table.insert(services, service:sub(1, -5))
+    if service:sub(-4) == ".lua" then
+        table.insert(services, service:sub(1, -5))
+    end
 end
 
 for _, service in ipairs(MOAIFileSystem.listFiles("game/services")) do
-    table.insert(gservices, service:sub(1, -5))
+    if service:sub(-4) == ".lua" then
+        table.insert(gservices, service:sub(1, -5))
+    end
 end
 
 table.sort(services)
